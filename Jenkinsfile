@@ -4,6 +4,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git url: 'https://github.com/diasel2000/estimator.git', credentialsId: 'Git'
+                sh 'chmod +x gradlew'
             }
         }
         stage('Build') {
