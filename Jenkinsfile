@@ -7,7 +7,7 @@ pipeline {
     }
 
     triggers {
-        issueCommentTrigger('.*')
+        githubPush()
     }
 
     stages {
