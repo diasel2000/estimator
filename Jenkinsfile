@@ -23,20 +23,23 @@ pipeline {
                 sh './gradlew test'
             }
         }
-        stage('Deploy') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'FTP_CREDENTIALS_ID', passwordVariable: 'FTP_PASS', usernameVariable: 'FTP_USER')]) {
-                    sh 'echo "Testing FTP connection with credentials:"'
-                    sh 'echo "FTP_USER: $FTP_USER"'
-                    sh 'echo "FTP_PASS: $FTP_PASS"'
-                    sh '''
-                    curl --ftp-create-dirs -T build/libs/*.jar \
-                    -u $FTP_USER:$FTP_PASS \
-                    ftp://$FTP_HOST$FTP_DIR/
-                    '''
-                }
-            }
-        }
+        // TODO: Select client to deploy
+                            // This stage is currently commented out until resolved,
+                            // which client to use for deployment.
+//         stage('Deploy') {
+//             steps {
+//                 withCredentials([usernamePassword(credentialsId: 'FTP_CREDENTIALS_ID', passwordVariable: 'FTP_PASS', usernameVariable: 'FTP_USER')]) {
+//                     sh 'echo "Testing FTP connection with credentials:"'
+//                     sh 'echo "FTP_USER: $FTP_USER"'
+//                     sh 'echo "FTP_PASS: $FTP_PASS"'
+//                     sh '''
+//                     curl --ftp-create-dirs -T build/libs/*.jar \
+//                     -u $FTP_USER:$FTP_PASS \
+//                     ftp://$FTP_HOST$FTP_DIR/
+//                     '''
+//                 }
+//             }
+//         }
     }
     post {
         always {
