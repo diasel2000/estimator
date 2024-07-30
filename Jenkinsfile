@@ -26,8 +26,13 @@ pipeline {
         stage('Deploy') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'FTP_CREDENTIALS_ID', passwordVariable: 'FTP_PASS', usernameVariable: 'FTP_USER')]) {
+                    sh 'echo "Testing FTP connection with credentials:"'
+                    sh 'echo "FTP_USER: $FTP_USER"'
+                    sh 'echo "FTP_PASS: $FTP_PASS"'
                     sh '''
-                    curl -T build/libs/*.jar ftp://$FTP_USER:$FTP_PASS@$FTP_HOST$FTP_DIR/ --ftp-create-dirs
+                    curl --ftp-create-dirs -T build/libs/*.jar \
+                    -u $FTP_USER:$FTP_PASS \
+                    ftp://$FTP_HOST$FTP_DIR/
                     '''
                 }
             }
