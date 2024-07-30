@@ -6,6 +6,11 @@ pipeline {
         FTP_DIR = '/home/u440805526/domains/slategray-nightingale-123371.hostingersite.com/public_html'
     }
 
+    triggers {
+        githubPush()
+        pollSCM('* * * * *')
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -41,6 +46,7 @@ pipeline {
 //             }
 //         }
     }
+
     post {
         always {
             archiveArtifacts artifacts: '**/build/libs/*.jar', allowEmptyArchive: true
@@ -49,12 +55,22 @@ pipeline {
         success {
             mail to: 'n221296@gmail.com',
                  subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                 body: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' was successful."
+                 body: """<h2>Build ${env.JOB_NAME} [${env.BUILD_NUMBER}]</h2>
+                          <p>Status: SUCCESS</p>
+                          <p>Details: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                          <p>Commit: ${env.GIT_COMMIT}</p>
+                          <p>Branch: ${env.BRANCH_NAME}</p>""",
+                 mimeType: 'text/html'
         }
         failure {
             mail to: 'n221296@gmail.com',
                  subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                 body: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed."
+                 body: """<h2>Build ${env.JOB_NAME} [${env.BUILD_NUMBER}]</h2>
+                          <p>Status: FAILURE</p>
+                          <p>Details: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                          <p>Commit: ${env.GIT_COMMIT}</p>
+                          <p>Branch: ${env.BRANCH_NAME}</p>""",
+                 mimeType: 'text/html'
         }
     }
 }
