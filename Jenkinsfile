@@ -1,5 +1,11 @@
 pipeline {
     agent any
+
+    environment {
+        FTP_HOST = 'ftp.slategray-nightingale-123371.hostingersite.com'
+        FTP_DIR = '/home/u440805526/domains/slategray-nightingale-123371.hostingersite.com/public_html'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -19,7 +25,11 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh './gradlew deploy'
+                withCredentials([usernamePassword(credentialsId: 'FTP_CREDENTIALS_ID', passwordVariable: 'FTP_PASS', usernameVariable: 'FTP_USER')]) {
+                    sh '''
+                    curl -T build/libs/*.jar ftp://$FTP_USER:$FTP_PASS@$FTP_HOST$FTP_DIR/ --ftp-create-dirs
+                    '''
+                }
             }
         }
     }
