@@ -7,8 +7,7 @@ pipeline {
     }
 
     triggers {
-        githubPush()
-        pollSCM('* * * * *')
+        issueCommentTrigger('.*')
     }
 
     stages {
