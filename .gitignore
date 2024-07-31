@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Sensitive Data #
+##################
+application.yml
