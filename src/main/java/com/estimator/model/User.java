@@ -1,37 +1,30 @@
 package com.estimator.model;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Set;
 
-@Entity
 @Data
-@NoArgsConstructor
+@Entity
+@Table(name = "Users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userID;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String googleID;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "UserRoles",
-            joinColumns = @JoinColumn(name = "UserID"),
-            inverseJoinColumns = @JoinColumn(name = "RoleID"))
-    private Set<Role> roles;
+    @ManyToOne
+    @JoinColumn(name = "subscriptionID")
+    private Subscription subscription;
 }
