@@ -19,6 +19,9 @@ public class User {
     private String email;
 
     @Column(nullable = false, unique = true)
+    private String password;
+
+    @Column(nullable = false, unique = true)
     private String googleID;
 
     @Column(nullable = false)
