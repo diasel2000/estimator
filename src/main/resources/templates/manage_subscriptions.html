@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Subscriptions</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="container">
+    <h2>Manage Subscriptions</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Subscription Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="subscription : ${subscriptions}">
+            <td th:text="${subscription.name}">Subscription Name</td>
+            <td th:text="${subscription.description}">Description</td>
+            <td>
+                <form th:action="@{/admin/subscriptions/delete/{id}(id=${subscription.id})}" method="post">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/dashboard">Back to Dashboard</a>
+</div>
+</body>
+</html>
