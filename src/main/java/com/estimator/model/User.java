@@ -1,24 +1,32 @@
 package com.estimator.model;
 
+import com.sun.istack.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+// Model for Users
 @Data
+@NoArgsConstructor
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userID;
+    private Integer userID;
 
+    @NotNull
     @Column(nullable = false, unique = true)
     private String username;
 
+    @NotNull
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @NotNull
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false, unique = true)
@@ -27,7 +35,7 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscriptionID")
     private Subscription subscription;
 }
