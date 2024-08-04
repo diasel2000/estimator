@@ -9,14 +9,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin/subscriptions")
 public class AdminSubscriptionController {
+
+    private final SubscriptionRepository subscriptionRepository;
+
     @Autowired
-    private SubscriptionRepository subscriptionRepository;
+    public AdminSubscriptionController(SubscriptionRepository subscriptionRepository) {
+        this.subscriptionRepository = subscriptionRepository;
+    }
 
     @GetMapping
     public String manageSubscriptions(Model model) {
@@ -26,9 +32,13 @@ public class AdminSubscriptionController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteSubscription(@PathVariable Long id) {
-        subscriptionRepository.deleteById(id);
+    public String deleteSubscription(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        if (subscriptionRepository.existsById(id)) {
+            subscriptionRepository.deleteById(id);
+            redirectAttributes.addFlashAttribute("message", "Subscription deleted successfully");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Subscription not found");
+        }
         return "redirect:/admin/subscriptions";
     }
 }
-
