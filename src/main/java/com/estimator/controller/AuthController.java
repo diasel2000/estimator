@@ -10,13 +10,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
 public class AuthController {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public AuthController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @GetMapping("/login")
     public String getLoginPage() {
@@ -29,11 +34,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestParam String username, @RequestParam String email, @RequestParam String password) {
+    public String registerUser(@RequestParam String username, @RequestParam String email, @RequestParam String password, RedirectAttributes redirectAttributes) {
+        if (userRepository.findByEmail(email) != null) {
+            redirectAttributes.addFlashAttribute("error", "Email already exists");
+            return "redirect:/register";
+        }
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
+        // Set password after encoding it
         userRepository.save(user);
+        redirectAttributes.addFlashAttribute("message", "Registration successful");
         return "redirect:/login";
     }
 

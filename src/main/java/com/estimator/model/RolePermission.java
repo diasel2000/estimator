@@ -1,22 +1,25 @@
 package com.estimator.model;
 
 import lombok.Data;
-import javax.persistence.*;
-import java.io.Serializable;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+
+// Model for RolePermission with composite key
 @Data
+@NoArgsConstructor
 @Entity
-@Table(name = "RolePermissions")
+@Table(name = "rolepermissions")
 public class RolePermission {
     @EmbeddedId
     private RolePermissionKey id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("roleID")
     @JoinColumn(name = "roleID")
     private Role role;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("permissionID")
     @JoinColumn(name = "permissionID")
     private Permission permission;
