@@ -2,6 +2,7 @@ package com.estimator.config;
 
 import com.estimator.repository.UserRepository;
 import com.estimator.services.CustomOAuth2UserService;
+import com.estimator.services.JwtTokenProvider;
 import com.estimator.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService() {
         return new CustomOAuth2UserService(userRepository);
@@ -39,13 +43,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/public/**", "/login", "/register", "/oauth2/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
+                .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/dashboard", true)
+                .failureUrl("/login?error=true")
                 .and()
                 .oauth2Login()
                 .loginPage("/login")

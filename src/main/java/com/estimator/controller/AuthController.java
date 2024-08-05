@@ -18,7 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
-
+import java.util.UUID;
 
 @Controller
 public class AuthController {
@@ -50,10 +50,10 @@ public class AuthController {
     public String registerUser(@RequestParam String username, @RequestParam String email, @RequestParam String password, RedirectAttributes redirectAttributes) {
         if (userService.findByEmail(email) != null) {
             redirectAttributes.addFlashAttribute("error", "Email already exists");
-            return "redirect:/register";
+            return "redirect:/login";
         }
 
-        userService.registerUser(username,email,passwordEncoder.encode(password),"");
+        userService.registerUser(username,email,passwordEncoder.encode(password), UUID.randomUUID().toString());
         redirectAttributes.addFlashAttribute("message", "Registration successful");
         return "redirect:/login";
     }
@@ -62,13 +62,12 @@ public class AuthController {
     public String loginUser(@RequestParam String email, @RequestParam String password, HttpSession session, RedirectAttributes redirectAttributes) {
         User user = userService.findByEmail(email);
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            String token = jwtTokenProvider.createToken(user.getEmail(), new ArrayList<>(user.getRoles())); // Fix roles cast
-            session.setAttribute("token", token); // Save token in session
-            // Check user subscription and redirect accordingly
+            String token = jwtTokenProvider.createToken(user.getEmail(), new ArrayList<>(user.getRoles()));
+            session.setAttribute("token", token);
             if (userHasSubscription(user)) {
-                return "redirect:/dashboard"; // Or the appropriate page based on the user's subscription
+                return "redirect:/dashboard";
             } else {
-                return "redirect:/subscribe"; // Redirect to subscription page
+                return "redirect:/subscribe";
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "Invalid email or password");
@@ -85,7 +84,6 @@ public class AuthController {
     }
 
     private boolean userHasSubscription(User user) {
-        // Check if the user has a subscription
         return user.getSubscription() != null;
     }
 }
