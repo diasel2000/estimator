@@ -1,42 +1,42 @@
 package com.estimator.controller;
 import com.estimator.model.Subscription;
 import com.estimator.model.User;
-import com.estimator.repository.SubscriptionRepository;
-import com.estimator.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.estimator.model.dto.RegisterRequest;
+import com.estimator.services.SubscriptionService;
+import com.estimator.services.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
+import java.security.Principal;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
-    private final UserRepository userRepository;
-    private final SubscriptionRepository subscriptionRepository;
+    private final UserService userService;
+    private final SubscriptionService subscriptionService;
 
-    @Autowired
-    public UserController(UserRepository userRepository, SubscriptionRepository subscriptionRepository) {
-        this.userRepository = userRepository;
-        this.subscriptionRepository = subscriptionRepository;
+    public UserController(UserService userService, SubscriptionService subscriptionService) {
+        this.userService = userService;
+        this.subscriptionService = subscriptionService;
     }
 
-    @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    @PostMapping("/register")
+    public ResponseEntity<User> registerUser(@RequestBody RegisterRequest request) {
+        User user = userService.registerUser(request.getUsername(), request.getEmail(), request.getPassword(), request.getGoogleId());
+        return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/subscriptions")
-    public List<Subscription> getAllSubscriptions() {
-        return subscriptionRepository.findAll();
+    @GetMapping("/profile")
+    public ResponseEntity<User> getUserProfile(Principal principal) {
+        User user = userService.findByEmail(principal.getName());
+        return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/subscriptions/{userId}")
-    public ResponseEntity<User> updateUserSubscription(@PathVariable Long userId, @RequestBody Subscription subscription) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        user.setSubscription(subscription);
-        User updatedUser = userRepository.save(user);
-        return ResponseEntity.ok(updatedUser);
+    @PostMapping("/update-subscription")
+    public ResponseEntity<User> updateSubscription(@RequestParam String subscriptionName, Principal principal) {
+        User user = userService.findByEmail(principal.getName());
+        Subscription subscription = subscriptionService.getSubscriptionByName(subscriptionName);
+        userService.updateSubscription(user, subscription);
+        return ResponseEntity.ok(user);
     }
 }
