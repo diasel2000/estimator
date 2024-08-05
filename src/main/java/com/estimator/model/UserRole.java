@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-// Model for UserRole with composite key
 @Data
 @NoArgsConstructor
 @Entity

@@ -1,10 +1,6 @@
 package com.estimator.repository;
 
-
-import com.estimator.model.Permission;
-import com.estimator.model.Role;
 import com.estimator.model.User;
-import com.estimator.model.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

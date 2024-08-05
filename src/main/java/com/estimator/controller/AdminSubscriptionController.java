@@ -1,7 +1,7 @@
 package com.estimator.controller;
 
 import com.estimator.model.Subscription;
-import com.estimator.repository.SubscriptionRepository;
+import com.estimator.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,24 +17,24 @@ import java.util.List;
 @RequestMapping("/admin/subscriptions")
 public class AdminSubscriptionController {
 
-    private final SubscriptionRepository subscriptionRepository;
+    private SubscriptionService subscriptionService;
 
     @Autowired
-    public AdminSubscriptionController(SubscriptionRepository subscriptionRepository) {
-        this.subscriptionRepository = subscriptionRepository;
+    public AdminSubscriptionController(SubscriptionService subscriptionService) {
+        this.subscriptionService = subscriptionService;
     }
 
     @GetMapping
     public String manageSubscriptions(Model model) {
-        List<Subscription> subscriptions = subscriptionRepository.findAll();
+        List<Subscription> subscriptions = subscriptionService.getAllSubscriptions();
         model.addAttribute("subscriptions", subscriptions);
         return "manage_subscriptions";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteSubscription(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        if (subscriptionRepository.existsById(id)) {
-            subscriptionRepository.deleteById(id);
+        if (subscriptionService.existsById(id)) {
+            subscriptionService.deleteById(id);
             redirectAttributes.addFlashAttribute("message", "Subscription deleted successfully");
         } else {
             redirectAttributes.addFlashAttribute("error", "Subscription not found");
