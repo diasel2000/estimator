@@ -1,9 +1,6 @@
 package com.estimator.services;
 
-import com.estimator.model.Role;
-import com.estimator.model.Subscription;
-import com.estimator.model.User;
-import com.estimator.model.UserRole;
+import com.estimator.model.*;
 import com.estimator.repository.RoleRepository;
 import com.estimator.repository.SubscriptionRepository;
 import com.estimator.repository.UserRepository;
@@ -13,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -37,8 +35,19 @@ public class UserService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
+        if (googleId.isEmpty()){
+            googleId = UUID.randomUUID().toString();
+        }
         user.setGoogleID(googleId);
         user.setCreatedAt(LocalDateTime.now());
+
+        Optional<Subscription> defaultSubscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName("Basic"));
+        if (defaultSubscriptionOpt.isPresent()) {
+            Subscription defaultSubscription = defaultSubscriptionOpt.get();
+            user.setSubscription(defaultSubscription);
+        } else {
+            throw new RuntimeException("Default subscription not found");
+        }
 
         Optional<Role> defaultRoleOpt = Optional.ofNullable(roleRepository.findByRoleName("USER"));
         if (defaultRoleOpt.isPresent()) {
@@ -49,21 +58,18 @@ public class UserService {
             throw new RuntimeException("Default role not found");
         }
 
-        Optional<Subscription> defaultSubscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName("Basic"));
-        if (defaultSubscriptionOpt.isPresent()) {
-            Subscription defaultSubscription = defaultSubscriptionOpt.get();
-            user.setSubscription(defaultSubscription);
-        } else {
-            throw new RuntimeException("Default subscription not found");
-        }
-
         userRepository.save(user);
         return user;
     }
 
 
     public void assignRoleToUser(User user, Role role) {
+        UserRoleKey key = new UserRoleKey();
+        key.setUserID(user.getUserID());
+        key.setRoleID(role.getRoleID());
+
         UserRole userRole = new UserRole();
+        userRole.setId(key);
         userRole.setUser(user);
         userRole.setRole(role);
         userRoleRepository.save(userRole);
