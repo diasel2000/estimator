@@ -1,6 +1,9 @@
 package com.estimator.config;
 
+import com.estimator.repository.RoleRepository;
+import com.estimator.repository.SubscriptionRepository;
 import com.estimator.repository.UserRepository;
+import com.estimator.repository.UserRoleRepository;
 import com.estimator.services.CustomOAuth2UserService;
 import com.estimator.services.JwtTokenProvider;
 import com.estimator.services.UserDetailsServiceImpl;
@@ -30,9 +33,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    private  RoleRepository roleRepository;
+
+    @Autowired
+    private  SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    private  UserRoleRepository userRoleRepository;
+
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService() {
-        return new CustomOAuth2UserService(userRepository);
+        return new CustomOAuth2UserService(userRepository, roleRepository, subscriptionRepository, userRoleRepository);
     }
 
     @Bean

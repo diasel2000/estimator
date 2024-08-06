@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 <div class="container">
@@ -12,16 +11,20 @@
     <div>
         <p>Your subscription: <span th:text="${user.subscription != null ? user.subscription.subscriptionName : 'No Subscription'}">Subscription Name</span></p>
     </div>
-    <div th:if="${user.subscription != null && user.subscription.subscriptionName == 'Ultimate'}">
+    <div th:if="${roles.contains('ROLE_ADMIN')}">
         <h3>Admin Panel</h3>
         <ul>
             <li><a th:href="@{/admin/users}">Manage Users</a></li>
-            <li><a th:href="@{/api/subscriptions}">Manage Subscriptions</a></li>
+            <li><a th:href="@{/admin/subscriptions}">Manage Subscriptions</a></li>
         </ul>
     </div>
-    <div th:unless="${user.subscription != null && user.subscription.subscriptionName == 'Ultimate'}">
+    <div th:unless="${roles.contains('ROLE_ADMIN')}">
         <h3>Your Dashboard</h3>
         <p>Content specific to your subscription will be displayed here.</p>
+        <ul>
+            <li><a th:href="@{/api/users/profile}">Your Profile</a></li>
+            <li><a th:href="@{/api/subscriptions}">Subscriptions</a></li>
+        </ul>
     </div>
     <div>
         <a th:href="@{/logout}">Logout</a>

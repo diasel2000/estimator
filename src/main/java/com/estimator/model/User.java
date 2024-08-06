@@ -2,11 +2,13 @@ package com.estimator.model;
 
 import com.sun.istack.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,7 +30,7 @@ public class User {
     private String email;
 
     @NotNull
-    @Column(nullable = false)
+    @Column/*(nullable = false)*/
     private String password;
 
     @Column(nullable = false, unique = true)
@@ -49,5 +51,18 @@ public class User {
         return userRoles.stream()
                 .map(UserRole::getRole)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(userID, user.userID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userID);
     }
 }

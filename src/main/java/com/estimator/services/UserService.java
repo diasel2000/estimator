@@ -42,7 +42,7 @@ public class UserService {
         user.setGoogleID(googleId);
         user.setCreatedAt(LocalDateTime.now());
 
-        Optional<Role> defaultRoleOpt = Optional.ofNullable(roleRepository.findByRoleName("USER"));
+        Optional<Role> defaultRoleOpt = Optional.ofNullable(roleRepository.findByRoleName("ROLE_USER"));
         if (!defaultRoleOpt.isPresent()) {
             throw new RuntimeException("Default role not found");
         }
