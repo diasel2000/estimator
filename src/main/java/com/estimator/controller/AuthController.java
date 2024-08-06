@@ -75,14 +75,6 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/profile")
-    public String getProfilePage(Model model, @AuthenticationPrincipal OAuth2User principal) {
-        String email = principal.getAttribute("email");
-        User user = userService.findByEmail(email);
-        model.addAttribute("user", user);
-        return "profile";
-    }
-
     private boolean userHasSubscription(User user) {
         return user.getSubscription() != null;
     }

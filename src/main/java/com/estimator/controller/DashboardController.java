@@ -1,5 +1,6 @@
 package com.estimator.controller;
 
+import com.estimator.model.Role;
 import com.estimator.model.Subscription;
 import com.estimator.model.User;
 import com.estimator.services.SubscriptionService;
@@ -11,47 +12,40 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class DashboardController {
 
     private final UserService userService;
-    private final SubscriptionService subscriptionService;
 
     @Autowired
-    public DashboardController(UserService userService, SubscriptionService subscriptionService) {
+    public DashboardController(UserService userService) {
         this.userService = userService;
-        this.subscriptionService = subscriptionService;
     }
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication authentication) {
         String googleId = authentication.getName();
-
         User user = userService.findByGoogleID(googleId);
-        if(user!=null) {
-            Subscription subscription = user.getSubscription();
 
-            String subscriptionName = subscription.getSubscriptionName();
-            if (subscriptionName.equals("Basic")) {
-                model.addAttribute("user", user);
-                return "dashboardU";
-            }
-            if (subscriptionName.equals("Standard")) {
-                model.addAttribute("user", user);
-                return "dashboardS";
-            }
-            if (subscriptionName.equals("Ultimate")) {
-                model.addAttribute("user", user);
+        if (user != null) {
+            model.addAttribute("user", user);
+            Subscription subscription = user.getSubscription();
+            String subscriptionName = subscription != null ? subscription.getSubscriptionName() : "No Subscription";
+
+            Set<Role> roles = user.getRoles();
+            model.addAttribute("roles", roles);
+
+            if ("Basic".equals(subscriptionName)) {
+                return "dashboard";
+            } else if ("Standard".equals(subscriptionName)) {
+                return "dashboard";
+            } else if ("Ultimate".equals(subscriptionName)) {
                 return "dashboard";
             }
         }
 
-        //TODO implement role permission check
-
-        //TODO implement templates for difrent subscriptions and roles
-
-        model.addAttribute("user", user);
         return "dashboard";
     }
 }
