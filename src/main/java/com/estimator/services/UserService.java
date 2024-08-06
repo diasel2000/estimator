@@ -7,6 +7,7 @@ import com.estimator.repository.UserRepository;
 import com.estimator.repository.UserRoleRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -35,35 +36,42 @@ public class UserService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
-        if (googleId.isEmpty()){
+        if (googleId.isEmpty()) {
             googleId = UUID.randomUUID().toString();
         }
         user.setGoogleID(googleId);
         user.setCreatedAt(LocalDateTime.now());
 
-        Optional<Subscription> defaultSubscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName("Basic"));
-        if (defaultSubscriptionOpt.isPresent()) {
-            Subscription defaultSubscription = defaultSubscriptionOpt.get();
-            user.setSubscription(defaultSubscription);
-        } else {
-            throw new RuntimeException("Default subscription not found");
-        }
-
         Optional<Role> defaultRoleOpt = Optional.ofNullable(roleRepository.findByRoleName("USER"));
-        if (defaultRoleOpt.isPresent()) {
-            Role defaultRole = defaultRoleOpt.get();
-            userRepository.save(user);
-            assignRoleToUser(user, defaultRole);
-        } else {
+        if (!defaultRoleOpt.isPresent()) {
             throw new RuntimeException("Default role not found");
         }
 
+        Optional<Subscription> defaultSubscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName("Basic"));
+        if (!defaultSubscriptionOpt.isPresent()) {
+            throw new RuntimeException("Default subscription not found");
+        }
+
+        user.setSubscription(defaultSubscriptionOpt.get());
         userRepository.save(user);
+
+        Role defaultRole = defaultRoleOpt.get();
+        assignRoleToUser(user, defaultRole);
+
         return user;
     }
 
+    @Transactional
+    public void deleteUserByEmail(String email) {
+        User userOpt = userRepository.findByEmail(email);
+        if (userOpt!=null) {
+            userRepository.deleteByEmail(email);
+        } else {
+            throw new RuntimeException("User not found with email: " + email);
+        }
+    }
 
-    public void assignRoleToUser(User user, Role role) {
+    private void assignRoleToUser(User user, Role role) {
         UserRoleKey key = new UserRoleKey();
         key.setUserID(user.getUserID());
         key.setRoleID(role.getRoleID());

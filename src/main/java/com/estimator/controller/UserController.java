@@ -39,4 +39,10 @@ public class UserController {
         userService.updateSubscription(user, subscription);
         return ResponseEntity.ok(user);
     }
+
+    @PostMapping("/email/{email}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String email) {
+        userService.deleteUserByEmail(email);
+        return ResponseEntity.noContent().build();
+    }
 }
