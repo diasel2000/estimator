@@ -41,7 +41,7 @@ public class User {
     @JoinColumn(name = "subscriptionID")
     private Subscription subscription;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserRole> userRoles = new HashSet<>();
 
     @Transient

@@ -16,7 +16,7 @@
         <h3>Admin Panel</h3>
         <ul>
             <li><a th:href="@{/admin/users}">Manage Users</a></li>
-            <li><a th:href="@{/admin/subscriptions}">Manage Subscriptions</a></li>
+            <li><a th:href="@{/api/subscriptions}">Manage Subscriptions</a></li>
         </ul>
     </div>
     <div th:unless="${user.subscription != null && user.subscription.subscriptionName == 'Ultimate'}">
