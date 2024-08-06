@@ -29,23 +29,24 @@ public class DashboardController {
         String googleId = authentication.getName();
 
         User user = userService.findByGoogleID(googleId);
-        List<Subscription> subscriptions = subscriptionService.getAllSubscriptions();
-        for (Subscription subscription:subscriptions){
-            String subscriptionName =subscription.getSubscriptionName();
-            if (subscriptionName.equals("Basic")){
-                model.addAttribute("user", user);
-                return "dashboardB";
-            }
-            if (subscriptionName.equals("Standard")){
-                model.addAttribute("user", user);
-                return "dashboardS";
-            }
-            if (subscriptionName.equals("Ultimate")){
+        if(user!=null) {
+            Subscription subscription = user.getSubscription();
+
+            String subscriptionName = subscription.getSubscriptionName();
+            if (subscriptionName.equals("Basic")) {
                 model.addAttribute("user", user);
                 return "dashboardU";
             }
-
+            if (subscriptionName.equals("Standard")) {
+                model.addAttribute("user", user);
+                return "dashboardS";
+            }
+            if (subscriptionName.equals("Ultimate")) {
+                model.addAttribute("user", user);
+                return "dashboard";
+            }
         }
+
         //TODO implement role permission check
 
         //TODO implement templates for difrent subscriptions and roles
