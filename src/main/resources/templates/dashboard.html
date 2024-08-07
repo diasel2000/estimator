@@ -7,18 +7,18 @@
 </head>
 <body>
 <div class="container">
-    <h2>Welcome, <span th:text="${user.username}">User</span></h2>
+    <h2>Welcome, <span th:text="${user != null ? user.username : 'User'}">User</span></h2>
     <div>
-        <p>Your subscription: <span th:text="${user.subscription != null ? user.subscription.subscriptionName : 'No Subscription'}">Subscription Name</span></p>
+        <p>Your subscription: <span th:text="${subscriptionName}">Subscription Name</span></p>
     </div>
-    <div th:if="${roles.contains('ROLE_ADMIN')}">
+    <div th:if="${roles != null and roles.contains('ROLE_ADMIN')}">
         <h3>Admin Panel</h3>
         <ul>
             <li><a th:href="@{/admin/users}">Manage Users</a></li>
             <li><a th:href="@{/admin/subscriptions}">Manage Subscriptions</a></li>
         </ul>
     </div>
-    <div th:unless="${roles.contains('ROLE_ADMIN')}">
+    <div th:unless="${roles != null and roles.contains('ROLE_ADMIN')}">
         <h3>Your Dashboard</h3>
         <p>Content specific to your subscription will be displayed here.</p>
         <ul>
