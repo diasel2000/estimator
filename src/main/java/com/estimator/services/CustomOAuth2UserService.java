@@ -56,12 +56,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
         }
 
         Optional<Role> defaultRoleOpt = Optional.ofNullable(roleRepository.findByRoleName("ROLE_ADMIN"));
-        if (!defaultRoleOpt.isPresent()) {
+        if (defaultRoleOpt.isEmpty()) {
             throw new RuntimeException("Default role not found");
         }
 
         Optional<Subscription> defaultSubscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName("Basic"));
-        if (!defaultSubscriptionOpt.isPresent()) {
+        if (defaultSubscriptionOpt.isEmpty()) {
             throw new RuntimeException("Default subscription not found");
         }
 

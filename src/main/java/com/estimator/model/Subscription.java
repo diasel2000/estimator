@@ -26,4 +26,13 @@ public class Subscription {
     @NotNull
     @Column(nullable = false)
     private BigDecimal price;
+
+    @Override
+    public String toString() {
+        return "Subscription{" +
+                "subscriptionID=" + subscriptionID +
+                ", subscriptionName='" + subscriptionName + '\'' +
+                '}';
+    }
+
 }

@@ -15,6 +15,7 @@ import java.util.UUID;
 
 
 @Service
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final SubscriptionRepository subscriptionRepository;
@@ -32,6 +33,9 @@ public class UserService {
     }
 
     public User registerUser(String username, String email, String password, String googleId) {
+        if (userRepository.findByUsername(username)!=null){
+            throw new RuntimeException("Username is already exist");
+        }
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
@@ -43,12 +47,12 @@ public class UserService {
         user.setCreatedAt(LocalDateTime.now());
 
         Optional<Role> defaultRoleOpt = Optional.ofNullable(roleRepository.findByRoleName("ROLE_USER"));
-        if (!defaultRoleOpt.isPresent()) {
+        if (defaultRoleOpt.isEmpty()) {
             throw new RuntimeException("Default role not found");
         }
 
         Optional<Subscription> defaultSubscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName("Basic"));
-        if (!defaultSubscriptionOpt.isPresent()) {
+        if (defaultSubscriptionOpt.isEmpty()) {
             throw new RuntimeException("Default subscription not found");
         }
 
@@ -88,16 +92,26 @@ public class UserService {
         return userOpt.orElse(null);
     }
 
-
     public void updateSubscription(User user, Subscription subscription) {
         user.setSubscription(subscription);
         userRepository.save(user);
     }
 
-    public User findByGoogleID(String googleId) {
-        Optional<User> userOpt = userRepository.findByGoogleID(googleId);
-        return userOpt.orElse(null);
+    @Transactional(readOnly = true)
+    public User findByGoogleID(String googleID) {
+        User user = userRepository.findByGoogleID(googleID);
+        if (user != null) {
+            // Ініціалізація lazy асоціацій
+            user.getRoles().size(); // Це ініціалізує lazy асоціацію userRoles
+            if (user.getSubscription() != null) {
+                user.getSubscription().getSubscriptionName(); // Ініціалізація subscription
+            }
+        }
+        return user;
     }
 
 
+    public User findByUserName(String username) {
+        return userRepository.findByUsername(username);
+    }
 }

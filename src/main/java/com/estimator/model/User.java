@@ -1,5 +1,6 @@
 package com.estimator.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,11 +40,12 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subscriptionID")
     private Subscription subscription;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private Set<UserRole> userRoles = new HashSet<>();
 
     @Transient
@@ -65,4 +67,18 @@ public class User {
     public int hashCode() {
         return Objects.hash(userID);
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userID=" + userID +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", googleID='" + googleID + '\'' +
+                ", createdAt=" + createdAt +
+                ", subscription=" + (subscription != null ? subscription.getSubscriptionName() : "null") +
+                ", roles=" + userRoles.size() +
+                '}';
+    }
+
 }
