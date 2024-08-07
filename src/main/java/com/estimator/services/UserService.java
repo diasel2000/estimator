@@ -32,6 +32,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public User registerUser(String username, String email, String password, String googleId) {
         if (userRepository.findByUsername(username)!=null){
             throw new RuntimeException("Username is already exist");
@@ -87,6 +88,7 @@ public class UserService {
         userRoleRepository.save(userRole);
     }
 
+    @Transactional
     public User findByEmail(String email) {
         Optional<User> userOpt = Optional.ofNullable(userRepository.findByEmail(email));
         return userOpt.orElse(null);
@@ -101,15 +103,13 @@ public class UserService {
     public User findByGoogleID(String googleID) {
         User user = userRepository.findByGoogleID(googleID);
         if (user != null) {
-            // Ініціалізація lazy асоціацій
-            user.getRoles().size(); // Це ініціалізує lazy асоціацію userRoles
+            user.getRoles().size();
             if (user.getSubscription() != null) {
-                user.getSubscription().getSubscriptionName(); // Ініціалізація subscription
+                user.getSubscription().getSubscriptionName();
             }
         }
         return user;
     }
-
 
     public User findByUserName(String username) {
         return userRepository.findByUsername(username);
