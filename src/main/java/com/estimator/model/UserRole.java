@@ -1,5 +1,6 @@
 package com.estimator.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ public class UserRole {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userID")
     @JoinColumn(name = "userID")
+    @JsonManagedReference
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,4 +38,12 @@ public class UserRole {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "UserRole{" +
+                "role=" + (role != null ? role.getRoleName() : "null") +
+                '}';
+    }
+
 }
