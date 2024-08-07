@@ -39,7 +39,7 @@ public class AuthController {
             return "redirect:/login";
         }
 
-        userService.registerUser(username,email,passwordEncoder.encode(password), UUID.randomUUID().toString());
+        userService.registerUser(username, email, password, UUID.randomUUID().toString());
         redirectAttributes.addFlashAttribute("message", "Registration successful");
         return "redirect:/login";
     }
