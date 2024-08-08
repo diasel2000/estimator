@@ -37,6 +37,13 @@ public class RolePermission {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "RolePermission(id=null, role=" + (role != null ? role.getRoleName() : "null") +
+                ", permission=" + (permission != null ? permission.getPermissionName() : "null") + ")";
+    }
+
 }
 
 
