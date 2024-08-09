@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -113,5 +114,17 @@ public class UserService {
 
     public User findByUserName(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public boolean existsById(Integer id) {
+        return userRepository.findById(Long.valueOf(id)).isPresent();
+    }
+
+    public void deleteById(Integer id) {
+        userRepository.deleteById(Long.valueOf(id));
     }
 }
