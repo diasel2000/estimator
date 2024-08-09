@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer subscriptionID;
+    private Long subscriptionID;
 
     @NotNull
     @Column(nullable = false, unique = true)

@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer roleID;
+    private Long roleID;
 
     @NotNull
     @Column(nullable = false, unique = true)

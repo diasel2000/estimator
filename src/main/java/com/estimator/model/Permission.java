@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer permissionID;
+    private Long permissionID;
 
     @NotNull
     @Column(nullable = false, unique = true)

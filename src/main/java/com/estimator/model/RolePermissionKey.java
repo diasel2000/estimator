@@ -13,10 +13,10 @@ import java.io.Serializable;
 @Embeddable
 public class RolePermissionKey implements Serializable {
     @Column(name = "roleID")
-    private Integer roleID;
+    private Long roleID;
 
     @Column(name = "permissionID")
-    private Integer permissionID;
+    private Long permissionID;
 
     @Override
     public boolean equals(Object o) {

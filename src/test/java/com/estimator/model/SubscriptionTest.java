@@ -9,7 +9,7 @@ public class SubscriptionTest {
     @Test
     public void testToString() {
         Subscription subscription = new Subscription();
-        subscription.setSubscriptionID(1);
+        subscription.setSubscriptionID(1l);
         subscription.setSubscriptionName("Basic");
 
         String expected = "Subscription{subscriptionID=1, subscriptionName='Basic'}";

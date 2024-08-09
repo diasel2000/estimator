@@ -13,10 +13,10 @@ import java.io.Serializable;
 @Embeddable
 public class UserRoleKey implements Serializable {
     @Column(name = "userID")
-    private Integer userID;
+    private Long userID;
 
     @Column(name = "roleID")
-    private Integer roleID;
+    private Long roleID;
 
     @Override
     public boolean equals(Object o) {
