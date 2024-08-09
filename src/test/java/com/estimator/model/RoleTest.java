@@ -8,11 +8,11 @@ public class RoleTest {
     @Test
     public void testEqualsAndHashCode() {
         Role role1 = new Role();
-        role1.setRoleID(1);
+        role1.setRoleID(1l);
         role1.setRoleName("ROLE_USER");
 
         Role role2 = new Role();
-        role2.setRoleID(1);
+        role2.setRoleID(1l);
         role2.setRoleName("ROLE_USER");
 
         assertEquals(role1, role2);
@@ -22,7 +22,7 @@ public class RoleTest {
     @Test
     public void testToString() {
         Role role = new Role();
-        role.setRoleID(1);
+        role.setRoleID(1l);
         role.setRoleName("ROLE_ADMIN");
 
         String expected = "Role(roleID=1, roleName=ROLE_ADMIN, description=null)";

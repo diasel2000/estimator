@@ -9,12 +9,12 @@ public class RolePermissionTest {
     @Test
     public void testEqualsAndHashCode() {
         RolePermissionKey key1 = new RolePermissionKey();
-        key1.setRoleID(1);
-        key1.setPermissionID(1);
+        key1.setRoleID(1l);
+        key1.setPermissionID(1l);
 
         RolePermissionKey key2 = new RolePermissionKey();
-        key2.setRoleID(1);
-        key2.setPermissionID(1);
+        key2.setRoleID(1l);
+        key2.setPermissionID(1l);
 
         assertEquals(key1, key2);
         assertEquals(key1.hashCode(), key2.hashCode());

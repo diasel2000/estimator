@@ -19,10 +19,10 @@
         </thead>
         <tbody>
         <tr th:each="subscription : ${subscriptions}">
-            <td th:text="${subscription.name}">Subscription Name</td>
+            <td th:text="${subscription.subscriptionName}">Subscription Name</td>
             <td th:text="${subscription.description}">Description</td>
             <td>
-                <form th:action="@{/admin/subscriptions/delete/{id}(id=${subscription.id})}" method="post">
+                <form th:action="@{/admin/subscriptions/delete/{id}(id=${subscription.subscriptionID})}" method="post">
                     <button type="submit">Delete</button>
                 </form>
             </td>
