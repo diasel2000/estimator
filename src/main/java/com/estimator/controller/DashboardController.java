@@ -39,11 +39,18 @@ public class DashboardController {
             model.addAttribute("roles", roles);
             model.addAttribute("subscriptionName", subscriptionName);
 
-            if ("Basic".equals(subscriptionName) || "Standard".equals(subscriptionName) || "Ultimate".equals(subscriptionName)) {
-                return "dashboard";
+            switch (subscriptionName) {
+                case "Basic":
+                    return "dashboardB";
+                case "Standard":
+                    return "dashboardS";
+                case "Ultimate":
+                    return "dashboardU";
+                default:
+                    return "dashboard";
             }
         }
 
-        return "error"; // Or another view to handle when user is null
+        return "error";
     }
 }

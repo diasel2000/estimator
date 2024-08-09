@@ -27,6 +27,10 @@ public class Subscription {
     @Column(nullable = false)
     private BigDecimal price;
 
+    public Subscription(String subscriptionName) {
+        this.subscriptionName= subscriptionName;
+    }
+
     @Override
     public String toString() {
         return "Subscription{" +
