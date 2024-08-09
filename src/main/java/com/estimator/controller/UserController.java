@@ -5,7 +5,8 @@ import com.estimator.model.dto.RegisterRequest;
 import com.estimator.services.SubscriptionService;
 import com.estimator.services.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,9 +32,23 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public String getProfilePage(Model model, @AuthenticationPrincipal OAuth2User principal) {
-        String email = principal.getAttribute("email");
-        User user = userService.findByEmail(email);
+    public String getProfilePage(Model model, Authentication authentication) {
+        User user = null;
+
+        if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
+            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+            String email = oAuth2User.getAttribute("email");
+            user = userService.findByEmail(email);
+        } else if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String username = userDetails.getUsername();
+            user = userService.findByUserName(username);
+        }
+
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
         model.addAttribute("user", user);
         return "profile";
     }

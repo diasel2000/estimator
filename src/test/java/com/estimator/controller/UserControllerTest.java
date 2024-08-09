@@ -12,8 +12,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import java.security.Principal;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.ui.Model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,11 +67,17 @@ public class UserControllerTest {
 
     @Test
     public void testGetProfilePage() {
-        User user = new User();
+        Authentication authentication = mock(Authentication.class);
+        OAuth2User oAuth2User = mock(OAuth2User.class);
+        when(authentication.getPrincipal()).thenReturn(oAuth2User);
         when(oAuth2User.getAttribute("email")).thenReturn("test@example.com");
+
+        User user = new User();
         when(userService.findByEmail("test@example.com")).thenReturn(user);
 
-        String viewName = userController.getProfilePage(model, oAuth2User);
+        Model model = mock(Model.class);
+
+        String viewName = userController.getProfilePage(model, authentication);
 
         assertEquals("profile", viewName);
         verify(model, times(1)).addAttribute("user", user);
@@ -76,10 +87,11 @@ public class UserControllerTest {
     public void testUpdateSubscription() {
         User user = new User();
         Subscription subscription = new Subscription();
+
+        Principal principal = mock(Principal.class);
         when(principal.getName()).thenReturn("test@example.com");
         when(userService.findByEmail("test@example.com")).thenReturn(user);
         when(subscriptionService.getSubscriptionByName("Basic")).thenReturn(subscription);
-        //when(userService.updateSubscription(any(User.class), any(Subscription.class))).thenReturn(user);
 
         ResponseEntity<User> response = userController.updateSubscription("Basic", principal);
 
@@ -94,5 +106,42 @@ public class UserControllerTest {
         assertEquals(ResponseEntity.noContent().build(), response);
         verify(userService, times(1)).deleteUserByEmail("test@example.com");
     }
+
+    @Test
+    public void testGetProfilePageWithUserDetails() {
+        Authentication authentication = mock(Authentication.class);
+        UserDetails userDetails = mock(UserDetails.class);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        when(userDetails.getUsername()).thenReturn("testuser");
+
+        User user = new User();
+        when(userService.findByUserName("testuser")).thenReturn(user);
+
+        Model model = mock(Model.class);
+
+        String viewName = userController.getProfilePage(model, authentication);
+
+        assertEquals("profile", viewName);
+        verify(model, times(1)).addAttribute("user", user);
+    }
+
+    @Test
+    public void testGetProfilePageUserNotFound() {
+        Authentication authentication = mock(Authentication.class);
+        OAuth2User oAuth2User = mock(OAuth2User.class);
+        when(authentication.getPrincipal()).thenReturn(oAuth2User);
+        when(oAuth2User.getAttribute("email")).thenReturn("notfound@example.com");
+
+        when(userService.findByEmail("notfound@example.com")).thenReturn(null);
+
+        Model model = mock(Model.class);
+
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
+            userController.getProfilePage(model, authentication);
+        });
+
+        assertEquals("User not found", thrown.getMessage());
+    }
+
 }
 
