@@ -52,7 +52,7 @@ pipeline {
             junit 'build/test-results/test/*.xml'
         }
         success {
-            mail to: 'n221296@gmail.com',
+            mail to: 'estimateyouritapp@gmail.com',
                  subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
                  body: """<h2>Build ${env.JOB_NAME} [${env.BUILD_NUMBER}]</h2>
                           <p>Status: SUCCESS</p>
@@ -62,7 +62,7 @@ pipeline {
                  mimeType: 'text/html'
         }
         failure {
-            mail to: 'n221296@gmail.com',
+            mail to: 'estimateyouritapp@gmail.com',
                  subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
                  body: """<h2>Build ${env.JOB_NAME} [${env.BUILD_NUMBER}]</h2>
                           <p>Status: FAILURE</p>
