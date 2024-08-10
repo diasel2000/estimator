@@ -55,7 +55,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
             user.setCreatedAt(LocalDateTime.now());
         }
 
-        Optional<Role> defaultRoleOpt = Optional.ofNullable(roleRepository.findByRoleName("ROLE_ADMIN"));
+        Optional<Role> defaultRoleOpt = Optional.ofNullable(roleRepository.findByRoleName("ROLE_USER"));
         if (defaultRoleOpt.isEmpty()) {
             throw new RuntimeException("Default role not found");
         }
