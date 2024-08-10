@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/admin/subscriptions")
 public class AdminSubscriptionController {
 
-    private SubscriptionService subscriptionService;
+    private final SubscriptionService subscriptionService;
 
     @Autowired
     public AdminSubscriptionController(SubscriptionService subscriptionService) {
