@@ -1,5 +1,6 @@
 package com.estimator.services;
 
+import com.estimator.exception.CustomException;
 import com.estimator.model.*;
 import com.estimator.repository.RoleRepository;
 import com.estimator.repository.SubscriptionRepository;
@@ -15,9 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-
 
 @Service
 @Transactional
@@ -46,7 +45,7 @@ public class UserService {
 
         if (userRepository.findByUsername(username) != null) {
             logger.warn("Username {} is already taken", username);
-            throw new RuntimeException("Username is already exist");
+            throw new CustomException.UserAlreadyExistsException(username);
         }
 
         User user = new User();
@@ -61,23 +60,22 @@ public class UserService {
         user.setGoogleID(googleId);
         user.setCreatedAt(LocalDateTime.now());
 
-        Optional<Role> defaultRoleOpt = Optional.ofNullable(roleRepository.findByRoleName("ROLE_USER"));
-        if (defaultRoleOpt.isEmpty()) {
+        Role defaultRole = roleRepository.findByRoleName("ROLE_USER");
+        if (defaultRole == null) {
             logger.error("Default role ROLE_USER not found");
-            throw new RuntimeException("Default role not found");
+            throw new CustomException.DefaultRoleNotFoundException();
         }
 
-        Optional<Subscription> defaultSubscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName("Basic"));
-        if (defaultSubscriptionOpt.isEmpty()) {
+        Subscription defaultSubscription = subscriptionRepository.findBySubscriptionName("Basic");
+        if (defaultSubscription == null) {
             logger.error("Default subscription Basic not found");
-            throw new RuntimeException("Default subscription not found");
+            throw new CustomException.DefaultSubscriptionNotFoundException();
         }
 
-        user.setSubscription(defaultSubscriptionOpt.get());
+        user.setSubscription(defaultSubscription);
         userRepository.save(user);
         logger.info("User {} successfully registered", username);
 
-        Role defaultRole = defaultRoleOpt.get();
         assignRoleToUser(user, defaultRole);
 
         return user;
@@ -93,7 +91,7 @@ public class UserService {
             logger.info("User with email: {} successfully deleted", email);
         } else {
             logger.warn("User not found with email: {}", email);
-            throw new RuntimeException("User not found with email: " + email);
+            throw new CustomException.UserNotFoundException(email);
         }
     }
 
@@ -113,16 +111,16 @@ public class UserService {
         logger.info("Role {} successfully assigned to user {}", role.getRoleName(), user.getUsername());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public User findByEmail(String email) {
         logger.debug("Finding user by email: {}", email);
-        Optional<User> userOpt = Optional.ofNullable(userRepository.findByEmail(email));
-        if (userOpt.isPresent()) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
             logger.info("User found with email: {}", email);
         } else {
             logger.warn("User not found with email: {}", email);
         }
-        return userOpt.orElse(null);
+        return user;
     }
 
     public void updateSubscription(User user, Subscription subscription) {
@@ -138,9 +136,9 @@ public class UserService {
         User user = userRepository.findByGoogleID(googleID);
         if (user != null) {
             logger.info("User found with Google ID: {}", googleID);
-            user.getRoles().size();
+            user.getRoles().size(); // Trigger lazy loading if needed
             if (user.getSubscription() != null) {
-                user.getSubscription().getSubscriptionName();
+                user.getSubscription().getSubscriptionName(); // Trigger lazy loading if needed
             }
         } else {
             logger.warn("User not found with Google ID: {}", googleID);
