@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.9'
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id 'java'
+    id "io.sentry.jvm.gradle" version "4.11.0"
 }
 
 group = 'com.estimator'
@@ -25,6 +26,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'ch.qos.logback:logback-classic:1.2.11'
+    implementation 'io.sentry:sentry-logback:7.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-orgjson:0.11.2'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
@@ -38,4 +42,11 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+sentry {
+    includeSourceContext = true
+    org = "estimator"
+    projectName = "estimator-backend"
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }
