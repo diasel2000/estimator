@@ -1,5 +1,6 @@
 package com.estimator.services;
 
+import com.estimator.exception.CustomException;
 import com.estimator.model.Subscription;
 import com.estimator.repository.SubscriptionRepository;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class SubscriptionService {
         return subscriptions;
     }
 
-    public Subscription getSubscriptionByName(String name) {
+    public Subscription getSubscriptionByName(String name) throws CustomException.SubscriptionNotFoundException {
         logger.debug("Fetching subscription by name: {}", name);
         Optional<Subscription> subscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName(name));
         if (subscriptionOpt.isPresent()) {
@@ -35,7 +36,7 @@ public class SubscriptionService {
             return subscriptionOpt.get();
         } else {
             logger.warn("Subscription not found with name: {}", name);
-            throw new RuntimeException("Subscription not found");
+            throw new CustomException.SubscriptionNotFoundException(name);
         }
     }
 
@@ -50,14 +51,18 @@ public class SubscriptionService {
         return exists;
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id) throws CustomException.SubscriptionNotFoundException {
         logger.debug("Deleting subscription by ID: {}", id);
+        if (!existsById(id)) {
+            throw new CustomException.SubscriptionNotFoundException("ID: " + id);
+        }
+
         try {
             subscriptionRepository.deleteById(id);
             logger.info("Deleted subscription with ID: {}", id);
         } catch (Exception e) {
             logger.error("Error occurred while deleting subscription with ID: {}", id, e);
-            throw e;
+            throw new RuntimeException("Error occurred while deleting subscription", e);
         }
     }
 }

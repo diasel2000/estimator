@@ -1,5 +1,6 @@
 package com.estimator.services;
 
+import com.estimator.exception.CustomException;
 import com.estimator.model.User;
 import com.estimator.model.UserRole;
 import com.estimator.repository.UserRepository;
@@ -11,7 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,15 +34,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws CustomException.UserNotFoundException, CustomException.UserRoleNotFoundException {
         logger.debug("Loading user by username: {}", username);
         User user = userRepository.findByUsername(username);
         if (user == null) {
             logger.warn("User not found with username: {}", username);
-            throw new UsernameNotFoundException("User not found");
+            throw new CustomException.UserNotFoundException(username);
         }
 
         List<UserRole> userRoles = userRoleRepository.findByUser(user);
+        if (userRoles == null || userRoles.isEmpty()) {
+            logger.warn("No roles found for user with username: {}", username);
+            throw new CustomException.UserRoleNotFoundException(username);
+        }
+
         List<GrantedAuthority> authorities = userRoles.stream()
                 .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getRoleName()))
                 .collect(Collectors.toList());
