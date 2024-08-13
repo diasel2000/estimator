@@ -2,6 +2,7 @@ package com.estimator.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.estimator.exception.CustomException;
 import com.estimator.model.Role;
 import com.estimator.model.UserRole;
 import com.estimator.repository.UserRoleRepository;
@@ -11,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.estimator.repository.UserRepository;
 import com.estimator.model.User;
@@ -107,24 +107,29 @@ class UserDetailsServiceImplTest {
         when(userRepository.findByUsername(username)).thenReturn(user);
         when(userRoleRepository.findByUser(user)).thenReturn(userRoles);
 
-        // Act
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        // Act & Assert
+        CustomException.UserRoleNotFoundException thrownException = assertThrows(CustomException.UserRoleNotFoundException.class, () -> {
+            userDetailsService.loadUserByUsername(username);
+        });
 
-        // Assert
-        assertNotNull(userDetails);
-        assertEquals(username, userDetails.getUsername());
-        assertEquals("encodedPassword", userDetails.getPassword());
-        assertTrue(userDetails.getAuthorities().isEmpty());
+        assertEquals("No roles found for user: testuser", thrownException.getMessage());
+
         verify(userRepository, times(1)).findByUsername(username);
         verify(userRoleRepository, times(1)).findByUser(user);
 
         // Verify logging
-        verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
-        assertEquals(Level.DEBUG, captorLoggingEvent.getAllValues().get(0).getLevel());
-        assertTrue(captorLoggingEvent.getAllValues().get(0).getFormattedMessage().contains("Loading user by username: testuser"));
+        verify(mockAppender, atLeastOnce()).doAppend(captorLoggingEvent.capture());
+        List<ILoggingEvent> logEvents = captorLoggingEvent.getAllValues();
 
-        assertEquals(Level.INFO, captorLoggingEvent.getAllValues().get(1).getLevel());
-        assertTrue(captorLoggingEvent.getAllValues().get(1).getFormattedMessage().contains("User found with username: testuser"));
+        assertTrue(logEvents.stream().anyMatch(event ->
+                event.getLevel().equals(Level.DEBUG) &&
+                        event.getFormattedMessage().contains("Loading user by username: testuser")
+        ));
+
+        assertTrue(logEvents.stream().anyMatch(event ->
+                event.getLevel().equals(Level.WARN) &&
+                        event.getFormattedMessage().contains("No roles found for user with username: testuser")
+        ));
     }
 
     @Test
@@ -134,11 +139,12 @@ class UserDetailsServiceImplTest {
         when(userRepository.findByUsername(username)).thenReturn(null);
 
         // Act & Assert
-        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> {
+        CustomException.UserNotFoundException exception = assertThrows(CustomException.UserNotFoundException.class, () -> {
             userDetailsService.loadUserByUsername(username);
         });
 
-        assertEquals("User not found", exception.getMessage());
+        assertEquals("User not found with email: " + username, exception.getMessage());
+        assertEquals("Username: " + username, exception.getContextInfo());
         verify(userRepository, times(1)).findByUsername(username);
 
         // Verify logging

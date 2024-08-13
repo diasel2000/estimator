@@ -1,6 +1,8 @@
 package com.estimator.services;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.estimator.exception.CustomException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,6 +19,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import org.slf4j.LoggerFactory;
+
+import static org.mockito.ArgumentMatchers.argThat;
 
 class SubscriptionServiceTest {
 
@@ -85,11 +89,11 @@ class SubscriptionServiceTest {
         when(subscriptionRepository.findBySubscriptionName(subscriptionName)).thenReturn(null);
 
         // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+        CustomException.SubscriptionNotFoundException exception = assertThrows(CustomException.SubscriptionNotFoundException.class, () -> {
             subscriptionService.getSubscriptionByName(subscriptionName);
         });
 
-        assertEquals("Subscription not found", exception.getMessage());
+        assertEquals("Subscription not found: Nonexistent", exception.getMessage());
         verify(subscriptionRepository, times(1)).findBySubscriptionName(subscriptionName);
         verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Fetching subscription by name: Nonexistent")));
         verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Subscription not found with name: Nonexistent")));
@@ -132,6 +136,7 @@ class SubscriptionServiceTest {
         // Arrange
         Long id = 1L;
 
+        when(subscriptionRepository.existsById(id)).thenReturn(true);
         doNothing().when(subscriptionRepository).deleteById(id);
 
         // Act
@@ -149,20 +154,28 @@ class SubscriptionServiceTest {
         Long id = 1L;
         Exception exception = new RuntimeException("Deletion failed");
 
-        doThrow(exception).when(subscriptionRepository).deleteById(id);
+        when(subscriptionRepository.existsById(id)).thenReturn(false);
 
         // Act & Assert
-        RuntimeException thrownException = assertThrows(RuntimeException.class, () -> {
+        CustomException.SubscriptionNotFoundException thrownException = assertThrows(CustomException.SubscriptionNotFoundException.class, () -> {
             subscriptionService.deleteById(id);
         });
 
-        assertEquals("Deletion failed", thrownException.getMessage());
-        verify(subscriptionRepository, times(1)).deleteById(id);
+        assertEquals("Subscription not found: ID: 1", thrownException.getMessage());
+        verify(subscriptionRepository, times(1)).existsById(id);
+        verify(subscriptionRepository, never()).deleteById(id);
+
         verify(mockAppender, times(1)).doAppend(argThat(event ->
-                event.getLevel().toString().equals("ERROR") &&
-                        event.getFormattedMessage().contains("Error occurred while deleting subscription with ID: 1") &&
-                        event.getThrowableProxy().getMessage().equals("Deletion failed")
+                event.getLevel().toString().equals("DEBUG") &&
+                        event.getFormattedMessage().contains("Deleting subscription by ID: 1")
+        ));
+        verify(mockAppender, times(1)).doAppend(argThat(event ->
+                event.getLevel().toString().equals("DEBUG") &&
+                        event.getFormattedMessage().contains("Checking if subscription exists by ID: 1")
+        ));
+        verify(mockAppender, times(1)).doAppend(argThat(event ->
+                event.getLevel().toString().equals("WARN") &&
+                        event.getFormattedMessage().contains("Subscription does not exist with ID: 1")
         ));
     }
-
 }

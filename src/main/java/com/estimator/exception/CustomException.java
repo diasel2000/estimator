@@ -89,4 +89,32 @@ public class CustomException extends RuntimeException {
             super("User not found with email: " + email, 1001, "Username: " + email);
         }
     }
+
+    /**
+     * Exception thrown when a subscription with the specified detail is not found.
+     */
+    public static class SubscriptionNotFoundException extends CustomException {
+        /**
+         * Constructs a new SubscriptionNotFoundException with the specified subscription detail.
+         *
+         * @param subscriptionDetail The detail of the subscription that was not found (e.g., subscription name or ID).
+         */
+        public SubscriptionNotFoundException(String subscriptionDetail) {
+            super("Subscription not found: " + subscriptionDetail, 1006, "Subscription Detail: " + subscriptionDetail);
+        }
+    }
+
+    /**
+     * Exception thrown when no roles are found for a user.
+     */
+    public static class UserRoleNotFoundException extends CustomException {
+        /**
+         * Constructs a new UserRoleNotFoundException with the specified username.
+         *
+         * @param username The username for which no roles were found.
+         */
+        public UserRoleNotFoundException(String username) {
+            super("No roles found for user: " + username, 1005, "Username: " + username);
+        }
+    }
 }
