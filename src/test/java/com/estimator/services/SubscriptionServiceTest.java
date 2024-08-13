@@ -13,6 +13,11 @@ import java.util.Arrays;
 import java.util.List;
 import static org.mockito.Mockito.*;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
+import org.slf4j.LoggerFactory;
+
 class SubscriptionServiceTest {
 
     @Mock
@@ -21,9 +26,16 @@ class SubscriptionServiceTest {
     @InjectMocks
     private SubscriptionService subscriptionService;
 
+    @Mock
+    private Appender<ILoggingEvent> mockAppender; // Mock Appender for Logger
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        // Set up Logger
+        Logger logger = (Logger) LoggerFactory.getLogger(SubscriptionService.class);
+        logger.addAppender(mockAppender);
     }
 
     @Test
@@ -42,6 +54,8 @@ class SubscriptionServiceTest {
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(subscriptionRepository, times(1)).findAll();
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Fetching all subscriptions")));
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Fetched 2 subscriptions")));
     }
 
     @Test
@@ -60,6 +74,8 @@ class SubscriptionServiceTest {
         assertNotNull(result);
         assertEquals(subscriptionName, result.getSubscriptionName());
         verify(subscriptionRepository, times(1)).findBySubscriptionName(subscriptionName);
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Fetching subscription by name: Basic")));
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Subscription found with name: Basic")));
     }
 
     @Test
@@ -75,6 +91,8 @@ class SubscriptionServiceTest {
 
         assertEquals("Subscription not found", exception.getMessage());
         verify(subscriptionRepository, times(1)).findBySubscriptionName(subscriptionName);
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Fetching subscription by name: Nonexistent")));
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Subscription not found with name: Nonexistent")));
     }
 
     @Test
@@ -89,6 +107,8 @@ class SubscriptionServiceTest {
         // Assert
         assertTrue(result);
         verify(subscriptionRepository, times(1)).existsById(id);
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Checking if subscription exists by ID: 1")));
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Subscription exists with ID: 1")));
     }
 
     @Test
@@ -103,6 +123,8 @@ class SubscriptionServiceTest {
         // Assert
         assertFalse(result);
         verify(subscriptionRepository, times(1)).existsById(id);
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Checking if subscription exists by ID: 1")));
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Subscription does not exist with ID: 1")));
     }
 
     @Test
@@ -117,5 +139,30 @@ class SubscriptionServiceTest {
 
         // Assert
         verify(subscriptionRepository, times(1)).deleteById(id);
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Deleting subscription by ID: 1")));
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Deleted subscription with ID: 1")));
     }
+
+    @Test
+    void testDeleteById_ExceptionThrown() {
+        // Arrange
+        Long id = 1L;
+        Exception exception = new RuntimeException("Deletion failed");
+
+        doThrow(exception).when(subscriptionRepository).deleteById(id);
+
+        // Act & Assert
+        RuntimeException thrownException = assertThrows(RuntimeException.class, () -> {
+            subscriptionService.deleteById(id);
+        });
+
+        assertEquals("Deletion failed", thrownException.getMessage());
+        verify(subscriptionRepository, times(1)).deleteById(id);
+        verify(mockAppender, times(1)).doAppend(argThat(event ->
+                event.getLevel().toString().equals("ERROR") &&
+                        event.getFormattedMessage().contains("Error occurred while deleting subscription with ID: 1") &&
+                        event.getThrowableProxy().getMessage().equals("Deletion failed")
+        ));
+    }
+
 }

@@ -9,9 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/api/subscriptions")
 public class SubscriptionController {
+    private static final Logger logger = LoggerFactory.getLogger(SubscriptionController.class);
     private final SubscriptionService subscriptionService;
 
     public SubscriptionController(SubscriptionService subscriptionService) {
@@ -20,7 +24,9 @@ public class SubscriptionController {
 
     @GetMapping
     public ResponseEntity<List<Subscription>> getAllSubscriptions() {
+        logger.debug("Fetching all subscriptions");
         List<Subscription> subscriptions = subscriptionService.getAllSubscriptions();
+        logger.info("Retrieved {} subscriptions", subscriptions.size());
         return ResponseEntity.ok(subscriptions);
     }
 }
