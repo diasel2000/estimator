@@ -17,9 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomOAuth2UserService.class);
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -37,39 +41,52 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        logger.debug("Loading user from OAuth2 provider");
+
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         String email = oAuth2User.getAttribute("email");
+        logger.debug("Retrieved email from OAuth2 provider: {}", email);
+
         if (email == null) {
+            logger.error("Email not found from OAuth2 provider");
             throw new OAuth2AuthenticationException("Email not found from OAuth2 provider");
         }
 
         User user = userRepository.findByEmail(email);
 
         if (user == null) {
+            logger.info("User not found in the database, creating a new user with email: {}", email);
             user = new User();
             user.setPassword(UUID.randomUUID().toString());
             user.setEmail(email);
             user.setGoogleID(oAuth2User.getAttribute("sub"));
             user.setUsername(oAuth2User.getAttribute("name"));
             user.setCreatedAt(LocalDateTime.now());
+        } else {
+            logger.info("User found in the database with email: {}", email);
         }
 
         Optional<Role> defaultRoleOpt = Optional.ofNullable(roleRepository.findByRoleName("ROLE_USER"));
         if (defaultRoleOpt.isEmpty()) {
+            logger.error("Default role not found");
             throw new RuntimeException("Default role not found");
         }
 
         Optional<Subscription> defaultSubscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName("Basic"));
         if (defaultSubscriptionOpt.isEmpty()) {
+            logger.error("Default subscription not found");
             throw new RuntimeException("Default subscription not found");
         }
 
         user.setSubscription(defaultSubscriptionOpt.get());
         userRepository.save(user);
+        logger.info("User {} saved to the database with default subscription: {}", email, "Basic");
 
         Role defaultRole = defaultRoleOpt.get();
         assignRoleToUser(user, defaultRole);
+        logger.info("Role {} assigned to user: {}", defaultRole.getRoleName(), email);
+
         userRepository.save(user);
         return oAuth2User;
     }
@@ -84,6 +101,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
         userRole.setUser(user);
         userRole.setRole(role);
         userRoleRepository.save(userRole);
+
+        logger.debug("Assigned role {} to user with ID: {}", role.getRoleName(), user.getUserID());
     }
 }
 

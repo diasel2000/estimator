@@ -6,9 +6,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class SubscriptionService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
+
     private final SubscriptionRepository subscriptionRepository;
 
     public SubscriptionService(SubscriptionRepository subscriptionRepository) {
@@ -16,23 +21,43 @@ public class SubscriptionService {
     }
 
     public List<Subscription> getAllSubscriptions() {
-        return subscriptionRepository.findAll();
+        logger.debug("Fetching all subscriptions");
+        List<Subscription> subscriptions = subscriptionRepository.findAll();
+        logger.info("Fetched {} subscriptions", subscriptions.size());
+        return subscriptions;
     }
 
     public Subscription getSubscriptionByName(String name) {
+        logger.debug("Fetching subscription by name: {}", name);
         Optional<Subscription> subscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName(name));
         if (subscriptionOpt.isPresent()) {
+            logger.info("Subscription found with name: {}", name);
             return subscriptionOpt.get();
         } else {
+            logger.warn("Subscription not found with name: {}", name);
             throw new RuntimeException("Subscription not found");
         }
     }
 
     public boolean existsById(Long id) {
-        return subscriptionRepository.existsById(id);
+        logger.debug("Checking if subscription exists by ID: {}", id);
+        boolean exists = subscriptionRepository.existsById(id);
+        if (exists) {
+            logger.info("Subscription exists with ID: {}", id);
+        } else {
+            logger.warn("Subscription does not exist with ID: {}", id);
+        }
+        return exists;
     }
 
     public void deleteById(Long id) {
-        subscriptionRepository.deleteById(id);
+        logger.debug("Deleting subscription by ID: {}", id);
+        try {
+            subscriptionRepository.deleteById(id);
+            logger.info("Deleted subscription with ID: {}", id);
+        } catch (Exception e) {
+            logger.error("Error occurred while deleting subscription with ID: {}", id, e);
+            throw e;
+        }
     }
 }

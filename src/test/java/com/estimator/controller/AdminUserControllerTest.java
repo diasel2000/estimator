@@ -14,7 +14,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 public class AdminUserControllerTest {
 
@@ -30,9 +37,13 @@ public class AdminUserControllerTest {
     @InjectMocks
     private AdminUserController adminUserController;
 
+    private final ByteArrayOutputStream logOutput = new ByteArrayOutputStream();
+    private static final Logger logger = LoggerFactory.getLogger(AdminUserController.class);
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        System.setOut(new PrintStream(logOutput));
     }
 
     @Test
@@ -50,6 +61,10 @@ public class AdminUserControllerTest {
         // Assert
         assertEquals("manage_users", viewName);
         verify(model, times(1)).addAttribute("users", users);
+
+        // Verify logs
+        String logContent = logOutput.toString();
+        assertTrue(logContent.contains("Managed users - Total users: 2"));
     }
 
     @Test
@@ -66,6 +81,10 @@ public class AdminUserControllerTest {
         assertEquals("redirect:/admin/users", viewName);
         verify(userRepository, times(1)).deleteById(userId);
         verify(redirectAttributes, times(1)).addFlashAttribute("message", "User deleted successfully");
+
+        // Verify logs
+        String logContent = logOutput.toString();
+        assertTrue(logContent.contains("Deleted user with ID: 1"));
     }
 
     @Test
@@ -82,5 +101,9 @@ public class AdminUserControllerTest {
         assertEquals("redirect:/admin/users", viewName);
         verify(userRepository, times(0)).deleteById(userId);
         verify(redirectAttributes, times(1)).addFlashAttribute("error", "User not found");
+
+        // Verify logs
+        String logContent = logOutput.toString();
+        assertTrue(logContent.contains("Attempted to delete user with ID: 1 - User not found"));
     }
 }

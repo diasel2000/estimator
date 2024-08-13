@@ -1,7 +1,6 @@
 package com.estimator.services;
 
 import com.estimator.model.Role;
-import io.jsonwebtoken.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,11 +13,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.mockito.Mockito;
+import org.slf4j.Logger;
+import static org.mockito.Mockito.*;
 
 class JwtTokenProviderTest {
 
     private JwtTokenProvider jwtTokenProvider;
     private KeyPair keyPair;
+    private Logger logger;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -26,7 +32,9 @@ class JwtTokenProviderTest {
         keyPairGenerator.initialize(256);
         keyPair = keyPairGenerator.generateKeyPair();
 
-        jwtTokenProvider = new JwtTokenProvider();
+        // Mock the logger
+        logger = Mockito.mock(Logger.class);
+        jwtTokenProvider = new JwtTokenProvider(logger);
 
         // Use reflection to set the private keyPair field
         Field keyPairField = JwtTokenProvider.class.getDeclaredField("keyPair");
@@ -48,6 +56,8 @@ class JwtTokenProviderTest {
 
         assertNotNull(token);
         assertFalse(token.isEmpty());
+        verify(logger).debug("Creating JWT token for email: {}", email);
+        verify(logger).debug("JWT token created successfully for email: {}", email);
     }
 
     @Test
@@ -59,6 +69,8 @@ class JwtTokenProviderTest {
         String username = jwtTokenProvider.getUsername(token);
 
         assertEquals(email, username);
+        verify(logger).debug("Extracting username from JWT token.");
+        verify(logger).debug("Username extracted successfully from JWT token: {}", email);
     }
 
     @Test
@@ -70,6 +82,8 @@ class JwtTokenProviderTest {
         boolean isValid = jwtTokenProvider.validateToken(token);
 
         assertTrue(isValid);
+        verify(logger).debug("Validating JWT token.");
+        verify(logger).debug("JWT token validated successfully.");
     }
 
     @Test
@@ -112,7 +126,6 @@ class JwtTokenProviderTest {
 
         assertFalse(exception.getMessage().contains("Expired or invalid JWT token"));
     }
-
 
     private Role createRole() {
         Role role = new Role();

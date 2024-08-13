@@ -1,6 +1,5 @@
 package com.estimator.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
 import com.estimator.model.Subscription;
 import com.estimator.services.SubscriptionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +15,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AdminSubscriptionControllerTest {
 
@@ -31,9 +36,13 @@ public class AdminSubscriptionControllerTest {
     @InjectMocks
     private AdminSubscriptionController adminSubscriptionController;
 
+    private final ByteArrayOutputStream logOutput = new ByteArrayOutputStream();
+    private static final Logger logger = LoggerFactory.getLogger(AdminSubscriptionController.class);
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        System.setOut(new PrintStream(logOutput));
     }
 
     @Test
@@ -51,6 +60,11 @@ public class AdminSubscriptionControllerTest {
         // Assert
         assertEquals("manage_subscriptions", viewName);
         verify(model, times(1)).addAttribute("subscriptions", subscriptions);
+
+        // Verify logs
+        String logContent = logOutput.toString();
+        assertTrue(logContent.contains("Fetching all subscriptions."));
+        assertTrue(logContent.contains("Managed subscriptions - Total subscriptions: 2"));
     }
 
     @Test
@@ -67,6 +81,10 @@ public class AdminSubscriptionControllerTest {
         assertEquals("redirect:/admin/subscriptions", viewName);
         verify(subscriptionService, times(1)).deleteById(subscriptionId);
         verify(redirectAttributes, times(1)).addFlashAttribute("message", "Subscription deleted successfully");
+
+        // Verify logs
+        String logContent = logOutput.toString();
+        assertTrue(logContent.contains("Deleted subscription with ID: " + subscriptionId));
     }
 
     @Test
@@ -83,5 +101,9 @@ public class AdminSubscriptionControllerTest {
         assertEquals("redirect:/admin/subscriptions", viewName);
         verify(subscriptionService, times(0)).deleteById(subscriptionId);
         verify(redirectAttributes, times(1)).addFlashAttribute("error", "Subscription not found");
+
+        // Verify logs
+        String logContent = logOutput.toString();
+        assertTrue(logContent.contains("Attempted to delete subscription with ID: " + subscriptionId + " - Subscription not found"));
     }
 }
