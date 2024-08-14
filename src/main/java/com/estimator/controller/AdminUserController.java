@@ -1,51 +1,51 @@
 package com.estimator.controller;
 
+import com.estimator.facade.UserFacade;
 import com.estimator.model.User;
-import com.estimator.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-@Controller
-@RequestMapping("/admin/users")
+@RestController
+@RequestMapping("/api/admin/users")
 public class AdminUserController {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminUserController.class);
 
-    private final UserRepository userRepository;
+    private final UserFacade userFacade;
 
     @Autowired
-    public AdminUserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public AdminUserController(UserFacade userFacade) {
+        this.userFacade = userFacade;
     }
 
     @GetMapping
-    public String manageUsers(Model model) {
-        List<User> users = userRepository.findAll();
-        model.addAttribute("users", users);
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userFacade.getAllUsers();
         logger.info("Managed users - Total users: {}", users.size());
-        return "manage_users";
+        return ResponseEntity.ok(users);
     }
 
-    @PostMapping("/delete/{id}")
-    public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            redirectAttributes.addFlashAttribute("message", "User deleted successfully");
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Long id) {
+        Map<String, String> response = new HashMap<>();
+
+        if (userFacade.existsById(id)) {
+            userFacade.deleteUserById(id);
+            response.put("message", "User deleted successfully");
             logger.info("Deleted user with ID: {}", id);
+            return ResponseEntity.ok(response);
         } else {
-            redirectAttributes.addFlashAttribute("error", "User not found");
+            response.put("error", "User not found");
             logger.warn("Attempted to delete user with ID: {} - User not found", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        return "redirect:/admin/users";
     }
 }

@@ -18,7 +18,7 @@
             <li><a th:href="@{/admin/subscriptions}">Manage Subscriptions</a></li>
         </ul>
     </div>
-    <div th:unless="${roles != null and roles.contains('ROLE_ADMIN')}">
+    <div th:unless="${roles != null and roles.contains('ROLE_USER')}">
         <h3>Your Dashboard</h3>
         <p>Content specific to your subscription will be displayed here.</p>
         <ul>
