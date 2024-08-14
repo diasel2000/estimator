@@ -154,11 +154,21 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public boolean existsById(Integer id) {
-        return userRepository.findById(Long.valueOf(id)).isPresent();
+    public boolean existsById(Long id) {
+        return userRepository.findById(id).isPresent();
     }
 
-    public void deleteById(Integer id) {
-        userRepository.deleteById(Long.valueOf(id));
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public boolean isPasswordValid(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    public User updateUserSubscription(String email, String subscriptionName) {
+        User user = findByEmail(email);
+        user.setSubscription(new Subscription(subscriptionName));
+        return userRepository.save(user);
     }
 }
