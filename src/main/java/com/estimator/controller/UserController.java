@@ -1,83 +1,85 @@
 package com.estimator.controller;
-import com.estimator.model.Subscription;
+import com.estimator.dto.UserDTO;
+import com.estimator.facade.UserFacade;
 import com.estimator.model.User;
-import com.estimator.model.dto.RegisterRequest;
-import com.estimator.services.SubscriptionService;
-import com.estimator.services.UserService;
+import com.estimator.dto.RegisterRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Collections;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-@Controller
+@RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    private final UserService userService;
-    private final SubscriptionService subscriptionService;
 
-    public UserController(UserService userService, SubscriptionService subscriptionService) {
-        this.userService = userService;
-        this.subscriptionService = subscriptionService;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final UserFacade userFacade;
+
+    @Autowired
+    public UserController(UserFacade userFacade) {
+        this.userFacade = userFacade;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest request) {
         logger.debug("Registering user with email: {}", request.getEmail());
-        User user = userService.registerUser(request.getUsername(), request.getEmail(), request.getPassword(), request.getGoogleId());
-        logger.info("User registered successfully with email: {}", request.getEmail());
-        return ResponseEntity.ok(user);
+        try {
+            User user = userFacade.registerUser(request);
+            UserDTO userDTO = userFacade.userToUserDTO(user);
+            logger.info("User registered successfully with email: {}", request.getEmail());
+            return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+        } catch (Exception e) {
+            logger.error("Error registering user with email: {}", request.getEmail(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Registration failed: " + e.getMessage()));
+        }
     }
 
     @GetMapping("/profile")
-    public String getProfilePage(Model model, Authentication authentication) {
+    public ResponseEntity<?> getProfilePage(Authentication authentication) {
         logger.debug("Getting profile page for user");
 
-        User user = null;
-
-        if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
-            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-            String email = oAuth2User.getAttribute("email");
-            user = userService.findByEmail(email);
-        } else if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String username = userDetails.getUsername();
-            user = userService.findByUserName(username);
-        }
-
+        User user = userFacade.getCurrentUser(authentication);
         if (user == null) {
             logger.error("User not found");
-            throw new RuntimeException("User not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("error", "User not found"));
         }
 
-        model.addAttribute("user", user);
-        return "profile";
+        UserDTO userDTO = userFacade.userToUserDTO(user);
+        return ResponseEntity.ok(userDTO);
     }
 
     @PostMapping("/update-subscription")
-    public ResponseEntity<User> updateSubscription(@RequestParam String subscriptionName, Principal principal) {
+    public ResponseEntity<?> updateSubscription(@RequestParam String subscriptionName, Principal principal) {
         logger.debug("Updating subscription for user with email: {}", principal.getName());
-
-        User user = userService.findByEmail(principal.getName());
-        Subscription subscription = subscriptionService.getSubscriptionByName(subscriptionName);
-        userService.updateSubscription(user, subscription);
-
-        return ResponseEntity.ok(user);
+        try {
+            User user = userFacade.updateSubscription(principal.getName(), subscriptionName);
+            UserDTO userDTO = userFacade.userToUserDTO(user);
+            return ResponseEntity.ok(userDTO);
+        } catch (Exception e) {
+            logger.error("Error updating subscription for user with email: {}", principal.getName(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Subscription update failed: " + e.getMessage()));
+        }
     }
 
-    @PostMapping("/email/{email}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String email) {
+    @DeleteMapping("/email/{email}")
+    public ResponseEntity<?> deleteUser(@PathVariable String email) {
         logger.debug("Deleting user with email: {}", email);
-
-        userService.deleteUserByEmail(email);
-        return ResponseEntity.noContent().build();
+        try {
+            userFacade.deleteUser(email);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            logger.error("Error deleting user with email: {}", email, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "User deletion failed: " + e.getMessage()));
+        }
     }
 }
