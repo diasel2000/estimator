@@ -89,6 +89,4 @@ public class CustomException extends RuntimeException {
             super("User not found with email: " + email, 1001, "Username: " + email);
         }
     }
-        }
-    }
 }

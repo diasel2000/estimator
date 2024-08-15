@@ -34,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws CustomException.UserNotFoundException, CustomException.UserRoleNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws CustomException.UserNotFoundException {
         logger.debug("Loading user by username: {}", username);
         User user = userRepository.findByEmail(username);
         if (user == null) {
@@ -45,7 +45,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<UserRole> userRoles = userRoleRepository.findByUser(user);
         if (userRoles == null || userRoles.isEmpty()) {
             logger.warn("No roles found for user with username: {}", username);
-            throw new CustomException.UserRoleNotFoundException(username);
+            throw new CustomException.DefaultRoleNotFoundException();
         }
 
         List<GrantedAuthority> authorities = userRoles.stream()
