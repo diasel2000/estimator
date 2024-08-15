@@ -89,10 +89,6 @@ public class CustomException extends RuntimeException {
             super("User not found with email: " + email, 1001, "Username: " + email);
         }
     }
-
-    public static class SubscriptionNotFoundException extends CustomException {
-        public SubscriptionNotFoundException(String subscriptionName) {
-            super("Subscription not found: " + subscriptionName, 1001, "name: " + subscriptionName);
         }
     }
 }

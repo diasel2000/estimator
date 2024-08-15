@@ -1,5 +1,6 @@
 package com.estimator.services;
 
+import com.estimator.exception.CustomException;
 import com.estimator.model.*;
 import com.estimator.repository.RoleRepository;
 import com.estimator.repository.SubscriptionRepository;
@@ -67,23 +68,24 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
             logger.info("User found in the database with email: {}", email);
         }
 
-        Optional<Role> defaultRoleOpt = Optional.ofNullable(roleRepository.findByRoleName("ROLE_USER"));
-        if (defaultRoleOpt.isEmpty()) {
+        // Find the default role
+        Role defaultRole = roleRepository.findByRoleName("ROLE_USER");
+        if (defaultRole == null) {
             logger.error("Default role not found");
-            throw new RuntimeException("Default role not found");
+            throw new CustomException.DefaultRoleNotFoundException();
         }
 
-        Optional<Subscription> defaultSubscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName("Basic"));
-        if (defaultSubscriptionOpt.isEmpty()) {
+        // Find the default subscription
+        Subscription defaultSubscription = subscriptionRepository.findBySubscriptionName("Basic");
+        if (defaultSubscription == null) {
             logger.error("Default subscription not found");
-            throw new RuntimeException("Default subscription not found");
+            throw new CustomException.DefaultSubscriptionNotFoundException();
         }
 
-        user.setSubscription(defaultSubscriptionOpt.get());
+        user.setSubscription(defaultSubscription);
         userRepository.save(user);
         logger.info("User {} saved to the database with default subscription: {}", email, "Basic");
 
-        Role defaultRole = defaultRoleOpt.get();
         assignRoleToUser(user, defaultRole);
         logger.info("Role {} assigned to user: {}", defaultRole.getRoleName(), email);
 
