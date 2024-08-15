@@ -1,5 +1,6 @@
 package com.estimator.config;
 
+import com.estimator.filter.JwtAuthenticationFilter;
 import com.estimator.repository.RoleRepository;
 import com.estimator.repository.SubscriptionRepository;
 import com.estimator.repository.UserRepository;
@@ -10,6 +11,7 @@ import com.estimator.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +22,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -63,27 +67,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/api/auth/login")
-                .loginProcessingUrl("/api/auth/login")
-                .defaultSuccessUrl("/dashboard", true)
-                .failureUrl("/api/auth/login?error=true")
-                .and()
-                .oauth2Login()
-                .loginPage("/api/auth/login")
-                .defaultSuccessUrl("/dashboard", true)
-                .userInfoEndpoint()
-                .userService(customOAuth2UserService())
-                .and()
-                .and()
-                .logout()
-                .permitAll()
+                .exceptionHandling()
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .maximumSessions(1)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .sessionFixation().migrateSession();
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login()
+                .loginPage("/basic_login")
+                .successHandler((request, response, authentication) -> {
+                    response.setStatus(HttpStatus.OK.value());
+                    response.getWriter().write("{\"message\": \"OAuth2 login successful\"}");
+                })
+                .failureHandler((request, response, exception) -> {
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    response.getWriter().write("{\"message\": \"OAuth2 login failed\"}");
+                })
+                .userInfoEndpoint()
+                .userService(customOAuth2UserService());
     }
 
     @Override
