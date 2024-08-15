@@ -36,7 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws CustomException.UserNotFoundException, CustomException.UserRoleNotFoundException {
         logger.debug("Loading user by username: {}", username);
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByEmail(username);
         if (user == null) {
             logger.warn("User not found with username: {}", username);
             throw new CustomException.UserNotFoundException(username);

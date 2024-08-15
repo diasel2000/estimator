@@ -168,7 +168,12 @@ public class UserService {
 
     public User updateUserSubscription(String email, String subscriptionName) {
         User user = findByEmail(email);
-        user.setSubscription(new Subscription(subscriptionName));
+        Subscription subscription = subscriptionRepository.findBySubscriptionName(subscriptionName);
+        if (subscription != null) {
+            user.setSubscription(subscription);
+        } else {
+            throw new CustomException.SubscriptionNotFoundException(subscriptionName);
+        }
         return userRepository.save(user);
     }
 }

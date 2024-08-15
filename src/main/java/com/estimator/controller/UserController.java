@@ -1,14 +1,14 @@
 package com.estimator.controller;
 import com.estimator.dto.UserDTO;
+import com.estimator.facade.AuthFacade;
 import com.estimator.facade.UserFacade;
 import com.estimator.model.User;
-import com.estimator.dto.RegisterRequest;
+import com.estimator.services.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -20,40 +20,32 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserFacade userFacade;
+    private final AuthFacade authFacade;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public UserController(UserFacade userFacade) {
+    public UserController(UserFacade userFacade, AuthFacade authFacade, JwtTokenProvider jwtTokenProvider) {
         this.userFacade = userFacade;
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest request) {
-        logger.debug("Registering user with email: {}", request.getEmail());
-        try {
-            User user = userFacade.registerUser(request);
-            UserDTO userDTO = userFacade.userToUserDTO(user);
-            logger.info("User registered successfully with email: {}", request.getEmail());
-            return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
-        } catch (Exception e) {
-            logger.error("Error registering user with email: {}", request.getEmail(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error", "Registration failed: " + e.getMessage()));
-        }
+        this.authFacade = authFacade;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<?> getProfilePage(Authentication authentication) {
-        logger.debug("Getting profile page for user");
-
-        User user = userFacade.getCurrentUser(authentication);
-        if (user == null) {
-            logger.error("User not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.singletonMap("error", "User not found"));
+    public ResponseEntity<UserDTO> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            if (jwtTokenProvider.validateToken(token)) {
+                String email = jwtTokenProvider.getUsername(token);
+                User user = authFacade.getUserByEmail(email);
+                UserDTO userDTO = userFacade.userToUserDTO(user);
+                if (userDTO != null) {
+                    return ResponseEntity.ok(userDTO);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                }
+            }
         }
-
-        UserDTO userDTO = userFacade.userToUserDTO(user);
-        return ResponseEntity.ok(userDTO);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @PostMapping("/update-subscription")
