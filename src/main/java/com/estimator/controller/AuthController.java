@@ -3,7 +3,9 @@ package com.estimator.controller;
 import com.estimator.dto.JwtResponse;
 import com.estimator.dto.LoginRequest;
 import com.estimator.dto.RegisterRequest;
+import com.estimator.dto.UserDTO;
 import com.estimator.facade.AuthFacade;
+import com.estimator.facade.UserFacade;
 import com.estimator.model.Role;
 import com.estimator.model.User;
 import com.estimator.services.JwtTokenProvider;
@@ -15,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -33,44 +35,44 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody @Valid RegisterRequest request) {
+    public ResponseEntity<Map<String, String>> registerUser(@RequestBody @Valid RegisterRequest request) {
         logger.info("Attempting to register user with email: {}", request.getEmail());
 
         if (authFacade.isEmailExists(request.getEmail())) {
             logger.warn("Registration failed: Email already exists for email: {}", request.getEmail());
-            return ResponseEntity.badRequest().body("Email already exists");
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email already exists"));
         }
 
         authFacade.registerUser(request);
         logger.info("Registration successful for user with email: {}", request.getEmail());
-        return ResponseEntity.ok("Registration successful");
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Registration successful");
+        response.put("redirectTo", "/api/auth/login");
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<Map<String, String>> loginUser(@RequestBody @Valid LoginRequest request) {
         logger.info("Attempting to authenticate user with email: {}", request.getEmail());
 
         User user = authFacade.authenticateUser(request.getEmail(), request.getPassword());
 
         if (user == null) {
             logger.warn("Authentication failed for email: {}", request.getEmail());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("message", "Invalid credentials"));
         }
 
-        String token = jwtTokenProvider.createToken(user.getEmail(), (List<Role>) user.getRoles());
+        List<Role> roles = new ArrayList<>(user.getRoles());
+        String token = jwtTokenProvider.createToken(user.getEmail(), roles);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        response.put("redirectTo", "/api/users/profile");
         logger.info("Authentication successful for email: {}", request.getEmail());
 
-        return ResponseEntity.ok(new JwtResponse(token));
-    }
-
-    @GetMapping("/me")
-    public ResponseEntity<User> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        if (jwtTokenProvider.validateToken(token)) {
-            String email = jwtTokenProvider.getUsername(token);
-            User user = authFacade.getUserByEmail(email);
-            return ResponseEntity.ok(user);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.ok(response);
     }
 }

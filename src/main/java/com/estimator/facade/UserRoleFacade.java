@@ -4,24 +4,20 @@ import com.estimator.dto.UserRoleDTO;
 import com.estimator.dto.UserRoleKeyDTO;
 import com.estimator.model.UserRole;
 import com.estimator.model.UserRoleKey;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserRoleFacade {
 
     private final RoleFacade roleFacade;
-    private final UserFacade userFacade;
 
-    public UserRoleFacade(RoleFacade roleFacade, @Lazy UserFacade userFacade) {
+    public UserRoleFacade(RoleFacade roleFacade) {
         this.roleFacade = roleFacade;
-        this.userFacade = userFacade;
     }
 
     public UserRoleDTO userRoleToUserRoleDTO(UserRole userRole) {
         UserRoleDTO userRoleDTO = new UserRoleDTO();
         userRoleDTO.setId(userRoleKeyToUserRoleKeyDTO(userRole.getId()));
-        userRoleDTO.setUser(userFacade.userToUserDTO(userRole.getUser()));
         userRoleDTO.setRole(roleFacade.roleToRoleDTO(userRole.getRole()));
         return userRoleDTO;
     }
@@ -29,7 +25,6 @@ public class UserRoleFacade {
     public UserRole userRoleDTOToUserRole(UserRoleDTO userRoleDTO) {
         UserRole userRole = new UserRole();
         userRole.setId(userRoleKeyDTOToUserRoleKey(userRoleDTO.getId()));
-        userRole.setUser(userFacade.userDTOToUser(userRoleDTO.getUser()));
         userRole.setRole(roleFacade.roleDTOToRole(userRoleDTO.getRole()));
         return userRole;
     }
