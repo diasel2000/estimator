@@ -1,5 +1,6 @@
 package com.estimator.controller;
 
+import com.estimator.dto.UserDTO;
 import com.estimator.facade.UserFacade;
 import com.estimator.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/api/admin/users")
 public class AdminUserController {
@@ -27,10 +30,13 @@ public class AdminUserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<User> users = userFacade.getAllUsers();
+        List<UserDTO> userDtos = users.stream()
+                .map(userFacade::userToUserDTO)
+                .collect(Collectors.toList());
         logger.info("Managed users - Total users: {}", users.size());
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(userDtos);
     }
 
     @DeleteMapping("/{id}")

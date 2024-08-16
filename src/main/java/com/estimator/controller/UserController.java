@@ -52,7 +52,9 @@ public class UserController {
     public ResponseEntity<?> updateSubscription(@RequestParam String subscriptionName, Principal principal) {
         logger.debug("Updating subscription for user with email: {}", principal.getName());
         try {
-            User user = userFacade.updateSubscription(principal.getName(), subscriptionName);
+            User authenticatedUser = authFacade.getUserByUsername(principal.getName());
+            //TODO add payment check
+            User user = userFacade.updateSubscription(authenticatedUser.getEmail(), subscriptionName);
             UserDTO userDTO = userFacade.userToUserDTO(user);
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
@@ -63,8 +65,17 @@ public class UserController {
     }
 
     @DeleteMapping("/email/{email}")
-    public ResponseEntity<?> deleteUser(@PathVariable String email) {
+    public ResponseEntity<?> deleteUser(@PathVariable String email, Principal principal) {
         logger.debug("Deleting user with email: {}", email);
+
+        User authenticatedUser = authFacade.getUserByUsername(principal.getName());
+
+        if (authenticatedUser == null || !authenticatedUser.getEmail().equals(email)) {
+            logger.warn("User with username {} tried to delete another user's account", principal.getName());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Collections.singletonMap("error", "You can only delete your own account."));
+        }
+
         try {
             userFacade.deleteUser(email);
             return ResponseEntity.noContent().build();

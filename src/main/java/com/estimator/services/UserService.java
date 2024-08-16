@@ -172,7 +172,7 @@ public class UserService {
         if (subscription != null) {
             user.setSubscription(subscription);
         } else {
-            throw new CustomException.SubscriptionNotFoundException(subscriptionName);
+            throw new CustomException.DefaultSubscriptionNotFoundException();
         }
         return userRepository.save(user);
     }

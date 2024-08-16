@@ -1,5 +1,6 @@
 package com.estimator.controller;
 
+import com.estimator.dto.RegisterRequest;
 import com.estimator.model.Subscription;
 import com.estimator.model.User;
 import com.estimator.model.dto.RegisterRequest;

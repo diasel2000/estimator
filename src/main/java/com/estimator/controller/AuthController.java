@@ -1,11 +1,8 @@
 package com.estimator.controller;
 
-import com.estimator.dto.JwtResponse;
 import com.estimator.dto.LoginRequest;
 import com.estimator.dto.RegisterRequest;
-import com.estimator.dto.UserDTO;
 import com.estimator.facade.AuthFacade;
-import com.estimator.facade.UserFacade;
 import com.estimator.model.Role;
 import com.estimator.model.User;
 import com.estimator.services.JwtTokenProvider;
