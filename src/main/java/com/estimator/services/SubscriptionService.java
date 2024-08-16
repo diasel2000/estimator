@@ -28,7 +28,7 @@ public class SubscriptionService {
         return subscriptions;
     }
 
-    public Subscription getSubscriptionByName(String name) throws CustomException.SubscriptionNotFoundException {
+    public Subscription getSubscriptionByName(String name) throws CustomException.DefaultSubscriptionNotFoundException {
         logger.debug("Fetching subscription by name: {}", name);
         Optional<Subscription> subscriptionOpt = Optional.ofNullable(subscriptionRepository.findBySubscriptionName(name));
         if (subscriptionOpt.isPresent()) {
@@ -36,7 +36,7 @@ public class SubscriptionService {
             return subscriptionOpt.get();
         } else {
             logger.warn("Subscription not found with name: {}", name);
-            throw new CustomException.SubscriptionNotFoundException(name);
+            throw new CustomException.DefaultSubscriptionNotFoundException();
         }
     }
 
@@ -51,10 +51,10 @@ public class SubscriptionService {
         return exists;
     }
 
-    public void deleteById(Long id) throws CustomException.SubscriptionNotFoundException {
+    public void deleteById(Long id) throws CustomException.DefaultSubscriptionNotFoundException {
         logger.debug("Deleting subscription by ID: {}", id);
         if (!existsById(id)) {
-            throw new CustomException.SubscriptionNotFoundException("ID: " + id);
+            throw new CustomException.DefaultSubscriptionNotFoundException();
         }
 
         try {

@@ -35,5 +35,9 @@ public class AuthFacade {
     public User getUserByEmail(String email) {
         return userService.findByEmail(email);
     }
+
+    public User getUserByUsername(String name) {
+        return userService.findByUserName(name);
+    }
 }
 
