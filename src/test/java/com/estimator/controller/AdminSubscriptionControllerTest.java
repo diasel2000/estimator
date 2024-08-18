@@ -1,5 +1,6 @@
 package com.estimator.controller;
 
+import com.estimator.facade.SubscriptionFacade;
 import com.estimator.model.Subscription;
 import com.estimator.services.SubscriptionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,16 +23,31 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+
 public class AdminSubscriptionControllerTest {
 
     @Mock
-    private SubscriptionService subscriptionService;
-
-    @Mock
-    private Model model;
-
-    @Mock
-    private RedirectAttributes redirectAttributes;
+    private SubscriptionFacade subscriptionFacade;
 
     @InjectMocks
     private AdminSubscriptionController adminSubscriptionController;
@@ -46,20 +62,21 @@ public class AdminSubscriptionControllerTest {
     }
 
     @Test
-    public void testManageSubscriptions() {
+    public void testGetAllSubscriptions() {
         // Arrange
         Subscription subscription1 = new Subscription();
         Subscription subscription2 = new Subscription();
         List<Subscription> subscriptions = Arrays.asList(subscription1, subscription2);
 
-        when(subscriptionService.getAllSubscriptions()).thenReturn(subscriptions);
+        when(subscriptionFacade.getAllSubscriptions()).thenReturn(subscriptions);
 
         // Act
-        String viewName = adminSubscriptionController.manageSubscriptions(model);
+        ResponseEntity<List<Subscription>> response = adminSubscriptionController.getAllSubscriptions();
 
         // Assert
-        assertEquals("manage_subscriptions", viewName);
-        verify(model, times(1)).addAttribute("subscriptions", subscriptions);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(subscriptions, response.getBody());
+        verify(subscriptionFacade, times(1)).getAllSubscriptions();
 
         // Verify logs
         String logContent = logOutput.toString();
@@ -72,15 +89,15 @@ public class AdminSubscriptionControllerTest {
         // Arrange
         Long subscriptionId = 1L;
 
-        when(subscriptionService.existsById(subscriptionId)).thenReturn(true);
+        when(subscriptionFacade.existsById(subscriptionId)).thenReturn(true);
 
         // Act
-        String viewName = adminSubscriptionController.deleteSubscription(subscriptionId, redirectAttributes);
+        ResponseEntity<Map<String, String>> response = adminSubscriptionController.deleteSubscription(subscriptionId);
 
         // Assert
-        assertEquals("redirect:/admin/subscriptions", viewName);
-        verify(subscriptionService, times(1)).deleteById(subscriptionId);
-        verify(redirectAttributes, times(1)).addFlashAttribute("message", "Subscription deleted successfully");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Subscription deleted successfully", response.getBody().get("message"));
+        verify(subscriptionFacade, times(1)).deleteSubscription(subscriptionId);
 
         // Verify logs
         String logContent = logOutput.toString();
@@ -92,15 +109,15 @@ public class AdminSubscriptionControllerTest {
         // Arrange
         Long subscriptionId = 1L;
 
-        when(subscriptionService.existsById(subscriptionId)).thenReturn(false);
+        when(subscriptionFacade.existsById(subscriptionId)).thenReturn(false);
 
         // Act
-        String viewName = adminSubscriptionController.deleteSubscription(subscriptionId, redirectAttributes);
+        ResponseEntity<Map<String, String>> response = adminSubscriptionController.deleteSubscription(subscriptionId);
 
         // Assert
-        assertEquals("redirect:/admin/subscriptions", viewName);
-        verify(subscriptionService, times(0)).deleteById(subscriptionId);
-        verify(redirectAttributes, times(1)).addFlashAttribute("error", "Subscription not found");
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Subscription not found", response.getBody().get("error"));
+        verify(subscriptionFacade, times(0)).deleteSubscription(subscriptionId);
 
         // Verify logs
         String logContent = logOutput.toString();

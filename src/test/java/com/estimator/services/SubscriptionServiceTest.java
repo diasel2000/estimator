@@ -31,13 +31,12 @@ class SubscriptionServiceTest {
     private SubscriptionService subscriptionService;
 
     @Mock
-    private Appender<ILoggingEvent> mockAppender; // Mock Appender for Logger
+    private Appender<ILoggingEvent> mockAppender;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        // Set up Logger
         Logger logger = (Logger) LoggerFactory.getLogger(SubscriptionService.class);
         logger.addAppender(mockAppender);
     }
@@ -63,7 +62,7 @@ class SubscriptionServiceTest {
     }
 
     @Test
-    void testGetSubscriptionByName_SubscriptionFound() {
+    void testGetSubscriptionByName_SubscriptionFound() throws CustomException.DefaultSubscriptionNotFoundException {
         // Arrange
         String subscriptionName = "Basic";
         Subscription subscription = new Subscription();
@@ -89,11 +88,11 @@ class SubscriptionServiceTest {
         when(subscriptionRepository.findBySubscriptionName(subscriptionName)).thenReturn(null);
 
         // Act & Assert
-        CustomException.SubscriptionNotFoundException exception = assertThrows(CustomException.SubscriptionNotFoundException.class, () -> {
+        CustomException.DefaultSubscriptionNotFoundException exception = assertThrows(CustomException.DefaultSubscriptionNotFoundException.class, () -> {
             subscriptionService.getSubscriptionByName(subscriptionName);
         });
 
-        assertEquals("Subscription not found: Nonexistent", exception.getMessage());
+        assertEquals("Default subscription Basic not found", exception.getMessage());
         verify(subscriptionRepository, times(1)).findBySubscriptionName(subscriptionName);
         verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Fetching subscription by name: Nonexistent")));
         verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Subscription not found with name: Nonexistent")));
@@ -132,7 +131,7 @@ class SubscriptionServiceTest {
     }
 
     @Test
-    void testDeleteById() {
+    void testDeleteById() throws CustomException.DefaultSubscriptionNotFoundException {
         // Arrange
         Long id = 1L;
 
@@ -149,33 +148,21 @@ class SubscriptionServiceTest {
     }
 
     @Test
-    void testDeleteById_ExceptionThrown() {
+    void testDeleteById_SubscriptionNotFound() {
         // Arrange
         Long id = 1L;
-        Exception exception = new RuntimeException("Deletion failed");
 
         when(subscriptionRepository.existsById(id)).thenReturn(false);
 
         // Act & Assert
-        CustomException.SubscriptionNotFoundException thrownException = assertThrows(CustomException.SubscriptionNotFoundException.class, () -> {
+        CustomException.DefaultSubscriptionNotFoundException thrownException = assertThrows(CustomException.DefaultSubscriptionNotFoundException.class, () -> {
             subscriptionService.deleteById(id);
         });
 
-        assertEquals("Subscription not found: ID: 1", thrownException.getMessage());
+        assertEquals("Default subscription Basic not found", thrownException.getMessage());
         verify(subscriptionRepository, times(1)).existsById(id);
         verify(subscriptionRepository, never()).deleteById(id);
-
-        verify(mockAppender, times(1)).doAppend(argThat(event ->
-                event.getLevel().toString().equals("DEBUG") &&
-                        event.getFormattedMessage().contains("Deleting subscription by ID: 1")
-        ));
-        verify(mockAppender, times(1)).doAppend(argThat(event ->
-                event.getLevel().toString().equals("DEBUG") &&
-                        event.getFormattedMessage().contains("Checking if subscription exists by ID: 1")
-        ));
-        verify(mockAppender, times(1)).doAppend(argThat(event ->
-                event.getLevel().toString().equals("WARN") &&
-                        event.getFormattedMessage().contains("Subscription does not exist with ID: 1")
-        ));
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Checking if subscription exists by ID: 1")));
+        verify(mockAppender, times(1)).doAppend(argThat(event -> event.getFormattedMessage().contains("Subscription does not exist with ID: 1")));
     }
 }

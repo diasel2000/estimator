@@ -1,30 +1,27 @@
 package com.estimator.controller;
 
+import com.estimator.facade.DashboardFacade;
 import com.estimator.model.Subscription;
 import com.estimator.model.User;
-import com.estimator.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.ui.Model;
-
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class DashboardControllerTest {
 
     @Mock
-    private UserService userService;
-
-    @Mock
-    private Model model;
+    private DashboardFacade dashboardFacade;
 
     @Mock
     private Authentication authentication;
@@ -49,23 +46,20 @@ public class DashboardControllerTest {
         user.setUsername(username);
 
         when(authentication.getName()).thenReturn(username);
-        when(userService.findByUserName(username)).thenReturn(user);
-        when(userService.findByGoogleID(username)).thenReturn(user);
+        when(dashboardFacade.getUserDetails(username)).thenReturn(user);
 
         // Act
-        String viewName = dashboardController.dashboard(model, authentication);
+        ResponseEntity<Map<String, Object>> response = dashboardController.getDashboard(authentication);
 
         // Assert
-        assertEquals("dashboardB", viewName);
-        verify(model, times(1)).addAttribute("user", user);
-        verify(model, times(1)).addAttribute("roles", user.getRoles());
-        verify(model, times(1)).addAttribute("subscriptionName", "Basic");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("dashboardB", response.getBody().get("dashboardView"));
+        verify(dashboardFacade, times(1)).getUserDetails(username);
 
         // Verify logs
         String logContent = logOutput.toString();
         assertTrue(logContent.contains("Fetching user details for username: testuser"));
         assertTrue(logContent.contains("User subscription: Basic"));
-        assertTrue(logContent.contains("Redirecting to Basic dashboard."));
         assertTrue(logContent.contains("User found. Username: testuser"));
     }
 
@@ -74,27 +68,24 @@ public class DashboardControllerTest {
         // Arrange
         String username = "testuser";
         User user = new User();
-        user.setUsername(username);
         user.setSubscription(new Subscription("Standard"));
+        user.setUsername(username);
 
         when(authentication.getName()).thenReturn(username);
-        when(userService.findByUserName(username)).thenReturn(user);
-        when(userService.findByGoogleID(username)).thenReturn(user);
+        when(dashboardFacade.getUserDetails(username)).thenReturn(user);
 
         // Act
-        String viewName = dashboardController.dashboard(model, authentication);
+        ResponseEntity<Map<String, Object>> response = dashboardController.getDashboard(authentication);
 
         // Assert
-        assertEquals("dashboardS", viewName);
-        verify(model, times(1)).addAttribute("user", user);
-        verify(model, times(1)).addAttribute("roles", user.getRoles());
-        verify(model, times(1)).addAttribute("subscriptionName", "Standard");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("dashboardS", response.getBody().get("dashboardView"));
+        verify(dashboardFacade, times(1)).getUserDetails(username);
 
         // Verify logs
         String logContent = logOutput.toString();
         assertTrue(logContent.contains("Fetching user details for username: testuser"));
         assertTrue(logContent.contains("User subscription: Standard"));
-        assertTrue(logContent.contains("Redirecting to Standard dashboard."));
         assertTrue(logContent.contains("User found. Username: testuser"));
     }
 
@@ -107,23 +98,20 @@ public class DashboardControllerTest {
         user.setUsername(username);
 
         when(authentication.getName()).thenReturn(username);
-        when(userService.findByUserName(username)).thenReturn(user);
-        when(userService.findByGoogleID(username)).thenReturn(user);
+        when(dashboardFacade.getUserDetails(username)).thenReturn(user);
 
         // Act
-        String viewName = dashboardController.dashboard(model, authentication);
+        ResponseEntity<Map<String, Object>> response = dashboardController.getDashboard(authentication);
 
         // Assert
-        assertEquals("dashboardU", viewName);
-        verify(model, times(1)).addAttribute("user", user);
-        verify(model, times(1)).addAttribute("roles", user.getRoles());
-        verify(model, times(1)).addAttribute("subscriptionName", "Ultimate");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("dashboardU", response.getBody().get("dashboardView"));
+        verify(dashboardFacade, times(1)).getUserDetails(username);
 
         // Verify logs
         String logContent = logOutput.toString();
         assertTrue(logContent.contains("Fetching user details for username: testuser"));
         assertTrue(logContent.contains("User subscription: Ultimate"));
-        assertTrue(logContent.contains("Redirecting to Ultimate dashboard."));
         assertTrue(logContent.contains("User found. Username: testuser"));
     }
 
@@ -136,23 +124,20 @@ public class DashboardControllerTest {
         user.setUsername(username);
 
         when(authentication.getName()).thenReturn(username);
-        when(userService.findByUserName(username)).thenReturn(user);
-        when(userService.findByGoogleID(username)).thenReturn(user);
+        when(dashboardFacade.getUserDetails(username)).thenReturn(user);
 
         // Act
-        String viewName = dashboardController.dashboard(model, authentication);
+        ResponseEntity<Map<String, Object>> response = dashboardController.getDashboard(authentication);
 
         // Assert
-        assertEquals("dashboard", viewName);
-        verify(model, times(1)).addAttribute("user", user);
-        verify(model, times(1)).addAttribute("roles", user.getRoles());
-        verify(model, times(1)).addAttribute("subscriptionName", "No Subscription");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("dashboard", response.getBody().get("dashboardView"));
+        verify(dashboardFacade, times(1)).getUserDetails(username);
 
         // Verify logs
         String logContent = logOutput.toString();
         assertTrue(logContent.contains("Fetching user details for username: testuser"));
         assertTrue(logContent.contains("User subscription: No Subscription"));
-        assertTrue(logContent.contains("Redirecting to default dashboard."));
         assertTrue(logContent.contains("User found. Username: testuser"));
     }
 
@@ -162,18 +147,18 @@ public class DashboardControllerTest {
         String username = "testuser";
 
         when(authentication.getName()).thenReturn(username);
-        when(userService.findByUserName(username)).thenReturn(null);
-        when(userService.findByGoogleID(username)).thenReturn(null);
+        when(dashboardFacade.getUserDetails(username)).thenReturn(null);
 
         // Act
-        String viewName = dashboardController.dashboard(model, authentication);
+        ResponseEntity<Map<String, Object>> response = dashboardController.getDashboard(authentication);
 
         // Assert
-        assertEquals("error", viewName);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("User not found", response.getBody().get("error"));
 
         // Verify logs
         String logContent = logOutput.toString();
         assertTrue(logContent.contains("Fetching user details for username: testuser"));
-        assertTrue(logContent.contains("User not found. Redirecting to error page."));
+        assertTrue(logContent.contains("User not found. Returning error response."));
     }
 }

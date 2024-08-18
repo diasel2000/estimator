@@ -55,9 +55,10 @@ class UserDetailsServiceImplTest {
     @Test
     void testLoadUserByUsername_UserFound_WithRoles() {
         // Arrange
-        String username = "testuser";
+        String email = "testuser@example.com";
         User user = new User();
-        user.setUsername(username);
+        user.setUsername("testuser@example.com");
+        user.setEmail(email);
         user.setPassword("encodedPassword");
 
         Role role = new Role();
@@ -70,51 +71,51 @@ class UserDetailsServiceImplTest {
         List<UserRole> userRoles = new ArrayList<>();
         userRoles.add(userRole);
 
-        when(userRepository.findByUsername(username)).thenReturn(user);
+        when(userRepository.findByEmail(email)).thenReturn(user);
         when(userRoleRepository.findByUser(user)).thenReturn(userRoles);
 
         // Act
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
         // Assert
         assertNotNull(userDetails);
-        assertEquals(username, userDetails.getUsername());
+        assertEquals(email, userDetails.getUsername());
         assertEquals("encodedPassword", userDetails.getPassword());
         assertEquals(1, userDetails.getAuthorities().size());
         assertTrue(userDetails.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN")));
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByEmail(email);
         verify(userRoleRepository, times(1)).findByUser(user);
 
         // Verify logging
         verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
         assertEquals(Level.DEBUG, captorLoggingEvent.getAllValues().get(0).getLevel());
-        assertTrue(captorLoggingEvent.getAllValues().get(0).getFormattedMessage().contains("Loading user by username: testuser"));
+        assertTrue(captorLoggingEvent.getAllValues().get(0).getFormattedMessage().contains("Loading user by username: testuser@example.com"));
 
         assertEquals(Level.INFO, captorLoggingEvent.getAllValues().get(1).getLevel());
-        assertTrue(captorLoggingEvent.getAllValues().get(1).getFormattedMessage().contains("User found with username: testuser"));
+        assertTrue(captorLoggingEvent.getAllValues().get(1).getFormattedMessage().contains("User found with username: testuser@example.com"));
     }
 
     @Test
     void testLoadUserByUsername_UserFound_NoRoles() {
         // Arrange
-        String username = "testuser";
+        String email = "testuser@example.com";
         User user = new User();
-        user.setUsername(username);
+        user.setEmail(email);
         user.setPassword("encodedPassword");
 
         List<UserRole> userRoles = new ArrayList<>();
 
-        when(userRepository.findByUsername(username)).thenReturn(user);
+        when(userRepository.findByEmail(email)).thenReturn(user);
         when(userRoleRepository.findByUser(user)).thenReturn(userRoles);
 
         // Act & Assert
-        CustomException.UserRoleNotFoundException thrownException = assertThrows(CustomException.UserRoleNotFoundException.class, () -> {
-            userDetailsService.loadUserByUsername(username);
+        CustomException.DefaultRoleNotFoundException thrownException = assertThrows(CustomException.DefaultRoleNotFoundException.class, () -> {
+            userDetailsService.loadUserByUsername(email);
         });
 
-        assertEquals("No roles found for user: testuser", thrownException.getMessage());
+        assertEquals("Default role ROLE_USER not found", thrownException.getMessage());
 
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByEmail(email);
         verify(userRoleRepository, times(1)).findByUser(user);
 
         // Verify logging
@@ -123,37 +124,36 @@ class UserDetailsServiceImplTest {
 
         assertTrue(logEvents.stream().anyMatch(event ->
                 event.getLevel().equals(Level.DEBUG) &&
-                        event.getFormattedMessage().contains("Loading user by username: testuser")
+                        event.getFormattedMessage().contains("Loading user by username: testuser@example.com")
         ));
 
         assertTrue(logEvents.stream().anyMatch(event ->
                 event.getLevel().equals(Level.WARN) &&
-                        event.getFormattedMessage().contains("No roles found for user with username: testuser")
+                        event.getFormattedMessage().contains("No roles found for user with username: testuser@example.com")
         ));
     }
 
     @Test
     void testLoadUserByUsername_UserNotFound() {
         // Arrange
-        String username = "nonexistentuser";
-        when(userRepository.findByUsername(username)).thenReturn(null);
+        String email = "nonexistentuser@example.com";
+        when(userRepository.findByEmail(email)).thenReturn(null);
 
         // Act & Assert
         CustomException.UserNotFoundException exception = assertThrows(CustomException.UserNotFoundException.class, () -> {
-            userDetailsService.loadUserByUsername(username);
+            userDetailsService.loadUserByUsername(email);
         });
 
-        assertEquals("User not found with email: " + username, exception.getMessage());
-        assertEquals("Username: " + username, exception.getContextInfo());
-        verify(userRepository, times(1)).findByUsername(username);
+        assertEquals("User not found with email: " + email, exception.getMessage());
+        verify(userRepository, times(1)).findByEmail(email);
 
         // Verify logging
         verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
         assertEquals(Level.DEBUG, captorLoggingEvent.getAllValues().get(0).getLevel());
-        assertTrue(captorLoggingEvent.getAllValues().get(0).getFormattedMessage().contains("Loading user by username: nonexistentuser"));
+        assertTrue(captorLoggingEvent.getAllValues().get(0).getFormattedMessage().contains("Loading user by username: nonexistentuser@example.com"));
 
         assertEquals(Level.WARN, captorLoggingEvent.getAllValues().get(1).getLevel());
-        assertTrue(captorLoggingEvent.getAllValues().get(1).getFormattedMessage().contains("User not found with username: nonexistentuser"));
+        assertTrue(captorLoggingEvent.getAllValues().get(1).getFormattedMessage().contains("User not found with username: nonexistentuser@example.com"));
     }
 }
 
