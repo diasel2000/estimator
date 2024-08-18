@@ -312,7 +312,7 @@ class UserServiceTest {
 
     @Test
     void testExistsById_Exists() {
-        Integer id = 1;
+        Long id = 1l;
         when(userRepository.findById(Long.valueOf(id))).thenReturn(Optional.of(new User()));
 
         boolean exists = userService.existsById(id);
@@ -323,7 +323,7 @@ class UserServiceTest {
 
     @Test
     void testExistsById_DoesNotExist() {
-        Integer id = 1;
+        Long id = 1l;
         when(userRepository.findById(Long.valueOf(id))).thenReturn(Optional.empty());
 
         boolean exists = userService.existsById(id);
@@ -334,7 +334,7 @@ class UserServiceTest {
 
     @Test
     void testDeleteById() {
-        Integer id = 1;
+        Long id = 1l;
 
         userService.deleteById(id);
 

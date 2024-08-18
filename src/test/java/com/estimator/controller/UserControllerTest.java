@@ -1,50 +1,43 @@
 package com.estimator.controller;
 
-import com.estimator.dto.RegisterRequest;
-import com.estimator.model.Subscription;
+import com.estimator.dto.RoleDTO;
+import com.estimator.dto.SubscriptionDTO;
+import com.estimator.dto.UserDTO;
+import com.estimator.dto.UserRoleDTO;
+import com.estimator.facade.AuthFacade;
+import com.estimator.facade.UserFacade;
 import com.estimator.model.User;
-import com.estimator.model.dto.RegisterRequest;
-import com.estimator.services.UserService;
-import com.estimator.services.SubscriptionService;
+import com.estimator.services.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.security.Principal;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.ui.Model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class UserControllerTest {
 
     @Mock
-    private UserService userService;
+    private UserFacade userFacade;
 
     @Mock
-    private SubscriptionService subscriptionService;
+    private AuthFacade authFacade;
 
     @Mock
-    private Model model;
-
-    @Mock
-    private OAuth2User oAuth2User;
-
-    @Mock
-    private Principal principal;
+    private JwtTokenProvider jwtTokenProvider;
 
     @InjectMocks
     private UserController userController;
@@ -57,156 +50,125 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegisterUserLogs() {
-        RegisterRequest request = new RegisterRequest();
-        request.setUsername("testuser");
-        request.setEmail("test@example.com");
-        request.setPassword("password");
-        request.setGoogleId("google-id");
+    public void testGetCurrentUserLogs() {
+        String token = "valid-token";
+        String email = "test@example.com";
 
         User user = new User();
-        when(userService.registerUser(anyString(), anyString(), anyString(), anyString())).thenReturn(user);
+        UserDTO userDTO = new UserDTO();
+
+        when(jwtTokenProvider.validateToken(token)).thenReturn(true);
+        when(jwtTokenProvider.getUsername(token)).thenReturn(email);
+        when(authFacade.getUserByEmail(email)).thenReturn(user);
+        when(userFacade.userToUserDTO(user)).thenReturn(userDTO);
 
         // Mock logger to capture log output
         TestAppender appender = new TestAppender();
         ((ch.qos.logback.classic.Logger) logger).addAppender(appender);
         appender.start();
 
-        ResponseEntity<User> response = userController.registerUser(request);
+        ResponseEntity<UserDTO> response = userController.getCurrentUser("Bearer " + token);
 
-        assertEquals(ResponseEntity.ok(user), response);
-        verify(userService, times(1)).registerUser(request.getUsername(), request.getEmail(), request.getPassword(), request.getGoogleId());
-
-        // Verify logging
-        assertTrue(appender.getLogMessages().contains("Registering user with email: test@example.com"));
-        assertTrue(appender.getLogMessages().contains("User registered successfully with email: test@example.com"));
-    }
-
-    @Test
-    public void testGetProfilePageLogs() {
-        Authentication authentication = mock(Authentication.class);
-        OAuth2User oAuth2User = mock(OAuth2User.class);
-        when(authentication.getPrincipal()).thenReturn(oAuth2User);
-        when(oAuth2User.getAttribute("email")).thenReturn("test@example.com");
-
-        User user = new User();
-        when(userService.findByEmail("test@example.com")).thenReturn(user);
-
-        Model model = mock(Model.class);
-
-        // Mock logger to capture log output
-        TestAppender appender = new TestAppender();
-        ((ch.qos.logback.classic.Logger) logger).addAppender(appender);
-        appender.start();
-
-        String viewName = userController.getProfilePage(model, authentication);
-
-        assertEquals("profile", viewName);
-        verify(model, times(1)).addAttribute("user", user);
-
-        // Verify logging
-        assertTrue(appender.getLogMessages().contains("Getting profile page for user"));
+        assertEquals(ResponseEntity.ok(userDTO), response);
+        verify(jwtTokenProvider, times(1)).validateToken(token);
+        verify(authFacade, times(1)).getUserByEmail(email);
+        verify(userFacade, times(1)).userToUserDTO(user);
     }
 
     @Test
     public void testUpdateSubscriptionLogs() {
-        User user = new User();
-        Subscription subscription = new Subscription();
+        String email = "test@example.com";
+        String subscriptionName = "Basic";
 
         Principal principal = mock(Principal.class);
-        when(principal.getName()).thenReturn("test@example.com");
-        when(userService.findByEmail("test@example.com")).thenReturn(user);
-        when(subscriptionService.getSubscriptionByName("Basic")).thenReturn(subscription);
+        when(principal.getName()).thenReturn(email);
+
+        User user = new User();
+        user.setEmail(email);
+
+        // Create and set up UserDTO
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserID(1L);
+        userDTO.setUsername("testuser");
+        userDTO.setEmail(email);
+        userDTO.setGoogleID("google-id");
+        userDTO.setCreatedAt(LocalDateTime.now());
+
+        // Set up SubscriptionDTO and UserRoleDTO if needed
+        SubscriptionDTO subscriptionDTO = new SubscriptionDTO();
+        subscriptionDTO.setSubscriptionName(subscriptionName);
+        userDTO.setSubscription(subscriptionDTO);
+
+        UserRoleDTO userRoleDTO = new UserRoleDTO();
+        RoleDTO roleDTO = new RoleDTO();
+        roleDTO.setRoleName("USER");
+        userRoleDTO.setRole(roleDTO);
+        userDTO.setUserRoles(Set.of(userRoleDTO));
+
+        when(authFacade.getUserByUsername(email)).thenReturn(user);
+        when(userFacade.updateSubscription(email, subscriptionName)).thenReturn(user);
+        when(userFacade.userToUserDTO(user)).thenReturn(userDTO);
 
         // Mock logger to capture log output
         TestAppender appender = new TestAppender();
         ((ch.qos.logback.classic.Logger) logger).addAppender(appender);
         appender.start();
 
-        ResponseEntity<User> response = userController.updateSubscription("Basic", principal);
+        ResponseEntity<?> response = userController.updateSubscription(subscriptionName, principal);
 
-        assertEquals(ResponseEntity.ok(user), response);
-        verify(userService, times(1)).updateSubscription(user, subscription);
+        assertEquals(ResponseEntity.ok(userDTO), response);
+        verify(authFacade, times(1)).getUserByUsername(email);
+        verify(userFacade, times(1)).updateSubscription(email, subscriptionName);
+        verify(userFacade, times(1)).userToUserDTO(user);
 
         // Verify logging
-        assertTrue(appender.getLogMessages().contains("Updating subscription for user with email: test@example.com"));
+        assertTrue(appender.getLogMessages().contains("Updating subscription for user with email: " + email));
     }
+
 
     @Test
     public void testDeleteUserLogs() {
+        String email = "test@example.com";
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn(email);
+
+        User authenticatedUser = new User();
+        authenticatedUser.setEmail(email);
+
+        when(authFacade.getUserByUsername(email)).thenReturn(authenticatedUser);
+
         // Mock logger to capture log output
         TestAppender appender = new TestAppender();
         ((ch.qos.logback.classic.Logger) logger).addAppender(appender);
         appender.start();
 
-        ResponseEntity<Void> response = userController.deleteUser("test@example.com");
+        ResponseEntity<?> response = userController.deleteUser(email, principal);
 
         assertEquals(ResponseEntity.noContent().build(), response);
-        verify(userService, times(1)).deleteUserByEmail("test@example.com");
+        verify(userFacade, times(1)).deleteUser(email);
 
         // Verify logging
-        assertTrue(appender.getLogMessages().contains("Deleting user with email: test@example.com"));
+        assertTrue(appender.getLogMessages().contains("Deleting user with email: " + email));
     }
 
-    // Additional test for user not found logging
     @Test
-    public void testGetProfilePageUserNotFoundLogs() {
-        Authentication authentication = mock(Authentication.class);
-        OAuth2User oAuth2User = mock(OAuth2User.class);
-        when(authentication.getPrincipal()).thenReturn(oAuth2User);
-        when(oAuth2User.getAttribute("email")).thenReturn("notfound@example.com");
+    public void testGetCurrentUserNotFoundLogs() {
+        String token = "valid-token";
+        String email = "notfound@example.com";
 
-        when(userService.findByEmail("notfound@example.com")).thenReturn(null);
-
-        Model model = mock(Model.class);
+        when(jwtTokenProvider.validateToken(token)).thenReturn(true);
+        when(jwtTokenProvider.getUsername(token)).thenReturn(email);
+        when(authFacade.getUserByEmail(email)).thenReturn(null);
 
         // Mock logger to capture log output
         TestAppender appender = new TestAppender();
         ((ch.qos.logback.classic.Logger) logger).addAppender(appender);
         appender.start();
 
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
-            userController.getProfilePage(model, authentication);
-        });
+        ResponseEntity<UserDTO> response = userController.getCurrentUser("Bearer " + token);
 
-        assertEquals("User not found", thrown.getMessage());
-
-        // Verify logging
-        assertTrue(appender.getLogMessages().contains("Getting profile page for user"));
-        assertTrue(appender.getLogMessages().contains("User not found"));
+        assertEquals(ResponseEntity.status(HttpStatus.NOT_FOUND).build(), response);
     }
-
-    @Test
-    public void testGetProfilePageWithUserDetailsLogs() {
-        // Mock Authentication and UserDetails
-        Authentication authentication = mock(Authentication.class);
-        UserDetails userDetails = mock(UserDetails.class);
-        when(authentication.getPrincipal()).thenReturn(userDetails);
-        when(userDetails.getUsername()).thenReturn("testuser");
-
-        // Mock UserService to return a User
-        User user = new User();
-        when(userService.findByUserName("testuser")).thenReturn(user);
-
-        Model model = mock(Model.class);
-
-        // Mock logger to capture log output
-        TestAppender appender = new TestAppender();
-        ((ch.qos.logback.classic.Logger) logger).addAppender(appender);
-        appender.start();
-
-        // Call the method
-        String viewName = userController.getProfilePage(model, authentication);
-
-        // Assertions
-        assertEquals("profile", viewName);
-        verify(model, times(1)).addAttribute("user", user);
-
-        // Verify logging
-        assertTrue(appender.getLogMessages().contains("Getting profile page for user"));
-        assertFalse(appender.getLogMessages().contains("User not found"));  // Ensure this log does not appear
-    }
-
 
     // TestAppender class for capturing log output
     public static class TestAppender extends ch.qos.logback.core.AppenderBase<ch.qos.logback.classic.spi.ILoggingEvent> {

@@ -1,14 +1,13 @@
 package com.estimator.controller;
 
+import com.estimator.dto.UserDTO;
+import com.estimator.facade.UserFacade;
 import com.estimator.model.User;
-import com.estimator.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.ui.Model;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,17 +21,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import java.util.*;
 
 public class AdminUserControllerTest {
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private Model model;
-
-    @Mock
-    private RedirectAttributes redirectAttributes;
+    private UserFacade userFacade;
 
     @InjectMocks
     private AdminUserController adminUserController;
@@ -47,20 +43,23 @@ public class AdminUserControllerTest {
     }
 
     @Test
-    public void testManageUsers() {
+    public void testGetAllUsers() {
         // Arrange
         User user1 = new User();
         User user2 = new User();
         List<User> users = Arrays.asList(user1, user2);
+        List<UserDTO> userDTOs = Arrays.asList(new UserDTO(), new UserDTO());
 
-        when(userRepository.findAll()).thenReturn(users);
+        when(userFacade.getAllUsers()).thenReturn(users);
+        when(userFacade.userToUserDTO(user1)).thenReturn(userDTOs.get(0));
+        when(userFacade.userToUserDTO(user2)).thenReturn(userDTOs.get(1));
 
         // Act
-        String viewName = adminUserController.manageUsers(model);
+        ResponseEntity<List<UserDTO>> response = adminUserController.getAllUsers();
 
         // Assert
-        assertEquals("manage_users", viewName);
-        verify(model, times(1)).addAttribute("users", users);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(userDTOs, response.getBody());
 
         // Verify logs
         String logContent = logOutput.toString();
@@ -71,16 +70,15 @@ public class AdminUserControllerTest {
     public void testDeleteUser_Success() {
         // Arrange
         Long userId = 1L;
-
-        when(userRepository.existsById(userId)).thenReturn(true);
+        when(userFacade.existsById(userId)).thenReturn(true);
 
         // Act
-        String viewName = adminUserController.deleteUser(userId, redirectAttributes);
+        ResponseEntity<Map<String, String>> response = adminUserController.deleteUser(userId);
 
         // Assert
-        assertEquals("redirect:/admin/users", viewName);
-        verify(userRepository, times(1)).deleteById(userId);
-        verify(redirectAttributes, times(1)).addFlashAttribute("message", "User deleted successfully");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User deleted successfully", response.getBody().get("message"));
+        verify(userFacade, times(1)).deleteUserById(userId);
 
         // Verify logs
         String logContent = logOutput.toString();
@@ -91,16 +89,15 @@ public class AdminUserControllerTest {
     public void testDeleteUser_UserNotFound() {
         // Arrange
         Long userId = 1L;
-
-        when(userRepository.existsById(userId)).thenReturn(false);
+        when(userFacade.existsById(userId)).thenReturn(false);
 
         // Act
-        String viewName = adminUserController.deleteUser(userId, redirectAttributes);
+        ResponseEntity<Map<String, String>> response = adminUserController.deleteUser(userId);
 
         // Assert
-        assertEquals("redirect:/admin/users", viewName);
-        verify(userRepository, times(0)).deleteById(userId);
-        verify(redirectAttributes, times(1)).addFlashAttribute("error", "User not found");
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("User not found", response.getBody().get("error"));
+        verify(userFacade, times(0)).deleteUserById(userId);
 
         // Verify logs
         String logContent = logOutput.toString();
