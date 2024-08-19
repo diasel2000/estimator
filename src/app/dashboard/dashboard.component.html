@@ -1,0 +1,25 @@
+<div class="container">
+    <h2>Welcome, <span>{{ user?.username || 'User' }}</span></h2>
+    <div>
+      <p>Your subscription: <span>{{ subscriptionName || 'Subscription Name' }}</span></p>
+    </div>
+    <div *ngIf="roles?.includes('ROLE_ADMIN')">
+      <h3>Admin Panel</h3>
+      <ul>
+        <li><a routerLink="/admin/users">Manage Users</a></li>
+        <li><a routerLink="/admin/subscriptions">Manage Subscriptions</a></li>
+      </ul>
+    </div>
+    <div *ngIf="!roles?.includes('ROLE_USER')">
+      <h3>Your Dashboard</h3>
+      <p>Content specific to your subscription will be displayed here.</p>
+      <ul>
+        <li><a routerLink="/api/users/profile">Your Profile</a></li>
+        <li><a routerLink="/api/subscriptions">Subscriptions</a></li>
+      </ul>
+    </div>
+    <div>
+      <a routerLink="/logout">Logout</a>
+    </div>
+  </div>
+  
