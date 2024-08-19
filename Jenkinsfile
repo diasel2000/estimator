@@ -11,26 +11,53 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Backend') {
             steps {
-                git url: 'https://github.com/diasel2000/estimator.git', credentialsId: 'Git'
+                git url: 'https://github.com/diasel2000/estimator.git', branch: 'develop', credentialsId: 'Git'
                 sh 'chmod +x gradlew'
             }
         }
-        stage('Build') {
+        stage('Build Backend') {
             steps {
                 sh './gradlew clean build'
             }
         }
-        stage('Test') {
+        stage('Test Backend') {
             steps {
                 sh './gradlew test'
             }
         }
-        // TODO: Select client to deploy
-                            // This stage is currently commented out until resolved,
-                            // which client to use for deployment.
-//         stage('Deploy') {
+        stage('Checkout Frontend') {
+            steps {
+                script {
+                    dir('estimator-frontend') {
+                        git url: 'https://github.com/diasel2000/estimator.git', branch: 'frontend', credentialsId: 'Git'
+                    }
+                }
+            }
+        }
+        stage('Build Frontend') {
+            steps {
+                script {
+                    dir('estimator-frontend') {
+                        sh 'npm install'
+                        sh 'npm run build'
+                    }
+                }
+            }
+        }
+//         stage('Deploy Frontend') {
+//             steps {
+//                 withCredentials([usernamePassword(credentialsId: 'FTP_CREDENTIALS_ID', passwordVariable: 'FTP_PASS', usernameVariable: 'FTP_USER')]) {
+//                     sh '''
+//                     curl --ftp-create-dirs -T estimator-frontend/dist/**/* \
+//                     -u $FTP_USER:$FTP_PASS \
+//                     ftp://$FTP_HOST$FTP_DIR/
+//                     '''
+//                 }
+//             }
+//         }
+//         stage('Deploy Backend') {
 //             steps {
 //                 withCredentials([usernamePassword(credentialsId: 'FTP_CREDENTIALS_ID', passwordVariable: 'FTP_PASS', usernameVariable: 'FTP_USER')]) {
 //                     sh 'echo "Testing FTP connection with credentials:"'
