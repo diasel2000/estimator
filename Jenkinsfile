@@ -2,10 +2,6 @@ pipeline {
     agent any
 
     environment {
-        SENTRY_AUTH_TOKEN = credentials('SENTRY_AUTH_TOKEN')
-        SENTRY_PROJECT = credentials('SENTRY_PROJECT')
-        SENTRY_ORG = credentials('SENTRY_ORG')
-        SENTRY_DSN = credentials('SENTRY_DSN')
     }
 
     triggers {
