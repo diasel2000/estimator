@@ -28,10 +28,9 @@ environment {
         }
         stage('Build Frontend') {
             steps {
-                dir('estimator-frontend') {
-                    sh 'npm install'
-                    sh 'npm run build'
-                }
+               git url: 'https://github.com/diasel2000/estimator.git', branch: 'frontend', credentialsId: 'Git'
+               sh 'npm install'
+               sh 'npm run build'
             }
         }
 //        TODO need add DEPLOYMENT stage
