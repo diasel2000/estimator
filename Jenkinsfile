@@ -2,8 +2,10 @@ pipeline {
     agent any
 
     environment {
-        FTP_HOST = 'ftp.slategray-nightingale-123371.hostingersite.com'
-        FTP_DIR = '/home/u440805526/domains/slategray-nightingale-123371.hostingersite.com/public_html'
+        SENTRY_AUTH_TOKEN = credentials('SENTRY_AUTH_TOKEN')
+        SENTRY_PROJECT = credentials('SENTRY_PROJECT')
+        SENTRY_ORG = credentials('SENTRY_ORG')
+        SENTRY_DSN = credentials('SENTRY_DSN')
     }
 
     triggers {
@@ -13,7 +15,7 @@ pipeline {
     stages {
         stage('Checkout Backend') {
             steps {
-                git url: 'https://github.com/diasel2000/estimator.git', branch: 'develop', credentialsId: 'Git'
+                git url: 'https://github.com/diasel2000/estimator.git', branch: 'develop', credentialsId: 'Git'  // Переконайтесь, що Git облікові дані є
                 sh 'chmod +x gradlew'
             }
         }
@@ -31,7 +33,7 @@ pipeline {
             steps {
                 script {
                     dir('estimator-frontend') {
-                        git url: 'https://github.com/diasel2000/estimator.git', branch: 'frontend', credentialsId: 'Git'
+                        git url: 'https://github.com/diasel2000/estimator.git', branch: 'frontend', credentialsId: 'Git'  // Переконайтесь, що Git облікові дані є
                     }
                 }
             }
@@ -46,6 +48,14 @@ pipeline {
                 }
             }
         }
+        stage('Upload to Sentry') {
+                    steps {
+                        script {
+                            sh 'sentry-cli releases new $RELEASE_VERSION'
+                            sh 'sentry-cli releases finalize $RELEASE_VERSION'
+                        }
+                    }
+                }
 //         stage('Deploy Frontend') {
 //             steps {
 //                 withCredentials([usernamePassword(credentialsId: 'FTP_CREDENTIALS_ID', passwordVariable: 'FTP_PASS', usernameVariable: 'FTP_USER')]) {
