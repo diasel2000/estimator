@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+environment {
+        SENTRY_AUTH_TOKEN = credentials('SENTRY_AUTH_TOKEN')
+    }
+
     triggers {
         githubPush()
     }
