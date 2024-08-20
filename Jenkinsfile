@@ -37,14 +37,6 @@ pipeline {
                 }
             }
         }
-        stage('Upload to Sentry') {
-            steps {
-                script {
-                    sh "sentry-cli releases new ${env.RELEASE_VERSION}"
-                    sh "sentry-cli releases finalize ${env.RELEASE_VERSION}"
-                }
-            }
-        }
 //        TODO need add DEPLOYMENT stage
     }
 
