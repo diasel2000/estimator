@@ -21,6 +21,12 @@ pipeline {
         }
         stage('Build Backend') {
             steps {
+            script {
+                                sh 'echo $SENTRY_AUTH_TOKEN'
+                                sh 'echo $SENTRY_PROJECT'
+                                sh 'echo $SENTRY_ORG'
+                                sh 'echo $SENTRY_DSN'
+                            }
                 sh './gradlew clean build'
             }
         }
