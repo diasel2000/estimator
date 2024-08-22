@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../environments/environment';
-import {User} from "../model/User";
+import { User } from "../model/User";
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +12,10 @@ import {User} from "../model/User";
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {
+    console.log('HttpClient: ', this.http);
+  }
+
 
   registerUser(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, data);
