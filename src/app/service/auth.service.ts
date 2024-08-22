@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+import {User} from "../model/User";
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +19,12 @@ export class AuthService {
   }
 
   loginUser(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, data);
+    return this.http.post(`${this.apiUrl}/login`, data).pipe(
+      tap((response: any) => {
+        localStorage.setItem('token', response.token);
+      }),
+      catchError(this.handleError<any>('loginUser'))
+    );
   }
 
   logoutUser(): void {
@@ -30,6 +37,21 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!this.getToken();
+  }
+
+  getCsrfToken(): string | null {
+    return localStorage.getItem('csrfToken');
+  }
+
+  getCurrentUser(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/current-user`);
+  }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(error);
+      return of(result as T);
+    };
   }
 }

@@ -1,0 +1,15 @@
+<form (submit)="onSubmit($event)">
+  <label for="email">Email:</label>
+  <input id="email" (input)="onEmailChange($event)" type="email" required>
+
+  <label for="password">Password:</label>
+  <input id="password" (input)="onPasswordChange($event)" type="password" required>
+
+  <label for="confirmPassword">Confirm Password:</label>
+  <input id="confirmPassword" (input)="onConfirmPasswordChange($event)" type="password" required>
+
+  <button type="submit">Register</button>
+
+  <div *ngIf="successMessage">{{ successMessage }}</div>
+  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+</form>
