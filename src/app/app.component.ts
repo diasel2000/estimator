@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.sass'
+  styleUrls: ['./app.component.sass'],
+  standalone: true
 })
 export class AppComponent {
-  title = 'estimator-frontend';
+  constructor(private router: Router) {}
+
+  navigateToLogin() {
+    this.router.navigate(['/login']);
+  }
 }
