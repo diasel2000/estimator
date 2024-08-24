@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass'],
-  standalone: true
+  standalone: true,
+  imports: [RouterOutlet]
 })
 export class AppComponent {
   constructor(private router: Router) {}
 
   navigateToLogin() {
-    this.router.navigate(['/login']);
+    console.log("go")
+    this.router.navigate(['login']);
   }
 }
