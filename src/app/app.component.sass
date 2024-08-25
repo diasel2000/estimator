@@ -12,10 +12,11 @@ header
   padding: 1rem
   position: fixed
   top: 0
-  left: -100% // Hide header initially
+  left: 0
   width: 100%
-  transition: left 0.3s ease-in-out // Smooth transition
-  z-index: 1000 // Ensure header is above other content
+  transition: transform 0.2s ease-in-out
+  z-index: 1000
+  transform: translateY(-100%)
 
   nav
     ul
@@ -40,13 +41,16 @@ header
   background-position: center
   background-repeat: no-repeat
   height: 100vh
-  width: 100% // Ensure the banner covers full width
+  width: 100vw
+  margin: 0
+  padding: 0
   display: flex
   align-items: center
   justify-content: center
   color: wheat
   text-align: center
   position: relative
+  box-sizing: border-box
 
   .banner-content
     h1
@@ -178,4 +182,4 @@ footer
 
 // Show header on hover over container
 .container:hover header
-  left: 0 // Show header when hovering over the container
+  transform: translateY(0) // Show header when hovering over the container

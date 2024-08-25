@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../environments/environment';
-import { User } from "../model/User";
+import { User } from '../model/User';
 
 @Injectable({
   providedIn: 'root',
@@ -16,15 +16,19 @@ export class AuthService {
     console.log('HttpClient: ', this.http);
   }
 
-
   registerUser(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, data);
+    return this.http.post(`${this.apiUrl}/register`, data).pipe(
+      catchError(this.handleError<any>('registerUser'))
+    );
   }
 
   loginUser(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, data).pipe(
       tap((response: any) => {
         localStorage.setItem('token', response.token);
+        if (response.csrfToken) {
+          localStorage.setItem('csrfToken', response.csrfToken);
+        }
       }),
       catchError(this.handleError<any>('loginUser'))
     );
@@ -32,6 +36,7 @@ export class AuthService {
 
   logoutUser(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('csrfToken');
     this.router.navigate(['/login']);
   }
 
@@ -48,12 +53,14 @@ export class AuthService {
   }
 
   getCurrentUser(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/current-user`);
+    return this.http.get<User>(`${this.apiUrl}/current-user`).pipe(
+      catchError(this.handleError<User>('getCurrentUser'))
+    );
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-      console.error(error);
+      console.error(`${operation} failed: ${error.message}`);
       return of(result as T);
     };
   }

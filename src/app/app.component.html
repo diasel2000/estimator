@@ -1,84 +1,87 @@
-<!-- Header with Navigation -->
-<header *ngIf="shouldDisplayHomePage()">
-  <nav>
+<!-- Container for hover effect -->
+<div class="container">
+  <!-- Header with Navigation -->
+  <header *ngIf="shouldDisplayHomePage()">
+    <nav>
+      <ul>
+        <li><a [routerLink]="[]" fragment="about">About</a></li>
+        <li><a [routerLink]="[]" fragment="advantages">Advantages</a></li>
+        <li><a [routerLink]="[]" fragment="interaction">Interaction</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Full-screen Banner Image -->
+  <section id="banner" *ngIf="shouldDisplayHomePage()">
+    <div class="banner-content">
+      <h1>Welcome to Estimator</h1>
+      <p>Your ultimate project cost estimation tool.</p>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="section" *ngIf="shouldDisplayHomePage()">
+    <h2>About Estimator</h2>
+    <p>Estimator is an application designed to estimate the cost of projects based on utilized technologies, man-hours, risk factors, and a variety of other parameters.</p>
+
+    <h3>Key Features</h3>
     <ul>
-      <li><a [routerLink]="[]" fragment="about">About</a></li>
-      <li><a [routerLink]="[]" fragment="advantages">Advantages</a></li>
-      <li><a [routerLink]="[]" fragment="interaction">Interaction</a></li>
+      <li>Project cost estimation based on user-provided parameters</li>
+      <li>Consideration of risks and their impact on costs</li>
+      <li>Flexible settings for different project types</li>
+      <li>Intuitive and user-friendly interface</li>
+      <li>Ability to save and export estimates</li>
     </ul>
-  </nav>
-</header>
+  </section>
 
-<!-- Full-screen Banner Image -->
-<section id="banner" *ngIf="shouldDisplayHomePage()">
-  <div class="banner-content">
-    <h1>Welcome to Estimator</h1>
-    <p>Your ultimate project cost estimation tool.</p>
-  </div>
-</section>
-
-<!-- About Section -->
-<section id="about" class="section" *ngIf="shouldDisplayHomePage()">
-  <h2>About Estimator</h2>
-  <p>Estimator is an application designed to estimate the cost of projects based on utilized technologies, man-hours, risk factors, and a variety of other parameters.</p>
-
-  <h3>Key Features</h3>
-  <ul>
-    <li>Project cost estimation based on user-provided parameters</li>
-    <li>Consideration of risks and their impact on costs</li>
-    <li>Flexible settings for different project types</li>
-    <li>Intuitive and user-friendly interface</li>
-    <li>Ability to save and export estimates</li>
-  </ul>
-</section>
-
-<!-- Advantages Section -->
-<section id="advantages" class="section" *ngIf="shouldDisplayHomePage()">
-  <h2>Advantages</h2>
-  <div class="advantages-list">
-    <div class="advantage-item">
-      <img src="assets/icons/accuracy.png" alt="Accuracy">
-      <h3>High Accuracy</h3>
-      <p>Get precise estimates based on real-world data and advanced algorithms.</p>
+  <!-- Advantages Section -->
+  <section id="advantages" class="section" *ngIf="shouldDisplayHomePage()">
+    <h2>Advantages</h2>
+    <div class="advantages-list">
+      <div class="advantage-item">
+        <img src="assets/icons/accuracy.png" alt="Accuracy">
+        <h3>High Accuracy</h3>
+        <p>Get precise estimates based on real-world data and advanced algorithms.</p>
+      </div>
+      <div class="advantage-item">
+        <img src="assets/icons/ease-of-use.png" alt="Ease of Use">
+        <h3>Ease of Use</h3>
+        <p>Our intuitive interface ensures that anyone can quickly estimate project costs.</p>
+      </div>
+      <div class="advantage-item">
+        <img src="assets/icons/customization.png" alt="Customization">
+        <h3>Customization</h3>
+        <p>Tailor the estimation process to suit the unique needs of your projects.</p>
+      </div>
     </div>
-    <div class="advantage-item">
-      <img src="assets/icons/ease-of-use.png" alt="Ease of Use">
-      <h3>Ease of Use</h3>
-      <p>Our intuitive interface ensures that anyone can quickly estimate project costs.</p>
+  </section>
+
+  <!-- Interaction Section -->
+  <section id="interaction" class="section" *ngIf="shouldDisplayHomePage()">
+    <h2>Interaction</h2>
+    <p>Contact us for any queries or support. We're here to help you!</p>
+    <p>You can also support the development of this project through donations. Your contributions will help us continue improving the Estimator app.</p>
+    <div class="donate-button">
+      <button>Donate Now</button>
     </div>
-    <div class="advantage-item">
-      <img src="assets/icons/customization.png" alt="Customization">
-      <h3>Customization</h3>
-      <p>Tailor the estimation process to suit the unique needs of your projects.</p>
+  </section>
+
+  <!-- Get Started Section -->
+  <section id="get-started" *ngIf="shouldDisplayHomePage()">
+    <a (click)="navigateToLogin()" class="get-started-button">Get Started</a>
+  </section>
+
+  <!-- Footer with Contact Information -->
+  <footer *ngIf="shouldDisplayHomePage()">
+    <div class="social-media">
+      <a href="https://instagram.com" target="_blank"><img src="assets/icons/instagram.png" alt="Instagram"></a>
+      <a href="https://tiktok.com" target="_blank"><img src="assets/icons/tiktok.png" alt="TikTok"></a>
+      <a href="https://facebook.com" target="_blank"><img src="assets/icons/facebook.png" alt="Facebook"></a>
+      <a href="https://youtube.com" target="_blank"><img src="assets/icons/youtube.png" alt="YouTube"></a>
     </div>
-  </div>
-</section>
-
-<!-- Interaction Section -->
-<section id="interaction" class="section" *ngIf="shouldDisplayHomePage()">
-  <h2>Interaction</h2>
-  <p>Contact us for any queries or support. We're here to help you!</p>
-  <p>You can also support the development of this project through donations. Your contributions will help us continue improving the Estimator app.</p>
-  <div class="donate-button">
-    <button>Donate Now</button>
-  </div>
-</section>
-
-<!-- Get Started Section -->
-<section id="get-started" *ngIf="shouldDisplayHomePage()">
-  <a (click)="navigateToLogin()" class="get-started-button">Get Started</a>
-</section>
-
-<!-- Footer with Contact Information -->
-<footer *ngIf="shouldDisplayHomePage()">
-  <div class="social-media">
-    <a href="https://instagram.com" target="_blank"><img src="assets/icons/instagram.png" alt="Instagram"></a>
-    <a href="https://tiktok.com" target="_blank"><img src="assets/icons/tiktok.png" alt="TikTok"></a>
-    <a href="https://facebook.com" target="_blank"><img src="assets/icons/facebook.png" alt="Facebook"></a>
-    <a href="https://youtube.com" target="_blank"><img src="assets/icons/youtube.png" alt="YouTube"></a>
-  </div>
-  <div class="contact-info">
-    <p>Email: estimator&#64;gmail.com</p>
-  </div>
-</footer>
-<router-outlet></router-outlet>
+    <div class="contact-info">
+      <p>Email: estimator&#64;gmail.com</p>
+    </div>
+  </footer>
+  <router-outlet></router-outlet>
+</div>
