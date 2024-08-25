@@ -7,5 +7,14 @@
 
   <button type="submit">Login</button>
 
-  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div *ngIf="errorMessage" class="errorMessage">{{ errorMessage }}</div>
 </form>
+
+<div class="social-login">
+  <a href="/oauth2/authorization/google">
+    <img src="/app/assets/icons/google-login.png" alt="Login with Google" class="google-login-img">
+  </a>
+</div>
+<div class="register-link">
+  <p>Don't have an account? <a href="/register">Register</a></p>
+</div>
