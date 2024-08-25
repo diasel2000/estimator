@@ -1,14 +1,21 @@
-// Global styles for the body
-body
+// Global styles
+html, body
   font-family: 'Arial', sans-serif
   margin: 0
   padding: 0
   color: #333
+  overflow-x: hidden // Prevent horizontal scroll
 
 // Header styles
 header
   background: #333
   padding: 1rem
+  position: fixed
+  top: 0
+  left: -100% // Hide header initially
+  width: 100%
+  transition: left 0.3s ease-in-out // Smooth transition
+  z-index: 1000 // Ensure header is above other content
 
   nav
     ul
@@ -28,15 +35,18 @@ header
 
 // Full-screen banner section
 #banner
-  background-image: url('assets/banner.jpg')
+  background-image: url('assets/banner2.png')
   background-size: cover
   background-position: center
+  background-repeat: no-repeat
   height: 100vh
+  width: 100% // Ensure the banner covers full width
   display: flex
   align-items: center
   justify-content: center
-  color: black
+  color: wheat
   text-align: center
+  position: relative
 
   .banner-content
     h1
@@ -141,9 +151,31 @@ footer
 
 // Mobile styles using media queries
 @media (max-width: 768px)
+  #banner
+    height: 60vh // Adjust height for smaller screens
+
+  .section
+    padding: 2rem 1rem
+
   #advantages .advantages-list
     flex-direction: column
 
     .advantage-item
       width: 100%
       margin-bottom: 2rem
+
+  .banner-content h1
+    font-size: 2rem
+
+  .banner-content p
+    font-size: 1rem
+
+  .get-started-button
+    font-size: 1.2rem
+
+  .donate-button button
+    font-size: 1rem
+
+// Show header on hover over container
+.container:hover header
+  left: 0 // Show header when hovering over the container
