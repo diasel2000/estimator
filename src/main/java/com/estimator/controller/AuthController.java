@@ -18,6 +18,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
@@ -30,7 +31,6 @@ public class AuthController {
         this.authFacade = authFacade;
         this.jwtTokenProvider = jwtTokenProvider;
     }
-
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerUser(@RequestBody @Valid RegisterRequest request) {
         logger.info("Attempting to register user with email: {}", request.getEmail());
