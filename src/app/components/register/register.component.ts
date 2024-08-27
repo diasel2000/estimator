@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -8,6 +8,7 @@ import { AuthService } from '../../service/auth.service';
   styleUrls: ['./register.component.sass']
 })
 export class RegisterComponent {
+  username: string = '';
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
@@ -15,6 +16,10 @@ export class RegisterComponent {
   errorMessage: string | null = null;
 
   constructor(private authService: AuthService, private router: Router) {}
+
+  onUsernameChange(event: Event) {
+    this.username = (event.target as HTMLInputElement).value;
+  }
 
   onEmailChange(event: Event) {
     this.email = (event.target as HTMLInputElement).value;
@@ -30,13 +35,23 @@ export class RegisterComponent {
 
   onSubmit(event: Event) {
     event.preventDefault();
+
+    this.successMessage = null;
+    this.errorMessage = null;
+
     if (this.password === this.confirmPassword) {
-      this.authService.registerUser({ email: this.email, password: this.password }).subscribe({
-        next: () => {
-          this.successMessage = 'Registration successful';
-          setTimeout(() => this.router.navigate(['/login']), 2000);
+      this.authService.registerUser({
+        username: this.username,
+        email: this.email,
+        password: this.password
+      }).subscribe({
+        next: response => {
+          this.successMessage = response.message || 'Registration successful';
+          setTimeout(() => this.router.navigate([response.redirectTo || '/login']), 2000);
         },
-        error: err => this.errorMessage = 'Registration failed'
+        error: err => {
+          this.errorMessage = err.message || 'Registration failed';
+        }
       });
     } else {
       this.errorMessage = 'Passwords do not match';

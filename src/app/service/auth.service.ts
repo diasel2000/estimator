@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { User } from '../model/User';
@@ -12,18 +12,17 @@ import { User } from '../model/User';
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient, private router: Router) {
-    console.log('HttpClient: ', this.http);
-  }
+  constructor(private http: HttpClient, private router: Router) {}
 
   registerUser(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, data).pipe(
+    return this.http.post<any>(`${this.apiUrl}/register`, data).pipe(
+      tap(response => console.log('Registration response:', response)),
       catchError(this.handleError<any>('registerUser'))
     );
   }
 
   loginUser(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, data).pipe(
+    return this.http.post<any>(`${this.apiUrl}/login`, data).pipe(
       tap((response: any) => {
         localStorage.setItem('token', response.token);
         if (response.csrfToken) {
@@ -59,9 +58,9 @@ export class AuthService {
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
+    return (error: HttpErrorResponse): Observable<T> => {
       console.error(`${operation} failed: ${error.message}`);
-      return of(result as T);
+      return throwError(() => new Error(error.error.message || 'An unknown error occurred'));
     };
   }
 }
