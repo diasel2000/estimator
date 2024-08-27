@@ -78,6 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/basic_login")
                 .successHandler((request, response, authentication) -> {
                     response.setStatus(HttpStatus.OK.value());
+                    response.sendRedirect("http://localhost:4200/dashboard");
                     response.getWriter().write("{\"message\": \"OAuth2 login successful\"}");
                 })
                 .failureHandler((request, response, exception) -> {
