@@ -1,4 +1,7 @@
 <form (submit)="onSubmit($event)">
+  <label for="username">Username:</label>
+  <input id="username" (input)="onUsernameChange($event)" type="text" required>
+
   <label for="email">Email:</label>
   <input id="email" (input)="onEmailChange($event)" type="email" required>
 
@@ -10,6 +13,16 @@
 
   <button type="submit">Register</button>
 
-  <div *ngIf="successMessage">{{ successMessage }}</div>
-  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="successMessage">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="errorMessage">{{ errorMessage }}</div>
 </form>
+
+<div class="social-login">
+  <a href="/oauth2/authorization/google">
+    <img src="app/assets/icons/google-login.png" alt="Register with Google" class="google-login-img">
+  </a>
+</div>
+
+<div class="login-link">
+  <p>Already have an account? <a href="/login">Login</a></p>
+</div>
