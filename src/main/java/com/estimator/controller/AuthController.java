@@ -2,6 +2,7 @@ package com.estimator.controller;
 
 import com.estimator.dto.LoginRequest;
 import com.estimator.dto.RegisterRequest;
+import com.estimator.exception.CustomException;
 import com.estimator.facade.AuthFacade;
 import com.estimator.model.Role;
 import com.estimator.model.User;
@@ -18,6 +19,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
@@ -37,18 +39,26 @@ public class AuthController {
 
         if (authFacade.isEmailExists(request.getEmail())) {
             logger.warn("Registration failed: Email already exists for email: {}", request.getEmail());
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email already exists"));
+            Map<String, String> errorResponse = Collections.singletonMap("message", "Email already exists");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
 
-        authFacade.registerUser(request);
-        logger.info("Registration successful for user with email: {}", request.getEmail());
+        try {
+            authFacade.registerUser(request);
+            logger.info("Registration successful for user with email: {}", request.getEmail());
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Registration successful");
-        response.put("redirectTo", "/api/auth/login");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Registration successful");
+            response.put("redirectTo", "/api/auth/login");
 
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
+        } catch (CustomException.UserAlreadyExistsException e) {
+            logger.error("Registration failed: User already exists {}", e.getMessage());
+            Map<String, String> errorResponse = Collections.singletonMap("message", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@RequestBody @Valid LoginRequest request) {
