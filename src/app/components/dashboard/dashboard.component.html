@@ -3,14 +3,32 @@
   <div>
     <p>Your subscription: <span>{{ subscriptionName }}</span></p>
   </div>
+
   <div *ngIf="isAdmin">
     <h3>Admin Panel</h3>
     <ul>
       <li><a routerLink="/admin/users">Manage Users</a></li>
       <li><a routerLink="/admin/subscriptions">Manage Subscriptions</a></li>
+      <li><a routerLink="/admin/reports">View Reports</a></li>
     </ul>
   </div>
-  <div *ngIf="!isAdmin && isUser">
+
+  <div *ngIf="isModerator">
+    <h3>Moderator Panel</h3>
+    <ul>
+      <li><a routerLink="/moderator/users">Manage Users</a></li>
+      <li><a routerLink="/moderator/reports">View Reports</a></li>
+    </ul>
+  </div>
+
+  <div *ngIf="isEditor">
+    <h3>Editor Panel</h3>
+    <ul>
+      <li><a routerLink="/editor/posts">Manage Posts</a></li>
+    </ul>
+  </div>
+
+  <div *ngIf="isUser && !isAdmin && !isModerator && !isEditor">
     <h3>Your Dashboard</h3>
     <p>Content specific to your subscription will be displayed here.</p>
     <ul>
@@ -18,7 +36,13 @@
       <li><a routerLink="/subscriptions">Subscriptions</a></li>
     </ul>
   </div>
+
+  <div *ngIf="isViewer && !isAdmin && !isModerator && !isEditor">
+    <h3>Viewer Dashboard</h3>
+    <p>You have limited access to the dashboard.</p>
+  </div>
+
   <div>
-    <a routerLink="/logout">Logout</a>
+    <a (click)="logout()">Logout</a>
   </div>
 </div>
