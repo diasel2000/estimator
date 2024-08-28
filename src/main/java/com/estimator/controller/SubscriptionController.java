@@ -3,6 +3,7 @@ package com.estimator.controller;
 import com.estimator.model.Subscription;
 import com.estimator.services.SubscriptionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/subscriptions")
+@CrossOrigin(origins = "http://localhost:4200")
 public class SubscriptionController {
     private static final Logger logger = LoggerFactory.getLogger(SubscriptionController.class);
     private final SubscriptionService subscriptionService;
