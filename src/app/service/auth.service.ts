@@ -37,6 +37,7 @@ export class AuthService {
           }
         }
       }),
+      tap(() => this.router.navigate(['/dashboard'])),
       catchError(this.handleError<any>('loginUser'))
     );
   }

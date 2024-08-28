@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 
@@ -12,14 +12,21 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   getCurrentUser(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/profile`);
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    console.log('Sending request to get current user');
+    return this.http.get(`${this.apiUrl}/profile`, { headers });
   }
 
   updateSubscription(subscriptionName: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/update-subscription`, { subscriptionName });
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.apiUrl}/update-subscription`, { subscriptionName }, { headers });
   }
 
   deleteUser(email: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/email/${email}`);
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete(`${this.apiUrl}/email/${email}`, { headers });
   }
 }

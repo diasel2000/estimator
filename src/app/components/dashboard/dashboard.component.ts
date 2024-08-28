@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { User } from '../../model/User';
-import { UserRole } from '../../model/UserRole';
-import { Role } from '../../model/Role';
-import {UserService} from "../../service/user.service";
+import { UserService } from "../../service/user.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -19,7 +17,7 @@ export class DashboardComponent implements OnInit {
   isModerator: boolean = false;
   isEditor: boolean = false;
 
-  constructor(private authService: AuthService,private userService:UserService) {}
+  constructor(private authService: AuthService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe({
@@ -29,11 +27,15 @@ export class DashboardComponent implements OnInit {
 
         this.subscriptionName = user.subscription ? user.subscription.name : 'No Subscription';
 
-        this.isAdmin = user.roles.some(role => role.role.name === 'ROLE_ADMIN');
-        this.isUser = user.roles.some(role => role.role.name === 'ROLE_USER');
-        this.isViewer = user.roles.some(role => role.role.name === 'ROLE_VIEWER');
-        this.isModerator = user.roles.some(role => role.role.name === 'ROLE_MODERATOR');
-        this.isEditor = user.roles.some(role => role.role.name === 'ROLE_EDITOR');
+        if (user.userRoles && user.userRoles.length > 0) {
+          this.isAdmin = user.userRoles.some(role => role.role.name === 'ROLE_ADMIN');
+          this.isUser = user.userRoles.some(role => role.role.name === 'ROLE_USER');
+          this.isViewer = user.userRoles.some(role => role.role.name === 'ROLE_VIEWER');
+          this.isModerator = user.userRoles.some(role => role.role.name === 'ROLE_MODERATOR');
+          this.isEditor = user.userRoles.some(role => role.role.name === 'ROLE_EDITOR');
+        } else {
+          console.warn('User roles are not defined');
+        }
       },
       error: (err) => {
         console.error('Error fetching user data:', err);
