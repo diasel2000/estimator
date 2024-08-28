@@ -9,6 +9,6 @@ export class User {
     public googleId: string,
     public createdAt: Date,
     public subscription: Subscription,
-    public roles: UserRole[]
+    public userRoles: UserRole[]
   ) {}
 }

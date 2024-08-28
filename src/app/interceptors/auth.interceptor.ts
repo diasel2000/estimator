@@ -10,11 +10,13 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authService.getToken();
+    const csrfToken = this.authService.getCsrfToken();
 
     if (token) {
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
+          'X-CSRF-Token': csrfToken || ''
         }
       });
     }

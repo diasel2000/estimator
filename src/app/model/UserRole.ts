@@ -5,7 +5,7 @@ import { UserRoleKey } from './UserRoleKey';
 export class UserRole {
   constructor(
     public id: UserRoleKey,
-    public user: User,
+    public user: User | null,
     public role: Role
   ) {}
 }

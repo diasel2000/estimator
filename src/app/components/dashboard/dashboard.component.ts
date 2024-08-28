@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { User } from '../../model/User';
-import { UserRole } from '../../model/UserRole';
-import { Role } from '../../model/Role';
-import {UserService} from "../../service/user.service";
+import { UserService } from "../../service/user.service";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.sass']
+  styleUrls: ['./dashboard.component.sass'],
+  standalone:true,
+  imports: [CommonModule]
 })
 export class DashboardComponent implements OnInit {
   user: User | null = null;
@@ -19,7 +20,7 @@ export class DashboardComponent implements OnInit {
   isModerator: boolean = false;
   isEditor: boolean = false;
 
-  constructor(private authService: AuthService,private userService:UserService) {}
+  constructor(private authService: AuthService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe({
@@ -27,13 +28,17 @@ export class DashboardComponent implements OnInit {
         console.log('User data:', user);
         this.user = user;
 
-        this.subscriptionName = user.subscription ? user.subscription.name : 'No Subscription';
+        this.subscriptionName = user.subscription ? user.subscription.subscriptionName : 'No Subscription';
 
-        this.isAdmin = user.roles.some(role => role.role.name === 'ROLE_ADMIN');
-        this.isUser = user.roles.some(role => role.role.name === 'ROLE_USER');
-        this.isViewer = user.roles.some(role => role.role.name === 'ROLE_VIEWER');
-        this.isModerator = user.roles.some(role => role.role.name === 'ROLE_MODERATOR');
-        this.isEditor = user.roles.some(role => role.role.name === 'ROLE_EDITOR');
+        if (user.userRoles && user.userRoles.length > 0) {
+          this.isAdmin = user.userRoles.some(role => role.role.name === 'ROLE_ADMIN');
+          this.isUser = user.userRoles.some(role => role.role.name === 'ROLE_USER');
+          this.isViewer = user.userRoles.some(role => role.role.name === 'ROLE_VIEWER');
+          this.isModerator = user.userRoles.some(role => role.role.name === 'ROLE_MODERATOR');
+          this.isEditor = user.userRoles.some(role => role.role.name === 'ROLE_EDITOR');
+        } else {
+          console.warn('User roles are not defined');
+        }
       },
       error: (err) => {
         console.error('Error fetching user data:', err);
