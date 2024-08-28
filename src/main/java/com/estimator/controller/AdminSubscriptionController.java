@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/admin/subscriptions")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AdminSubscriptionController {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminSubscriptionController.class);
