@@ -1,7 +1,7 @@
 export class Subscription {
   constructor(
-    public id: number,
-    public name: string,
+    public subscriptionID: number,
+    public subscriptionName: string,
     public description: string,
     public price: number
   ) {}

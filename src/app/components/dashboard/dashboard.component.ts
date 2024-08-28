@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { User } from '../../model/User';
 import { UserService } from "../../service/user.service";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.sass']
+  styleUrls: ['./dashboard.component.sass'],
+  standalone:true,
+  imports: [CommonModule]
 })
 export class DashboardComponent implements OnInit {
   user: User | null = null;
@@ -25,7 +28,7 @@ export class DashboardComponent implements OnInit {
         console.log('User data:', user);
         this.user = user;
 
-        this.subscriptionName = user.subscription ? user.subscription.name : 'No Subscription';
+        this.subscriptionName = user.subscription ? user.subscription.subscriptionName : 'No Subscription';
 
         if (user.userRoles && user.userRoles.length > 0) {
           this.isAdmin = user.userRoles.some(role => role.role.name === 'ROLE_ADMIN');
