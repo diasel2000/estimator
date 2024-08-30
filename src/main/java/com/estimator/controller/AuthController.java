@@ -4,7 +4,6 @@ import com.estimator.dto.LoginRequest;
 import com.estimator.dto.RegisterRequest;
 import com.estimator.exception.CustomException;
 import com.estimator.facade.AuthFacade;
-import com.estimator.model.Role;
 import com.estimator.model.User;
 import com.estimator.services.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +18,26 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "${cors.allowed.origins}")
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
+    private static final String REGISTRATION_FAILED_EMAIL_ALREADY_EXISTS_FOR_EMAIL = "Registration failed: Email already exists for email: {}";
+    private static final String REGISTRATION_SUCCESSFUL_FOR_USER_WITH_EMAIL = "Registration successful for user with email: {}";
+    private static final String ATTEMPTING_TO_AUTHENTICATE_USER_WITH_EMAIL = "Attempting to authenticate user with email: {}";
+    private static final String REGISTRATION_FAILED_USER_ALREADY_EXISTS = "Registration failed: User already exists {}";
+    private static final String ATTEMPTING_TO_REGISTER_USER_WITH_EMAIL = "Attempting to register user with email: {}";
+    private static final String AUTHENTICATION_SUCCESSFUL_FOR_EMAIL = "Authentication successful for email: {}";
+    private static final String AUTHENTICATION_FAILED_FOR_EMAIL = "Authentication failed for email: {}";
+    private static final String REGISTRATION_SUCCESSFUL = "Registration successful";
+    private static final String EMAIL_ALREADY_EXISTS = "Email already exists";
+    private static final String INVALID_CREDENTIALS = "Invalid credentials";
+    private static final String API_USERS_PROFILE = "/api/users/profile";
+    private static final String API_AUTH_LOGIN = "/api/auth/login";
+    private static final String REDIRECT_TO = "redirectTo";
+    private static final String MESSAGE = "message";
+    private static final String TOKEN = "token";
 
     private final AuthFacade authFacade;
     private final JwtTokenProvider jwtTokenProvider;
@@ -35,51 +50,62 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerUser(@RequestBody @Valid RegisterRequest request) {
-        logger.info("Attempting to register user with email: {}", request.getEmail());
+        logger.info(ATTEMPTING_TO_REGISTER_USER_WITH_EMAIL, request.getEmail());
 
-        if (authFacade.isEmailExists(request.getEmail())) {
-            logger.warn("Registration failed: Email already exists for email: {}", request.getEmail());
-            Map<String, String> errorResponse = Collections.singletonMap("message", "Email already exists");
-            return ResponseEntity.badRequest().body(errorResponse);
+        if (isEmailAlreadyExists(request.getEmail())) {
+            return createErrorResponse(EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
         }
 
         try {
             authFacade.registerUser(request);
-            logger.info("Registration successful for user with email: {}", request.getEmail());
-
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Registration successful");
-            response.put("redirectTo", "/api/auth/login");
-
-            return ResponseEntity.ok(response);
+            logger.info(REGISTRATION_SUCCESSFUL_FOR_USER_WITH_EMAIL, request.getEmail());
+            return createSuccessResponse();
         } catch (CustomException.UserAlreadyExistsException e) {
-            logger.error("Registration failed: User already exists {}", e.getMessage());
-            Map<String, String> errorResponse = Collections.singletonMap("message", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            logger.error(REGISTRATION_FAILED_USER_ALREADY_EXISTS, e.getMessage());
+            return createErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@RequestBody @Valid LoginRequest request) {
-        logger.info("Attempting to authenticate user with email: {}", request.getEmail());
+        logger.info(ATTEMPTING_TO_AUTHENTICATE_USER_WITH_EMAIL, request.getEmail());
 
         User user = authFacade.authenticateUser(request.getEmail(), request.getPassword());
 
         if (user == null) {
-            logger.warn("Authentication failed for email: {}", request.getEmail());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Collections.singletonMap("message", "Invalid credentials"));
+            logger.warn(AUTHENTICATION_FAILED_FOR_EMAIL, request.getEmail());
+            return createErrorResponse(INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
         }
 
-        List<Role> roles = new ArrayList<>(user.getRoles());
-        String token = jwtTokenProvider.createToken(user.getEmail(), roles);
+        String token = jwtTokenProvider.createToken(user.getEmail(), new ArrayList<>(user.getRoles()));
+        logger.info(AUTHENTICATION_SUCCESSFUL_FOR_EMAIL, request.getEmail());
 
+        return createSuccessResponseWithToken(token);
+    }
+
+    private boolean isEmailAlreadyExists(String email) {
+        boolean exists = authFacade.isEmailExists(email);
+        if (exists) {
+            logger.warn(REGISTRATION_FAILED_EMAIL_ALREADY_EXISTS_FOR_EMAIL, email);
+        }
+        return exists;
+    }
+
+    private ResponseEntity<Map<String, String>> createErrorResponse(String message, HttpStatus status) {
+        return ResponseEntity.status(status).body(Collections.singletonMap(MESSAGE, message));
+    }
+
+    private ResponseEntity<Map<String, String>> createSuccessResponse() {
         Map<String, String> response = new HashMap<>();
-        response.put("token", token);
-        response.put("redirectTo", "/api/users/profile");
-        logger.info("Authentication successful for email: {}", request.getEmail());
+        response.put(MESSAGE, AuthController.REGISTRATION_SUCCESSFUL);
+        response.put(REDIRECT_TO, API_AUTH_LOGIN);
+        return ResponseEntity.ok(response);
+    }
 
+    private ResponseEntity<Map<String, String>> createSuccessResponseWithToken(String token) {
+        Map<String, String> response = new HashMap<>();
+        response.put(TOKEN, token);
+        response.put(REDIRECT_TO, API_USERS_PROFILE);
         return ResponseEntity.ok(response);
     }
 }

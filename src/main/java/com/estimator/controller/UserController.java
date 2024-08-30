@@ -16,10 +16,22 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "${cors.allowed.origins}")
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    private static final String ERROR_UPDATING_SUBSCRIPTION_FOR_USER_WITH_EMAIL = "Error updating subscription for user with email: {}";
+    private static final String UPDATING_SUBSCRIPTION_FOR_USER_WITH_EMAIL = "Updating subscription for user with email: {}";
+    private static final String YOU_CAN_ONLY_DELETE_YOUR_OWN_ACCOUNT = "You can only delete your own account.";
+    private static final String ERROR_DELETING_USER_WITH_EMAIL = "Error deleting user with email: {}";
+    private static final String DELETING_USER_WITH_EMAIL = "Deleting user with email: {}";
+    private static final String SUBSCRIPTION_UPDATE_FAILED = "Subscription update failed";
+    private static final String USER_DELETION_FAILED = "User deletion failed";
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER_ = "Bearer ";
+    private static final String ERROR = "error";
+
     private final UserFacade userFacade;
     private final AuthFacade authFacade;
     private final JwtTokenProvider jwtTokenProvider;
@@ -32,58 +44,82 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<UserDTO> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            if (jwtTokenProvider.validateToken(token)) {
-                String email = jwtTokenProvider.getUsername(token);
-                User user = authFacade.getUserByEmail(email);
-                UserDTO userDTO = userFacade.userToUserDTO(user);
-                if (userDTO != null) {
-                    return ResponseEntity.ok(userDTO);
-                } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-                }
-            }
+    public ResponseEntity<UserDTO> getCurrentUser(@RequestHeader(AUTHORIZATION) String authHeader) {
+        if (!isValidAuthHeader(authHeader)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        String token = extractToken(authHeader);
+        if (!jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = jwtTokenProvider.getUsername(token);
+        UserDTO userDTO = fetchUserDTOByEmail(email);
+
+        return userDTO != null
+                ? ResponseEntity.ok(userDTO)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping("/update-subscription")
     public ResponseEntity<?> updateSubscription(@RequestParam String subscriptionName, Principal principal) {
-        logger.debug("Updating subscription for user with email: {}", principal.getName());
+        logger.debug(UPDATING_SUBSCRIPTION_FOR_USER_WITH_EMAIL, principal.getName());
+
         try {
-            User authenticatedUser = authFacade.getUserByUsername(principal.getName());
-            //TODO add payment check
-            User user = userFacade.updateSubscription(authenticatedUser.getEmail(), subscriptionName);
-            UserDTO userDTO = userFacade.userToUserDTO(user);
-            return ResponseEntity.ok(userDTO);
+            UserDTO updatedUserDTO = updateSubscriptionForUser(principal.getName(), subscriptionName);
+            return ResponseEntity.ok(updatedUserDTO);
         } catch (Exception e) {
-            logger.error("Error updating subscription for user with email: {}", principal.getName(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error", "Subscription update failed: " + e.getMessage()));
+            logger.error(ERROR_UPDATING_SUBSCRIPTION_FOR_USER_WITH_EMAIL, principal.getName(), e);
+            return createErrorResponse(SUBSCRIPTION_UPDATE_FAILED, e);
         }
     }
 
     @DeleteMapping("/email/{email}")
     public ResponseEntity<?> deleteUser(@PathVariable String email, Principal principal) {
-        logger.debug("Deleting user with email: {}", email);
+        logger.debug(DELETING_USER_WITH_EMAIL, email);
 
-        User authenticatedUser = authFacade.getUserByUsername(principal.getName());
-
-        if (authenticatedUser == null || !authenticatedUser.getEmail().equals(email)) {
-            logger.warn("User with username {} tried to delete another user's account", principal.getName());
+        if (!isAuthorizedToDelete(email, principal)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Collections.singletonMap("error", "You can only delete your own account."));
+                    .body(Collections.singletonMap(ERROR, YOU_CAN_ONLY_DELETE_YOUR_OWN_ACCOUNT));
         }
 
         try {
             userFacade.deleteUser(email);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            logger.error("Error deleting user with email: {}", email, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error", "User deletion failed: " + e.getMessage()));
+            logger.error(ERROR_DELETING_USER_WITH_EMAIL, email, e);
+            return createErrorResponse(USER_DELETION_FAILED, e);
         }
+    }
+
+    private boolean isValidAuthHeader(String authHeader) {
+        return authHeader != null && authHeader.startsWith(BEARER_);
+    }
+
+    private String extractToken(String authHeader) {
+        return authHeader.substring(7);
+    }
+
+    private UserDTO fetchUserDTOByEmail(String email) {
+        User user = authFacade.getUserByEmail(email);
+        return userFacade.userToUserDTO(user);
+    }
+
+    private UserDTO updateSubscriptionForUser(String username, String subscriptionName) throws Exception {
+        User authenticatedUser = authFacade.getUserByUsername(username);
+        // TODO: Add payment check logic here.
+        User user = userFacade.updateSubscription(authenticatedUser.getEmail(), subscriptionName);
+        return userFacade.userToUserDTO(user);
+    }
+
+    private boolean isAuthorizedToDelete(String email, Principal principal) {
+        User authenticatedUser = authFacade.getUserByUsername(principal.getName());
+        return authenticatedUser != null && authenticatedUser.getEmail().equals(email);
+    }
+
+    private ResponseEntity<?> createErrorResponse(String message, Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap(ERROR, message + ": " + e.getMessage()));
     }
 }

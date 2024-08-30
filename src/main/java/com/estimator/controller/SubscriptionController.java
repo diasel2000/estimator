@@ -15,9 +15,13 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/subscriptions")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "${cors.allowed.origins}")
 public class SubscriptionController {
     private static final Logger logger = LoggerFactory.getLogger(SubscriptionController.class);
+
+    public static final String FETCHING_ALL_SUBSCRIPTIONS = "Fetching all subscriptions";
+    public static final String RETRIEVED_SUBSCRIPTIONS = "Retrieved {} subscriptions";
+
     private final SubscriptionService subscriptionService;
 
     public SubscriptionController(SubscriptionService subscriptionService) {
@@ -26,9 +30,9 @@ public class SubscriptionController {
 
     @GetMapping
     public ResponseEntity<List<Subscription>> getAllSubscriptions() {
-        logger.debug("Fetching all subscriptions");
+        logger.debug(FETCHING_ALL_SUBSCRIPTIONS);
         List<Subscription> subscriptions = subscriptionService.getAllSubscriptions();
-        logger.info("Retrieved {} subscriptions", subscriptions.size());
+        logger.info(RETRIEVED_SUBSCRIPTIONS, subscriptions.size());
         return ResponseEntity.ok(subscriptions);
     }
 }
