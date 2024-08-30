@@ -4,7 +4,7 @@ html, body
   margin: 0
   padding: 0
   color: #333
-  overflow-x: hidden // Prevent horizontal scroll
+  overflow-x: hidden
 
 // Header styles
 header
@@ -83,15 +83,18 @@ header
     display: flex
     justify-content: space-around
     flex-wrap: wrap
+    gap: 2rem
 
     .advantage-item
-      width: 30%
+      flex: 1 1 30%
       text-align: center
       margin-bottom: 2rem
+      box-sizing: border-box
 
       img
-        width: 50px
-        margin-bottom: 1rem
+        width: 100%  // Adjust width to fit container
+        max-width: 400px  // Limit maximum width
+        height: auto  // Maintain aspect ratio
 
       h3
         font-size: 1.5rem
