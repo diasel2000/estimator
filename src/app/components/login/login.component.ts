@@ -38,7 +38,6 @@ export class LoginComponent implements OnInit {
 
   onSubmit(event: Event) {
     event.preventDefault();
-    console.log('Form submitted');
     if (this.email && this.password) {
       this.authService.loginUser({ email: this.email, password: this.password }).subscribe({
         next: () => this.router.navigate(['/dashboard']),
@@ -54,7 +53,16 @@ export class LoginComponent implements OnInit {
       const urlParams = new URLSearchParams(window.location.search);
       const token = urlParams.get('token');
       if (token) {
-        this.authService.handleGoogleAuthResponse({ token });
+        this.authService.handleGoogleAuthResponse(token).subscribe({
+          next: () => this.router.navigate(['/dashboard']),
+          error: err => {
+            console.error('Google auth failed', err);
+            this.router.navigate(['/login']);
+          }
+        });
+      } else {
+        // Handle case when token is missing
+        this.router.navigate(['/login']);
       }
     }
   }

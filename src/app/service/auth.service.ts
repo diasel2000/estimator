@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../environments/environment';
-import { User } from '../model/User';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -43,16 +42,20 @@ export class AuthService {
     );
   }
 
-  handleGoogleAuthResponse(response: any): void {
-    if (isPlatformBrowser(this.platformId) && response.token) {
-      localStorage.setItem('token', response.token);
-      if (response.csrfToken) {
-        localStorage.setItem('csrfToken', response.csrfToken);
-      }
-      this.router.navigate(['/dashboard']);
+  handleGoogleAuthResponse(token: string): Observable<any> {
+    if (isPlatformBrowser(this.platformId)) {
+      return this.http.post(this.apiUrl, { token }).pipe(
+        tap(response => {
+          // Handle successful authentication (e.g., store token, user info)
+          localStorage.setItem('token', token);
+        }),
+        catchError(err => {
+          console.error('Authentication error', err);
+          return throwError(() => new Error('Authentication failed'));
+        })
+      );
     } else {
-      console.error('No token received from Google');
-      this.router.navigate(['/login']);
+      return throwError(() => new Error('Not in browser environment'));
     }
   }
 
