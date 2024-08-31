@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { User } from '../../model/User';
 import { UserService } from "../../service/user.service";
-import {CommonModule} from "@angular/common";
+import { CommonModule } from "@angular/common";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,14 +21,13 @@ export class DashboardComponent implements OnInit {
   isModerator: boolean = false;
   isEditor: boolean = false;
 
-  constructor(private authService: AuthService, private userService: UserService) {}
+  constructor(private authService: AuthService, private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe({
       next: (user: User) => {
         console.log('User data:', user);
         this.user = user;
-
         this.subscriptionName = user.subscription ? user.subscription.subscriptionName : 'No Subscription';
 
         if (user.userRoles && user.userRoles.length > 0) {
@@ -42,6 +42,7 @@ export class DashboardComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching user data:', err);
+        this.router.navigate(['/login']);
       }
     });
   }
