@@ -47,12 +47,11 @@ export class AuthService {
     if (isPlatformBrowser(this.platformId)) {
       return this.http.post<any>(`${this.OauthApiUrl}`, { token }).pipe(
         tap(response => {
-          console.log(token);
-          // Handle successful authentication (e.g., store token, user info)
-          localStorage.setItem('token', token);
+          localStorage.setItem('token', response.token);
+          this.router.navigate(['/dashboard']);
         }),
         catchError(err => {
-          console.error('Authentication error', err);
+          this.router.navigate(['/login']);
           return throwError(() => new Error('Authentication failed'));
         })
       );
