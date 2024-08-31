@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, HostListener, Renderer2} from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet } from '@angular/router';
@@ -14,7 +14,7 @@ import { filter } from 'rxjs';
 export class AppComponent {
   currentUrl: string = '';
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private el: ElementRef, private renderer: Renderer2) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
@@ -42,5 +42,18 @@ export class AppComponent {
   shouldDisplayHomePage(): boolean {
     // Display home page content if the current route is home or contains a fragment
     return this.isHomePage() && (this.currentUrl === '/' || this.currentUrl.includes('#'));
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const aboutSection = this.el.nativeElement.querySelector('#about');
+    const rect = aboutSection.getBoundingClientRect();
+    const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+
+    if (rect.top <= viewHeight - 100) {
+      this.renderer.addClass(aboutSection, 'in-view');
+    } else {
+      this.renderer.removeClass(aboutSection, 'in-view');
+    }
   }
 }

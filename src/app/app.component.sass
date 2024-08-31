@@ -77,6 +77,78 @@ header
     list-style: none
     padding: 0
 
+#about
+  padding: 8rem 2rem
+  text-align: center
+  background: linear-gradient(135deg, #e6e0d4, #b0c4de)
+  color: #4b3f2f
+  border-radius: 10px
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1)
+  margin: 2rem auto
+  max-width: 1200px
+
+  h2
+    font-size: 2.5rem
+    margin-bottom: 4rem
+    color: #6c757d
+    position: relative
+
+    &:before
+      content: ''
+      position: absolute
+      width: 50px
+      height: 4px
+      background: #6c757d
+      bottom: -10px
+      left: 50%
+      transform: translateX(-50%)
+
+  p
+    font-size: 1.2rem
+    line-height: 1.6
+    margin-bottom: 2rem
+    animation: fadeIn 1s ease-in-out
+    color: #3b2c20
+
+    &:first-of-type
+      font-weight: 600
+      color: #5f4631
+
+  h3
+    font-size: 2rem
+    margin-bottom: 1.5rem
+    color: #4b3f2f
+
+  ul
+    list-style: none
+    padding: 0
+
+    li
+      font-size: 1.2rem
+      line-height: 1.6
+      margin-bottom: 1rem
+      padding-left: 1.5rem
+      position: relative
+
+      &:before
+        content: '✔'
+        color: #6c757d
+        position: absolute
+        left: 0
+        font-size: 1.5rem
+
+      &:hover
+        color: #6c757d
+        transition: color 0.3s ease
+
+@keyframes fadeIn
+  0%
+    opacity: 0
+    transform: translateY(10px)
+  100%
+    opacity: 1
+    transform: translateY(0)
+
 // Advantages section styles
 #advantages
   .advantages-list
@@ -92,9 +164,9 @@ header
       box-sizing: border-box
 
       img
-        width: 100%  // Adjust width to fit container
-        max-width: 400px  // Limit maximum width
-        height: auto  // Maintain aspect ratio
+        width: 100%
+        max-width: 400px
+        height: auto
 
       h3
         font-size: 1.5rem
@@ -140,21 +212,43 @@ header
 
 // Footer styles
 footer
-  background: #f8f9fa
+  background: #2d3a4a // Тёмно-синий
+  color: #f8f9fa // Светло-серый
   padding: 2rem
   text-align: center
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1)
+
+  .footer-content
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
 
   .social-media
     margin-bottom: 1rem
 
     a
       margin: 0 0.5rem
+      display: inline-block
+      transition: transform 0.3s ease
+      &:hover
+        transform: scale(1.1)
 
-      img
-        width: 30px
+    img
+      width: 30px
+      height: auto
+
 
   .contact-info
     font-size: 1rem
+
+    .email-link
+      color: #f8f9fa
+      text-decoration: none
+      font-weight: bold
+      transition: color 0.3s ease
+      &:hover
+        color: #ffcc00
 
 // Mobile styles using media queries
 @media (max-width: 768px)

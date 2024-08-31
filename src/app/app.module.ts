@@ -10,6 +10,7 @@ import {AppRoutingModule} from "./app.routes";
 import {AuthGuardService} from "./service/auth-guard.service";
 import {AuthService} from "./service/auth.service";
 import {AppComponent} from "./app.component";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import {AppComponent} from "./app.component";
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     CommonModule,
     HttpClientModule,
     AppRoutingModule
