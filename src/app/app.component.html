@@ -26,11 +26,11 @@
 
     <h3>Key Features</h3>
     <ul>
-      <li>Project cost estimation based on user-provided parameters</li>
-      <li>Consideration of risks and their impact on costs</li>
-      <li>Flexible settings for different project types</li>
-      <li>Intuitive and user-friendly interface</li>
-      <li>Ability to save and export estimates</li>
+      <li>Comprehensive project cost estimation based on user-provided parameters, ensuring accurate budgeting and planning.</li>
+      <li>In-depth consideration of risks and their impact on costs, enabling proactive management and mitigation strategies.</li>
+      <li>Flexible settings for various project types, allowing customization to meet the specific needs of diverse industries and project scopes.</li>
+      <li>Intuitive and user-friendly interface designed to streamline the estimation process, reducing time spent on training and increasing productivity.</li>
+      <li>Ability to save and export estimates in multiple formats (e.g., PDF, Excel), facilitating easy sharing and integration with other tools and stakeholders.</li>
     </ul>
   </section>
 
@@ -70,17 +70,26 @@
   <section id="get-started" *ngIf="shouldDisplayHomePage()">
     <a (click)="navigateToLogin()" class="get-started-button">Get Started</a>
   </section>
-
   <!-- Footer with Contact Information -->
   <footer *ngIf="shouldDisplayHomePage()">
     <div class="social-media">
-      <a href="https://instagram.com" target="_blank"><img src="assets/icons/instagram.png" alt="Instagram"></a>
-      <a href="https://tiktok.com" target="_blank"><img src="assets/icons/tiktok.png" alt="TikTok"></a>
-      <a href="https://facebook.com" target="_blank"><img src="assets/icons/facebook.png" alt="Facebook"></a>
-      <a href="https://youtube.com" target="_blank"><img src="assets/icons/youtube.png" alt="YouTube"></a>
+      <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+        <img src="assets/icons/instagram.png" alt="Instagram">
+      </a>
+      <a href="https://tiktok.com" target="_blank" aria-label="TikTok">
+        <img src="assets/icons/tiktok.png" alt="TikTok">
+      </a>
+      <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+        <img src="assets/icons/facebook.png" alt="Facebook">
+      </a>
+      <a href="https://youtube.com" target="_blank" aria-label="YouTube">
+        <img src="assets/icons/youtube.png" alt="YouTube">
+      </a>
     </div>
     <div class="contact-info">
-      <p>Email: estimator&#64;gmail.com</p>
+      <p>
+        <a [href]="emailLink" class="email-link">Email us: estimateyouritapp&#64;gmail.com</a>
+      </p>
     </div>
   </footer>
   <router-outlet></router-outlet>

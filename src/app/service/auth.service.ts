@@ -4,15 +4,14 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../environments/environment';
-import { User } from '../model/User';
 import { isPlatformBrowser } from '@angular/common';
-import {UserService} from "./user.service";
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
+  private OauthApiUrl = `http://localhost:8081/oauth2/authorization/google`;
 
   constructor(
     private http: HttpClient,
@@ -37,9 +36,28 @@ export class AuthService {
           }
         }
       }),
-      tap(() => this.router.navigate(['/dashboard'])),
+      tap(() => {
+        this.router.navigate(['/dashboard']);
+      }),
       catchError(this.handleError<any>('loginUser'))
     );
+  }
+
+  handleGoogleAuthResponse(token: string): Observable<any> {
+    if (isPlatformBrowser(this.platformId)) {
+      return this.http.post<any>(`${this.OauthApiUrl}`, { token }).pipe(
+        tap(response => {
+          localStorage.setItem('token', response.token);
+          this.router.navigate(['/dashboard']);
+        }),
+        catchError(err => {
+          this.router.navigate(['/login']);
+          return throwError(() => new Error('Authentication failed'));
+        })
+      );
+    } else {
+      return throwError(() => new Error('Not in browser environment'));
+    }
   }
 
   logoutUser(): void {

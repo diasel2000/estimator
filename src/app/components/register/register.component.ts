@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.sass']
+  styleUrls: ['./register.component.sass'],
+  standalone:true,
+  imports: [CommonModule]
 })
 export class RegisterComponent {
   username: string = '';
