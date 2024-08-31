@@ -11,6 +11,7 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
+  private OauthApiUrl = `http://localhost:8081/oauth2/authorization/google`;
 
   constructor(
     private http: HttpClient,
@@ -44,8 +45,9 @@ export class AuthService {
 
   handleGoogleAuthResponse(token: string): Observable<any> {
     if (isPlatformBrowser(this.platformId)) {
-      return this.http.post(this.apiUrl, { token }).pipe(
+      return this.http.post<any>(`${this.OauthApiUrl}`, { token }).pipe(
         tap(response => {
+          console.log(token);
           // Handle successful authentication (e.g., store token, user info)
           localStorage.setItem('token', token);
         }),
