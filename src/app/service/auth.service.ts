@@ -11,7 +11,7 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
-  private OauthApiUrl = `http://localhost:8081/oauth2/authorization/google`;
+  private oauthApiUrl = `http://localhost:8081/oauth2/authorization/google`;
 
   constructor(
     private http: HttpClient,
@@ -43,14 +43,23 @@ export class AuthService {
     );
   }
 
-  handleGoogleAuthResponse(token: string): Observable<any> {
+  handleGoogleAuthResponse(idToken: string): Observable<any> {
     if (isPlatformBrowser(this.platformId)) {
-      return this.http.post<any>(`${this.OauthApiUrl}`, { token }).pipe(
+      console.log('Received Google ID Token:', idToken);
+
+      return this.http.post<any>(`${this.oauthApiUrl}`, { idToken }).pipe(
         tap(response => {
-          localStorage.setItem('token', response.token);
-          this.router.navigate(['/dashboard']);
+          console.log('Server response:', response);
+          if (response.token) {
+            console.log('Saving token to localStorage:', response.token);
+            localStorage.setItem('token', response.token);
+            this.router.navigate(['/dashboard']);
+          } else {
+            console.warn('No token received from server');
+          }
         }),
         catchError(err => {
+          console.error('Google auth failed', err);
           this.router.navigate(['/login']);
           return throwError(() => new Error('Authentication failed'));
         })
