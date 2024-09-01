@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
+      console.log('ngOnInit called');
       this.handleGoogleAuthResponse();
     }
   }
@@ -51,9 +52,9 @@ export class LoginComponent implements OnInit {
   private handleGoogleAuthResponse() {
     if (isPlatformBrowser(this.platformId)) {
       const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('token');
-      if (token) {
-        this.authService.handleGoogleAuthResponse(token).subscribe({
+      const idToken = urlParams.get('id_token');
+      if (idToken) {
+        this.authService.handleGoogleAuthResponse(idToken).subscribe({
           next: () => this.router.navigate(['/dashboard']),
           error: err => {
             console.error('Google auth failed', err);
@@ -61,7 +62,7 @@ export class LoginComponent implements OnInit {
           }
         });
       } else {
-        // Handle case when token is missing
+        console.warn('ID Token is missing from URL');
         this.router.navigate(['/login']);
       }
     }
