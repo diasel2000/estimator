@@ -19,11 +19,21 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -75,11 +85,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login()
-                .loginPage("/basic_login")
+                .loginPage("/login")
                 .successHandler((request, response, authentication) -> {
+                    String redirectUri = "http://localhost:4200/login";
+                    OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
+
+                    DefaultOidcUser principal = (DefaultOidcUser) oauthToken.getPrincipal();
+                    OidcIdToken idTokenObj = principal.getIdToken();
+                    String idToken = idTokenObj.getTokenValue();
+
+                    String redirectUrlWithToken = UriComponentsBuilder.fromUriString(redirectUri)
+                            .queryParam("id_token", idToken)
+                            .build().toUriString();
+
                     response.setStatus(HttpStatus.OK.value());
-                    response.sendRedirect("http://localhost:4200/dashboard");
-                    response.getWriter().write("{\"message\": \"OAuth2 login successful\"}");
+                    response.sendRedirect(redirectUrlWithToken);
                 })
                 .failureHandler((request, response, exception) -> {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -92,5 +112,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 }
