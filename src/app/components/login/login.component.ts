@@ -52,17 +52,11 @@ export class LoginComponent implements OnInit {
   private handleGoogleAuthResponse() {
     if (isPlatformBrowser(this.platformId)) {
       const urlParams = new URLSearchParams(window.location.search);
-      const idToken = urlParams.get('id_token');
-      if (idToken) {
-        this.authService.handleGoogleAuthResponse(idToken).subscribe({
-          next: () => this.router.navigate(['/dashboard']),
-          error: err => {
-            console.error('Google auth failed', err);
-            this.router.navigate(['/login']);
-          }
-        });
+      const token = urlParams.get('token');
+      if (token) {
+        localStorage.setItem('token', token);
+        this.router.navigate(['/dashboard']);
       } else {
-        console.warn('ID Token is missing from URL');
         this.router.navigate(['/login']);
       }
     }
