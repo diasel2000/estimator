@@ -1,6 +1,8 @@
 package com.estimator.config;
 
 import com.estimator.filter.JwtAuthenticationFilter;
+import com.estimator.model.Role;
+import com.estimator.model.User;
 import com.estimator.repository.RoleRepository;
 import com.estimator.repository.SubscriptionRepository;
 import com.estimator.repository.UserRepository;
@@ -22,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -32,8 +33,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 
 @Configuration
 @EnableWebSecurity
@@ -67,11 +67,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .cors().and()
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/auth/login", "/api/auth/register", "/oauth2/**").permitAll()
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
@@ -87,18 +101,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .oauth2Login()
                 .loginPage("/login")
                 .successHandler((request, response, authentication) -> {
-                    String redirectUri = "http://localhost:4200/login";
                     OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
-
                     DefaultOidcUser principal = (DefaultOidcUser) oauthToken.getPrincipal();
-                    OidcIdToken idTokenObj = principal.getIdToken();
-                    String idToken = idTokenObj.getTokenValue();
+                    String googleId = principal.getAttribute("sub");
+
+                    User user = userRepository.findByGoogleID(googleId);
+                    List<Role> roleList = userRepository.findRolesByUserID(user.getUserID());
+                    String token = jwtTokenProvider.createToken(user.getEmail(), new ArrayList<>(roleList));
+
+                    String redirectUri = "http://localhost:4200/login";
 
                     String redirectUrlWithToken = UriComponentsBuilder.fromUriString(redirectUri)
-                            .queryParam("id_token", idToken)
+                            .queryParam("token", token)
                             .build().toUriString();
-
-                    response.setStatus(HttpStatus.OK.value());
                     response.sendRedirect(redirectUrlWithToken);
                 })
                 .failureHandler((request, response, exception) -> {
@@ -112,19 +127,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-
-        return source;
     }
 }
