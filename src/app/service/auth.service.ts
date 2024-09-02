@@ -43,32 +43,6 @@ export class AuthService {
     );
   }
 
-  handleGoogleAuthResponse(idToken: string): Observable<any> {
-    if (isPlatformBrowser(this.platformId)) {
-      console.log('Received Google ID Token:', idToken);
-
-      return this.http.post<any>(`${this.oauthApiUrl}`, { idToken }).pipe(
-        tap(response => {
-          console.log('Server response:', response);
-          if (response.token) {
-            console.log('Saving token to localStorage:', response.token);
-            localStorage.setItem('token', response.token);
-            this.router.navigate(['/dashboard']);
-          } else {
-            console.warn('No token received from server');
-          }
-        }),
-        catchError(err => {
-          console.error('Google auth failed', err);
-          this.router.navigate(['/login']);
-          return throwError(() => new Error('Authentication failed'));
-        })
-      );
-    } else {
-      return throwError(() => new Error('Not in browser environment'));
-    }
-  }
-
   logoutUser(): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('token');
