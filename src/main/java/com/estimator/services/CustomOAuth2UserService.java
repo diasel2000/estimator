@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,18 +26,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
 
     private static final Logger logger = LoggerFactory.getLogger(CustomOAuth2UserService.class);
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final SubscriptionRepository subscriptionRepository;
-    private final UserRoleRepository userRoleRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
-    public CustomOAuth2UserService(UserRepository userRepository, RoleRepository roleRepository, SubscriptionRepository subscriptionRepository, UserRoleRepository userRoleRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.subscriptionRepository = subscriptionRepository;
-        this.userRoleRepository = userRoleRepository;
-    }
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
 
     @Override
     @Transactional
