@@ -1,12 +1,11 @@
 package com.estimator.config;
 
 import com.estimator.filter.JwtAuthenticationFilter;
-import com.estimator.model.Role;
-import com.estimator.model.User;
 import com.estimator.repository.RoleRepository;
 import com.estimator.repository.SubscriptionRepository;
 import com.estimator.repository.UserRepository;
 import com.estimator.repository.UserRoleRepository;
+import com.estimator.services.CustomAuthenticationSuccessHandler;
 import com.estimator.services.CustomOAuth2UserService;
 import com.estimator.services.JwtTokenProvider;
 import com.estimator.services.UserDetailsServiceImpl;
@@ -14,58 +13,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+public class SecurityConfig {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private SubscriptionRepository subscriptionRepository;
-
-    @Autowired
-    private UserRoleRepository userRoleRepository;
-
-    @Bean
-    public OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService() {
-        return new CustomOAuth2UserService(userRepository, roleRepository, subscriptionRepository, userRoleRepository);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -81,51 +52,50 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return source;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors().and()
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/api/auth/login", "/api/auth/register", "/oauth2/**").permitAll()
-                .antMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .oauth2Login()
-                .loginPage("/login")
-                .successHandler((request, response, authentication) -> {
-                    OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
-                    DefaultOidcUser principal = (DefaultOidcUser) oauthToken.getPrincipal();
-                    String googleId = principal.getAttribute("sub");
-
-                    User user = userRepository.findByGoogleID(googleId);
-                    List<Role> roleList = userRepository.findRolesByUserID(user.getUserID());
-                    String token = jwtTokenProvider.createToken(user.getEmail(), new ArrayList<>(roleList));
-
-                    String redirectUri = "http://localhost:4200/login";
-
-                    String redirectUrlWithToken = UriComponentsBuilder.fromUriString(redirectUri)
-                            .queryParam("token", token)
-                            .build().toUriString();
-                    response.sendRedirect(redirectUrlWithToken);
-                })
-                .failureHandler((request, response, exception) -> {
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    response.getWriter().write("{\"message\": \"OAuth2 login failed\"}");
-                })
-                .userInfoEndpoint()
-                .userService(customOAuth2UserService());
+    @Bean
+    public CustomOAuth2UserService customOAuth2UserService() {
+        return new CustomOAuth2UserService();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new CustomAuthenticationSuccessHandler();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors().configurationSource(corsConfigurationSource()).and()
+                .csrf().disable()
+                .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers("/api/auth/login", "/api/auth/register", "/oauth2/**").permitAll()
+                        .antMatchers("/api/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                )
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
+                                .userService(customOAuth2UserService())
+                        )
+                        .loginPage("/basic_login")
+                        .successHandler(successHandler())
+                        .failureHandler((request, response, exception) -> {
+                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                            response.getWriter().write("{\"message\": \"OAuth2 login failed\"}");
+                        })
+                ).addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 }
