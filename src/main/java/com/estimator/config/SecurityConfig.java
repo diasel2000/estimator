@@ -1,14 +1,8 @@
 package com.estimator.config;
 
 import com.estimator.filter.JwtAuthenticationFilter;
-import com.estimator.repository.RoleRepository;
-import com.estimator.repository.SubscriptionRepository;
-import com.estimator.repository.UserRepository;
-import com.estimator.repository.UserRoleRepository;
 import com.estimator.services.CustomAuthenticationSuccessHandler;
-import com.estimator.services.CustomOAuth2UserService;
 import com.estimator.services.JwtTokenProvider;
-import com.estimator.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,9 +27,6 @@ import java.util.*;
 public class SecurityConfig {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     @Bean
@@ -53,16 +44,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CustomOAuth2UserService customOAuth2UserService() {
-        return new CustomOAuth2UserService();
-    }
-
-    @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        return new CustomAuthenticationSuccessHandler();
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -73,7 +54,10 @@ public class SecurityConfig {
                 .cors().configurationSource(corsConfigurationSource()).and()
                 .csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers("/api/auth/login", "/api/auth/register", "/oauth2/**").permitAll()
+                        .antMatchers("/api/auth/login", "/api/auth/register",
+                                "/oauth2/**", "/login/oauth2/code/google",
+                                "/login**", "/webjars/**", "/"
+                        ).permitAll()
                         .antMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -83,19 +67,20 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
                 .oauth2Login(oauth2Login -> oauth2Login
-                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
-                                .userService(customOAuth2UserService())
-                        )
-                        .loginPage("/basic_login")
                         .successHandler(successHandler())
                         .failureHandler((request, response, exception) -> {
                             response.setStatus(HttpStatus.UNAUTHORIZED.value());
                             response.getWriter().write("{\"message\": \"OAuth2 login failed\"}");
                         })
-                ).addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new CustomAuthenticationSuccessHandler();
     }
 }
