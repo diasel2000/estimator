@@ -1,0 +1,79 @@
+$primary-color: #1a73e8
+$secondary-color: #ffffff
+$background-color: #f9fafb
+$border-color: #e0e0e0
+$admin-color: #ff7043
+$moderator-color: #66bb6a
+$editor-color: #42a5f5
+$user-color: #5e35b1
+$viewer-color: #8e8e8e
+
+body
+  font-family: 'Roboto', sans-serif
+  background-color: $background-color
+  color: #202124
+  margin: 0
+  padding: 0
+
+.container
+  max-width: 1200px
+  margin: 0 auto
+  padding: 2rem
+  background-color: $secondary-color
+  border-radius: 8px
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
+
+h2, h3
+  color: $primary-color
+  margin-bottom: 1rem
+
+span
+  font-weight: bold
+  color: $primary-color
+
+a
+  color: $primary-color
+  text-decoration: none
+  &:hover
+    text-decoration: underline
+
+ul
+  padding-left: 1.5rem
+  list-style-type: none
+
+li
+  margin-bottom: 0.5rem
+
+.admin-panel
+  h3
+    color: $admin-color
+
+.moderator-panel
+  h3
+    color: $moderator-color
+
+.editor-panel
+  h3
+    color: $editor-color
+
+.user-panel
+  h3
+    color: $user-color
+
+.viewer-panel
+  h3
+    color: $viewer-color
+
+.logout-link
+  display: inline-block
+  margin-top: 2rem
+  padding: 0.75rem 1.5rem
+  background-color: $primary-color
+  color: $secondary-color
+  border-radius: 4px
+  text-align: center
+  text-decoration: none
+  cursor: pointer
+  transition: background-color 0.3s ease
+  &:hover
+    background-color: darken($primary-color, 10%)
