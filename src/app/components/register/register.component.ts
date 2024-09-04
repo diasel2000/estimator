@@ -42,6 +42,13 @@ export class RegisterComponent {
     this.successMessage = null;
     this.errorMessage = null;
 
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+    if (!passwordRegex.test(this.password)) {
+      this.errorMessage = 'Password must be at least 8 characters long and contain at least one uppercase letter and one number';
+      return;
+    }
+
     if (this.password === this.confirmPassword) {
       this.authService.registerUser({
         username: this.username,
