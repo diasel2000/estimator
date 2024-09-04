@@ -1,11 +1,26 @@
+<div class="login-header">
+  <img src="/assets/icons/favicon.png" alt="Logo" class="logo">
+  <h2>Welcome to Your Estimation Service</h2>
+</div>
+
 <form (submit)="onSubmit($event)">
-  <label for="email">Email:</label>
-  <input id="email" (input)="onEmailChange($event)" type="email" required>
+  <div class="input-group">
+    <label for="email">Email:</label>
+    <div class="input-wrapper">
+      <input id="email" (input)="onEmailChange($event)" type="email" required>
+      <span class="info-icon" title="In most cases, this is the email address associated with your Estimator account">ℹ️</span>
+    </div>
+  </div>
 
-  <label for="password">Password:</label>
-  <input id="password" (input)="onPasswordChange($event)" type="password" required autocomplete="current-password">
+  <div class="input-group">
+    <label for="password">Password:</label>
+    <div class="input-wrapper">
+      <input id="password" [type]="showPassword ? 'text' : 'password'" (input)="onPasswordChange($event)" required autocomplete="current-password">
+      <span class="toggle-password" (click)="togglePasswordVisibility()">{{ showPassword ? '👁️' : '👁️‍🗨️' }}</span>
+    </div>
+  </div>
 
-  <button type="submit">Login</button>
+  <button type="submit">Sign in</button>
 
   <div *ngIf="errorMessage" class="errorMessage">{{ errorMessage }}</div>
 </form>
@@ -16,5 +31,5 @@
   </a>
 </div>
 <div class="register-link">
-  <p>Don't have an account? <a href="/register">Register</a></p>
+  <p>Don't have an account? <a href="/register">Sign up!</a></p>
 </div>
