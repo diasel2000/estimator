@@ -31,11 +31,11 @@ export class DashboardComponent implements OnInit {
         this.subscriptionName = user.subscription ? user.subscription.subscriptionName : 'No Subscription';
 
         if (user.userRoles && user.userRoles.length > 0) {
-          this.isAdmin = user.userRoles.some(role => role.role.name === 'ROLE_ADMIN');
-          this.isUser = user.userRoles.some(role => role.role.name === 'ROLE_USER');
-          this.isViewer = user.userRoles.some(role => role.role.name === 'ROLE_VIEWER');
-          this.isModerator = user.userRoles.some(role => role.role.name === 'ROLE_MODERATOR');
-          this.isEditor = user.userRoles.some(role => role.role.name === 'ROLE_EDITOR');
+          this.isAdmin = user.userRoles.some(role => role.role.roleName === 'ROLE_ADMIN');
+          this.isUser = user.userRoles.some(role => role.role.roleName === 'ROLE_USER');
+          this.isViewer = user.userRoles.some(role => role.role.roleName === 'ROLE_VIEWER');
+          this.isModerator = user.userRoles.some(role => role.role.roleName === 'ROLE_MODERATOR');
+          this.isEditor = user.userRoles.some(role => role.role.roleName === 'ROLE_EDITOR');
         } else {
           console.warn('User roles are not defined');
         }

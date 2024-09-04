@@ -7,24 +7,24 @@
   <div *ngIf="isAdmin">
     <h3>Admin Panel</h3>
     <ul>
-      <li><a routerLink="/admin/users">Manage Users</a></li>
-      <li><a routerLink="/admin/subscriptions">Manage Subscriptions</a></li>
-      <li><a routerLink="/admin/reports">View Reports</a></li>
+      <li><a href="/admin/users">Manage Users</a></li>
+      <li><a href="/admin/subscriptions">Manage Subscriptions</a></li>
+      <li><a href="/admin/reports">View Reports</a></li>
     </ul>
   </div>
 
   <div *ngIf="isModerator">
     <h3>Moderator Panel</h3>
     <ul>
-      <li><a routerLink="/moderator/users">Manage Users</a></li>
-      <li><a routerLink="/moderator/reports">View Reports</a></li>
+      <li><a href="/moderator/users">Manage Users</a></li>
+      <li><a href="/moderator/reports">View Reports</a></li>
     </ul>
   </div>
 
   <div *ngIf="isEditor">
     <h3>Editor Panel</h3>
     <ul>
-      <li><a routerLink="/editor/posts">Manage Posts</a></li>
+      <li><a href="/editor/posts">Manage Posts</a></li>
     </ul>
   </div>
 
@@ -32,8 +32,8 @@
     <h3>Your Dashboard</h3>
     <p>Content specific to your subscription will be displayed here.</p>
     <ul>
-      <li><a routerLink="/users/profile">Your Profile</a></li>
-      <li><a routerLink="/subscriptions">Subscriptions</a></li>
+      <li><a href="/users/profile">Your Profile</a></li>
+      <li><a href="/subscriptions">Subscriptions</a></li>
     </ul>
   </div>
 
@@ -43,6 +43,6 @@
   </div>
 
   <div>
-    <a (click)="logout()">Logout</a>
+    <a href="/login" (click)="logout()">Logout</a>
   </div>
 </div>
