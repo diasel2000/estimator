@@ -1,3 +1,16 @@
+.login-header
+  text-align: center
+  margin-bottom: 1rem
+
+  .logo
+    width: 100px
+    height: auto
+    margin-bottom: 0.5rem
+
+  h2
+    font-size: 1.5rem
+    color: #007bff
+
 form
   display: flex
   flex-direction: column
@@ -8,13 +21,31 @@ form
   border-radius: 8px
   background-color: #f9f9f9
 
+  .input-group
+    display: flex
+    flex-direction: column
+    margin-bottom: 1rem
+
+    .input-wrapper
+      position: relative
+
+      .info-icon,
+      .toggle-password
+        position: absolute
+        right: 0.5rem
+        top: 50%
+        transform: translateY(-50%)
+        cursor: pointer
+        font-size: 1.25rem
+        color: #007bff
+
   label
     margin-bottom: 0.5rem
     font-weight: bold
 
   input
-    margin-bottom: 1rem
-    padding: 0.5rem
+    width: calc(100% - 2rem)
+    padding: 0.5rem 2rem 0.5rem 0.5rem
     border: 1px solid #ddd
     border-radius: 4px
 
@@ -39,8 +70,11 @@ form
   margin-top: 1rem
 
   .google-login-img
-    width: 150px // Adjust as needed
+    width: 50px
+    height: auto
     cursor: pointer
+    display: inline-block
+    margin: 0 auto
 
 .register-link
   text-align: center

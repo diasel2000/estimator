@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit {
   email: string = '';
   password: string = '';
   errorMessage: string | null = null;
+  showPassword: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -47,6 +48,10 @@ export class LoginComponent implements OnInit {
     } else {
       this.errorMessage = 'Please fill out all fields';
     }
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   private handleGoogleAuthResponse() {

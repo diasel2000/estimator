@@ -1,3 +1,8 @@
+<div class="login-header">
+  <img src="/assets/icons/favicon.png" alt="Logo" class="logo">
+  <h2>Welcome to Your Estimation Service</h2>
+</div>
+
 <form (submit)="onSubmit($event)">
   <label for="username">Username:</label>
   <input id="username" (input)="onUsernameChange($event)" type="text" required>
@@ -11,7 +16,7 @@
   <label for="confirmPassword">Confirm Password:</label>
   <input id="confirmPassword" (input)="onConfirmPasswordChange($event)" type="password" required autocomplete="current-password">
 
-  <button type="submit">Register</button>
+  <button type="submit">Sign up</button>
 
   <div *ngIf="successMessage" class="successMessage">{{ successMessage }}</div>
   <div *ngIf="errorMessage" class="errorMessage">{{ errorMessage }}</div>
@@ -24,5 +29,5 @@
 </div>
 
 <div class="login-link">
-  <p>Already have an account? <a href="/login">Login</a></p>
+  <p>Already have an account? <a href="/login">Sign in</a></p>
 </div>
