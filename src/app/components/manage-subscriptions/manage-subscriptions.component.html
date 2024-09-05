@@ -1,1 +1,22 @@
-<p>manage-subscriptions works!</p>
+<div class="container">
+  <h2>Manage Subscriptions</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Subscription Name</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let subscription of subscriptions">
+      <td>{{ subscription.subscriptionName }}</td>
+      <td>{{ subscription.description }}</td>
+      <td>
+        <button (click)="deleteSubscription(subscription.subscriptionID)">Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <a href="/dashboard">Back to Dashboard</a>
+</div>

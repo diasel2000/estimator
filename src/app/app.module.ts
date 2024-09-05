@@ -13,6 +13,8 @@ import {AppComponent} from "./app.component";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ProfileComponent} from "./components/profile/profile.component";
 import {SubscriptionsComponent} from "./components/subscriptions/subscriptions.component";
+import {ManageSubscriptionsComponent} from "./components/manage-subscriptions/manage-subscriptions.component";
+import {ManageUsersComponent} from "./components/manage-users/manage-users.component";
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import {SubscriptionsComponent} from "./components/subscriptions/subscriptions.c
     DashboardComponent,
     LoginComponent,
     ProfileComponent,
-    SubscriptionsComponent
+    SubscriptionsComponent,
+    ManageSubscriptionsComponent,
+    ManageUsersComponent
   ],
   imports: [
     BrowserModule,
