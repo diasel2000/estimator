@@ -1,0 +1,38 @@
+<div class="profile-header">
+  <img src="/assets/icons/favicon.png" alt="Logo" class="logo">
+  <h2>Profile Management</h2>
+</div>
+
+<form (submit)="onSubmit($event)">
+  <div class="input-group">
+    <label for="username">Username:</label>
+    <div class="input-wrapper">
+      <input id="username" name="username" [value]="user?.username || ''" [readonly]="!isEditing" required>
+    </div>
+  </div>
+
+  <div class="input-group">
+    <label for="email">Email:</label>
+    <div class="input-wrapper">
+      <input id="email" name="email" [value]="user?.email || ''" [readonly]="!isEditing" type="email" required>
+    </div>
+  </div>
+
+  <div class="input-group">
+    <label for="subscription">Subscription:</label>
+    <div class="input-wrapper">
+      <select id="subscription" name="subscription" [disabled]="!isEditing">
+        <option *ngFor="let sub of subscriptions" [value]="sub" [selected]="user?.subscription?.subscriptionName === sub">{{ sub }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <a href="users/profile/#" (click)="toggleEdit()" *ngIf="!isEditing" class="button-link">Edit Profile</a>
+    <a href="/dashboard" class="button-link">Dashboard</a>
+    <a href="/login" (click)="logout()" class="button-link">Logout</a>
+    <a href="#" (click)="deleteAccount()" class="button-link delete-link">Delete Account</a>
+  </div>
+
+  <div *ngIf="errorMessage" class="errorMessage">{{ errorMessage }}</div>
+</form>

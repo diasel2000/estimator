@@ -1,10 +1,10 @@
 <div class="container">
   <h2>Welcome, <span>{{ user?.username || 'User' }}</span></h2>
-  <div>
+  <div class="subscription-info">
     <p>Your subscription: <span>{{ subscriptionName }}</span></p>
   </div>
 
-  <div *ngIf="isAdmin">
+  <div *ngIf="isAdmin" class="admin-panel card">
     <h3>Admin Panel</h3>
     <ul>
       <li><a href="/admin/users">Manage Users</a></li>
@@ -13,7 +13,7 @@
     </ul>
   </div>
 
-  <div *ngIf="isModerator">
+  <div *ngIf="isModerator" class="moderator-panel card">
     <h3>Moderator Panel</h3>
     <ul>
       <li><a href="/moderator/users">Manage Users</a></li>
@@ -21,14 +21,14 @@
     </ul>
   </div>
 
-  <div *ngIf="isEditor">
+  <div *ngIf="isEditor" class="editor-panel card">
     <h3>Editor Panel</h3>
     <ul>
       <li><a href="/editor/posts">Manage Posts</a></li>
     </ul>
   </div>
 
-  <div *ngIf="isUser && !isAdmin && !isModerator && !isEditor">
+  <div *ngIf="isUser && !isAdmin && !isModerator && !isEditor" class="user-panel card">
     <h3>Your Dashboard</h3>
     <p>Content specific to your subscription will be displayed here.</p>
     <ul>
@@ -37,12 +37,10 @@
     </ul>
   </div>
 
-  <div *ngIf="isViewer && !isAdmin && !isModerator && !isEditor">
+  <div *ngIf="isViewer && !isAdmin && !isModerator && !isEditor" class="viewer-panel card">
     <h3>Viewer Dashboard</h3>
     <p>You have limited access to the dashboard.</p>
   </div>
 
-  <div>
-    <a href="/login" (click)="logout()">Logout</a>
-  </div>
+  <a href="/login" (click)="logout()" class="logout-link">Logout</a>
 </div>

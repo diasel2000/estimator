@@ -8,6 +8,12 @@ $editor-color: #42a5f5
 $user-color: #5e35b1
 $viewer-color: #8e8e8e
 
+=card-hover-effect
+  transition: transform 0.3s ease, box-shadow 0.3s ease
+  &:hover
+    transform: translateY(-5px)
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1)
+
 body
   font-family: 'Roboto', sans-serif
   background-color: $background-color
@@ -34,8 +40,34 @@ span
 a
   color: $primary-color
   text-decoration: none
+  transition: all 0.3s ease
+  position: relative
   &:hover
-    text-decoration: underline
+    color: darken($primary-color, 10%)
+    text-decoration: none
+    &:before
+      content: ''
+      position: absolute
+      width: 100%
+      height: 2px
+      bottom: -2px
+      left: 0
+      background-color: $primary-color
+      visibility: hidden
+      transform: scaleX(1)
+      transition: all 0.3s ease
+  &:before
+    content: ''
+    position: absolute
+    width: 100%
+    height: 2px
+    bottom: -2px
+    left: 0
+    background-color: $primary-color
+    visibility: hidden
+    transform: scaleX(0)
+    transition: all 0.3s ease
+
 
 ul
   padding-left: 1.5rem
@@ -44,25 +76,29 @@ ul
 li
   margin-bottom: 0.5rem
 
-.admin-panel
-  h3
-    color: $admin-color
+.card
+  background-color: $secondary-color
+  padding: 1.5rem
+  border: 1px solid $border-color
+  border-radius: 8px
+  margin-bottom: 2rem
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05)
+  +card-hover-effect
 
-.moderator-panel
-  h3
-    color: $moderator-color
+.admin-panel h3
+  color: $admin-color
 
-.editor-panel
-  h3
-    color: $editor-color
+.moderator-panel h3
+  color: $moderator-color
 
-.user-panel
-  h3
-    color: $user-color
+.editor-panel h3
+  color: $editor-color
 
-.viewer-panel
-  h3
-    color: $viewer-color
+.user-panel h3
+  color: $user-color
+
+.viewer-panel h3
+  color: $viewer-color
 
 .logout-link
   display: inline-block
@@ -74,6 +110,20 @@ li
   text-align: center
   text-decoration: none
   cursor: pointer
-  transition: background-color 0.3s ease
+  transition: all 0.3s ease
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1)
   &:hover
     background-color: darken($primary-color, 10%)
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2)
+    transform: translateY(-2px)
+
+
+@media (max-width: 768px)
+  .container
+    padding: 1rem
+
+  .card
+    padding: 1rem
+
+  h2, h3
+    font-size: 1.5rem
