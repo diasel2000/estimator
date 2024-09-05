@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .antMatchers("/api/auth/login", "/api/auth/register",
                                 "/oauth2/**", "/login/oauth2/code/google",
-                                "/login**", "/webjars/**", "/"
+                                "/api/subscriptions", "/login**", "/webjars/**", "/"
                         ).permitAll()
                         .antMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
