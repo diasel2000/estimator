@@ -12,6 +12,7 @@ import {AuthService} from "./service/auth.service";
 import {AppComponent} from "./app.component";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ProfileComponent} from "./components/profile/profile.component";
+import {SubscriptionsComponent} from "./components/subscriptions/subscriptions.component";
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import {ProfileComponent} from "./components/profile/profile.component";
     RegisterComponent,
     DashboardComponent,
     LoginComponent,
-    ProfileComponent
+    ProfileComponent,
+    SubscriptionsComponent
   ],
   imports: [
     BrowserModule,
