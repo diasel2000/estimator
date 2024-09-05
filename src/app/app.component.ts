@@ -3,7 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
-import {EmailService} from "./service/email.service";
+import { EmailService } from './service/email.service';
 
 @Component({
   selector: 'app-root',
@@ -21,21 +21,13 @@ export class AppComponent {
     const body = `
 Dear Estimator,
 
-I hope this message finds you well. I am reaching out to establish contact with your esteemed company to discuss potential opportunities and gather detailed feedback on a project we are currently considering.
-
 Please find below the key details that will help us tailor our request:
 
-Purpose of Contact: [Specify your purpose, e.g., "I am an investor looking to explore potential investment opportunities," "I am a client seeking detailed information regarding your services," "I am inquiring about a specific project or request," "Other topic: [Provide details]"]
-
+Purpose of Contact: [Specify your purpose, e.g.,"]
 Project Name: [Enter the project name]
-
 Project Description: [Provide a brief description of the project]
-
 Estimated Deadline: [Specify the expected completion date]
-
 Budget: [Indicate the budget range]
-
-We look forward to your response and hope to discuss how we can collaborate effectively. If you require any additional information to proceed, please feel free to let us know.
 
 Thank you for your time and consideration.
 
@@ -43,8 +35,6 @@ Best regards,
 
 [Your Full Name]
 [Your Position]
-[Your Company Name]
-[Your Contact Information]
     `;
     this.emailLink = this.emailService.generateMailtoLink(subject, body);
     this.router.events.pipe(

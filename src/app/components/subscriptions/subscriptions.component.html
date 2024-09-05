@@ -4,7 +4,7 @@
   <div *ngFor="let subscription of subscriptions" class="subscription-card card">
     <h3>{{ subscription.subscriptionName }}</h3>
     <p>{{ subscription.description }}</p>
-    <p class="price">${{ subscription.price.toFixed(2) }}</p>
+    <p class="price">${{ subscription.price.toFixed(2) }}/month</p>
     <button (click)="subscribe(subscription.subscriptionID)">Subscribe</button>
   </div>
 </div>
