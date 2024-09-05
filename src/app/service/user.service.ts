@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
+import {User} from "../model/User";
 
 @Injectable({
   providedIn: 'root',
@@ -28,5 +29,9 @@ export class UserService {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.delete(`${this.apiUrl}/email/${email}`, { headers });
+  }
+
+  updateProfile(updatedUser: Partial<User>): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/profile/update`, updatedUser);
   }
 }

@@ -11,13 +11,15 @@ import {AuthGuardService} from "./service/auth-guard.service";
 import {AuthService} from "./service/auth.service";
 import {AppComponent} from "./app.component";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {ProfileComponent} from "./components/profile/profile.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
     DashboardComponent,
-    LoginComponent
+    LoginComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
