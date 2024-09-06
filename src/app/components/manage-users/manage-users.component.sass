@@ -1,0 +1,113 @@
+$primary-color: #1a73e8
+$secondary-color: #ffffff
+$background-color: #f9fafb
+$border-color: #e0e0e0
+$admin-color: #ff7043
+$moderator-color: #66bb6a
+$editor-color: #42a5f5
+$user-color: #5e35b1
+$viewer-color: #8e8e8e
+
+=card-hover-effect
+  transition: transform 0.3s ease, box-shadow 0.3s ease
+  &:hover
+    transform: translateY(-5px)
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1)
+
+body
+  font-family: 'Roboto', sans-serif
+  background-color: $background-color
+  color: #202124
+  margin: 0
+  padding: 0
+
+.container
+  max-width: 1200px
+  margin: 0 auto
+  padding: 2rem
+  background-color: $secondary-color
+  border-radius: 8px
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
+
+h2
+  color: $primary-color
+  margin-bottom: 1rem
+
+.error
+  color: red
+  font-weight: bold
+  margin-bottom: 1rem
+
+table
+  width: 100%
+  border-collapse: collapse
+  margin-bottom: 2rem
+
+th, td
+  padding: 1rem
+  text-align: left
+  border-bottom: 1px solid $border-color
+
+th
+  background-color: $primary-color
+  color: $secondary-color
+  font-weight: bold
+
+td
+  background-color: $secondary-color
+
+button
+  background-color: $admin-color
+  color: $secondary-color
+  padding: 0.5rem 1rem
+  border: none
+  border-radius: 4px
+  cursor: pointer
+  transition: background-color 0.3s ease, transform 0.3s ease
+  &:hover
+    background-color: darken($admin-color, 10%)
+    transform: translateY(-2px)
+
+a
+  color: $primary-color
+  text-decoration: none
+  transition: all 0.3s ease
+  position: relative
+  &:hover
+    color: darken($primary-color, 10%)
+    text-decoration: none
+    &:before
+      content: ''
+      position: absolute
+      width: 100%
+      height: 2px
+      bottom: -2px
+      left: 0
+      background-color: $primary-color
+      visibility: hidden
+      transform: scaleX(1)
+      transition: all 0.3s ease
+  &:before
+    content: ''
+    position: absolute
+    width: 100%
+    height: 2px
+    bottom: -2px
+    left: 0
+    background-color: $primary-color
+    visibility: hidden
+    transform: scaleX(0)
+    transition: all 0.3s ease
+
+@media (max-width: 768px)
+  .container
+    padding: 1rem
+
+  h2
+    font-size: 1.5rem
+
+  table
+    font-size: 0.9rem
+
+  button
+    padding: 0.5rem
