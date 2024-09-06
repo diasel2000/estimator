@@ -3,7 +3,7 @@ import { UserRole } from './UserRole';
 
 export class User {
   constructor(
-    public id: number,
+    public userID: number,
     public username: string,
     public email: string,
     public googleId: string,
