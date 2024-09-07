@@ -1,129 +1,180 @@
-$primary-color: #1a73e8
-$secondary-color: #ffffff
-$background-color: #f9fafb
-$border-color: #e0e0e0
-$admin-color: #ff7043
-$moderator-color: #66bb6a
-$editor-color: #42a5f5
-$user-color: #5e35b1
-$viewer-color: #8e8e8e
-
-=card-hover-effect
-  transition: transform 0.3s ease, box-shadow 0.3s ease
-  &:hover
-    transform: translateY(-5px)
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1)
-
-body
-  font-family: 'Roboto', sans-serif
-  background-color: $background-color
-  color: #202124
-  margin: 0
-  padding: 0
-
-.container
-  max-width: 1200px
-  margin: 0 auto
-  padding: 2rem
-  background-color: $secondary-color
-  border-radius: 8px
+.sidebar
+  width: 220px
+  background-color: #f9f9f9
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
+  padding: 20px
+  position: fixed
+  top: 0
+  left: 0
+  height: 100vh
+  display: flex
+  flex-direction: column
+  justify-content: space-between
+  transition: transform 0.3s ease-in-out
+  z-index: 10
 
-h2, h3
-  color: $primary-color
-  margin-bottom: 1rem
+  &.hidden
+    transform: translateX(-100%)
 
-span
-  font-weight: bold
-  color: $primary-color
+  .user-info
+    margin-bottom: 20px
 
-a
-  color: $primary-color
-  text-decoration: none
-  transition: all 0.3s ease
-  position: relative
-  &:hover
-    color: darken($primary-color, 10%)
-    text-decoration: none
-    &:before
-      content: ''
-      position: absolute
-      width: 100%
-      height: 2px
-      bottom: -2px
-      left: 0
-      background-color: $primary-color
-      visibility: hidden
-      transform: scaleX(1)
-      transition: all 0.3s ease
-  &:before
-    content: ''
+    button
+      background: none
+      border: none
+      font-size: 1.2rem
+      font-weight: bold
+      color: #333
+      cursor: pointer
+      display: flex
+      align-items: center
+      padding: 10px
+      border-radius: 6px
+      transition: background-color 0.3s, color 0.3s
+
+      &:hover
+        color: #0078d4
+        background-color: #f0f0f0
+
+    ul
+      list-style: none
+      padding: 0
+      margin-top: 10px
+
+      li
+        font-size: 0.9rem
+        color: #666
+        margin-bottom: 10px
+
+        a
+          color: #0078d4
+          text-decoration: none
+
+          &:hover
+            text-decoration: underline
+
+  .search-bar
+    display: flex
+    align-items: center
+    margin-bottom: 20px
+
+    input
+      flex: 1
+      padding: 10px
+      font-size: 1rem
+      border: 1px solid #ddd
+      border-radius: 6px
+      outline: none
+      background-color: #fff
+      transition: border-color 0.3s
+
+      &:focus
+        border-color: #0078d4
+
+    button
+      background: none
+      border: none
+      padding: 0
+      margin-left: 10px
+      cursor: pointer
+
+      img
+        width: 16px
+        height: 16px
+
+  nav
+    display: flex
+    flex-direction: column
+    gap: 10px
+
+    button
+      background-color: #0078d4
+      color: #fff
+      border: none
+      border-radius: 6px
+      padding: 10px
+      font-size: 1rem
+      cursor: pointer
+      text-align: left
+      transition: background-color 0.3s, color 0.3s
+
+      &:hover
+        background-color: #005a9e
+        color: #fff
+
+      &:focus
+        outline: none
+        box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.5)
+
+    .dropdown
+      position: relative
+
+      button
+        background: none
+        border: none
+        font-size: 1rem
+        color: #333
+        cursor: pointer
+        padding: 10px
+        text-align: left
+        transition: background-color 0.3s, color 0.3s
+        border-radius: 6px
+        text-decoration: none
+
+        &:hover
+          background-color: #f0f0f0
+          color: #0078d4
+
+        &:focus
+          outline: none
+          box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.5)
+
+      ul
+        list-style-type: none
+        padding-left: 10px
+        position: absolute
+        top: 100%
+        left: 0
+        background-color: #fff
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
+        border-radius: 12px
+        z-index: 20
+        margin: 0
+        width: 100%
+
+        li
+          padding: 5px 10px
+
+  .footer-links
+    margin-top: 370px
+    display: flex
+    flex-direction: column
+    gap: 20px
+
+    a
+      color: #0078d4
+      text-decoration: none
+      font-size: 0.9rem
+      padding: 10px
+      border-radius: 6px
+      transition: background-color 0.3s, color 0.3s
+      background-color: #f9f9f9
+      border: 1px solid #0078d4
+
+      &:hover
+        background-color: #0078d4
+        color: #fff
+        border-color: #0078d4
+
+  .toggle-sidebar
+    background: none
+    border: none
     position: absolute
-    width: 100%
-    height: 2px
-    bottom: -2px
-    left: 0
-    background-color: $primary-color
-    visibility: hidden
-    transform: scaleX(0)
-    transition: all 0.3s ease
+    top: 10px
+    left: 220px
+    cursor: pointer
+    font-size: 1.2rem
+    color: #333
 
-
-ul
-  padding-left: 1.5rem
-  list-style-type: none
-
-li
-  margin-bottom: 0.5rem
-
-.card
-  background-color: $secondary-color
-  padding: 1.5rem
-  border: 1px solid $border-color
-  border-radius: 8px
-  margin-bottom: 2rem
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05)
-  +card-hover-effect
-
-.admin-panel h3
-  color: $admin-color
-
-.moderator-panel h3
-  color: $moderator-color
-
-.editor-panel h3
-  color: $editor-color
-
-.user-panel h3
-  color: $user-color
-
-.viewer-panel h3
-  color: $viewer-color
-
-.logout-link
-  display: inline-block
-  margin-top: 2rem
-  padding: 0.75rem 1.5rem
-  background-color: $primary-color
-  color: $secondary-color
-  border-radius: 4px
-  text-align: center
-  text-decoration: none
-  cursor: pointer
-  transition: all 0.3s ease
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1)
-  &:hover
-    background-color: darken($primary-color, 10%)
-    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2)
-    transform: translateY(-2px)
-
-
-@media (max-width: 768px)
-  .container
-    padding: 1rem
-
-  .card
-    padding: 1rem
-
-  h2, h3
-    font-size: 1.5rem
+    &:hover
+      color: #0078d4
