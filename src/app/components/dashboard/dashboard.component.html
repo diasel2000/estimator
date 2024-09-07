@@ -15,11 +15,17 @@
   </div>
 
   <nav>
-    <button (click)="navigate('/home')">Home</button>
-    <button (click)="navigate('/getting-started')">Getting Started</button>
+    <button (click)="navigate('/home')">
+      <img src="assets/icons/home-icon.png" alt="Home" class="nav-icon"> Home
+    </button>
+    <button (click)="navigate('/getting-started')">
+      <img src="assets/icons/getting-started-icon.png" alt="Getting Started" class="nav-icon"> Getting Started
+    </button>
 
     <div class="dropdown">
-      <button (click)="toggleDropdown('projects')">My Projects</button>
+      <button (click)="toggleDropdown('projects')">
+        <img src="assets/icons/projects-icon.png" alt="My Projects" class="nav-icon"> My Projects
+      </button>
       <ul *ngIf="dropdowns['projects']">
         <li *ngFor="let project of projects">{{ project.name }}</li>
         <li><button (click)="addProject()">Add Project</button></li>
@@ -27,7 +33,9 @@
     </div>
 
     <div class="dropdown">
-      <button (click)="toggleDropdown('tasks')">Task List</button>
+      <button (click)="toggleDropdown('tasks')">
+        <img src="assets/icons/tasks-icon.png" alt="Task List" class="nav-icon"> Task List
+      </button>
       <ul *ngIf="dropdowns['tasks']">
         <li *ngFor="let task of tasks">{{ task.name }}</li>
         <li><button (click)="addTask()">Add Task</button></li>
@@ -35,13 +43,17 @@
     </div>
 
     <div class="dropdown">
-      <button (click)="toggleDropdown('developers')">Developers</button>
+      <button (click)="toggleDropdown('developers')">
+        <img src="assets/icons/developers-icon.png" alt="Developers" class="nav-icon"> Developers
+      </button>
       <ul *ngIf="dropdowns['developers']">
         <li *ngFor="let developer of developers">{{ developer.name }}</li>
       </ul>
     </div>
 
-    <button>More</button>
+    <button>
+      <img src="assets/icons/more-icon.png" alt="More" class="nav-icon"> More
+    </button>
   </nav>
 
   <div class="footer-links">
