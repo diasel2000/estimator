@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {APP_INITIALIZER, ErrorHandler, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { RegisterComponent } from './components/register/register.component';
@@ -15,6 +15,8 @@ import {ProfileComponent} from "./components/profile/profile.component";
 import {SubscriptionsComponent} from "./components/subscriptions/subscriptions.component";
 import {ManageSubscriptionsComponent} from "./components/manage-subscriptions/manage-subscriptions.component";
 import {ManageUsersComponent} from "./components/manage-users/manage-users.component";
+import { Router } from "@angular/router";
+import * as Sentry from "@sentry/angular";
 
 @NgModule({
   declarations: [
@@ -37,7 +39,22 @@ import {ManageUsersComponent} from "./components/manage-users/manage-users.compo
   providers: [
     AuthService,
     AuthGuardService,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        showDialog: true,
+      }),
+    }, {
+      provide: Sentry.TraceService,
+      deps: [Router],
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => () => {},
+      deps: [Sentry.TraceService],
+      multi: true,
+    }
   ],
   bootstrap: [AppComponent]
 })
