@@ -69,6 +69,20 @@ export class AuthService {
     return null;
   }
 
+  //TODO add backend logic
+  logoutAllDevices(): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/logout-all-devices`, {}).pipe(
+      tap(() => {
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('csrfToken');
+        }
+        this.router.navigate(['/login']);
+      }),
+      catchError(this.handleError<any>('logoutAllDevices'))
+    );
+  }
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: HttpErrorResponse): Observable<T> => {
       console.error(`${operation} failed: ${error.message}`);

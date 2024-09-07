@@ -1,46 +1,53 @@
-<div class="container">
-  <h2>Welcome, <span>{{ user?.username || 'User' }}</span></h2>
-  <div class="subscription-info">
-    <p>Your subscription: <span>{{ subscriptionName }}</span></p>
-  </div>
-
-  <div *ngIf="isAdmin" class="admin-panel card">
-    <h3>Admin Panel</h3>
-    <ul>
-      <li><a href="/admin/users">Manage Users</a></li>
-      <li><a href="/admin/subscriptions">Manage Subscriptions</a></li>
-      <li><a href="/admin/reports">View Reports</a></li>
+<div class="sidebar" [class.hidden]="sidebarHidden">
+  <div class="user-info">
+    <button (click)="toggleUserMenu()">{{ user?.username || 'User' }}</button>
+    <ul *ngIf="showUserMenu">
+      <li>Email: {{ user?.email }}</li>
+      <li><a href="/login" (click)="logout()">Logout</a></li>
     </ul>
   </div>
 
-  <div *ngIf="isModerator" class="moderator-panel card">
-    <h3>Moderator Panel</h3>
-    <ul>
-      <li><a href="/moderator/users">Manage Users</a></li>
-      <li><a href="/moderator/reports">View Reports</a></li>
-    </ul>
+  <div class="search-bar">
+    <input type="text" placeholder="Search..." [(ngModel)]="searchQuery">
+    <button (click)="onSearch()">
+      <img src="assets/search-icon.svg" alt="Search">
+    </button>
   </div>
 
-  <div *ngIf="isEditor" class="editor-panel card">
-    <h3>Editor Panel</h3>
-    <ul>
-      <li><a href="/editor/posts">Manage Posts</a></li>
-    </ul>
-  </div>
+  <nav>
+    <button (click)="navigate('/home')">Home</button>
+    <button (click)="navigate('/getting-started')">Getting Started</button>
 
-  <div *ngIf="isUser && !isAdmin && !isModerator && !isEditor" class="user-panel card">
-    <h3>Your Dashboard</h3>
-    <p>Content specific to your subscription will be displayed here.</p>
-    <ul>
-      <li><a href="/users/profile">Your Profile</a></li>
-      <li><a href="/subscriptions">Subscriptions</a></li>
-    </ul>
-  </div>
+    <div class="dropdown">
+      <button (click)="toggleDropdown('projects')">My Projects</button>
+      <ul *ngIf="dropdowns['projects']">
+        <li *ngFor="let project of projects">{{ project.name }}</li>
+        <li><button (click)="addProject()">Add Project</button></li>
+      </ul>
+    </div>
 
-  <div *ngIf="isViewer && !isAdmin && !isModerator && !isEditor" class="viewer-panel card">
-    <h3>Viewer Dashboard</h3>
-    <p>You have limited access to the dashboard.</p>
-  </div>
+    <div class="dropdown">
+      <button (click)="toggleDropdown('tasks')">Task List</button>
+      <ul *ngIf="dropdowns['tasks']">
+        <li *ngFor="let task of tasks">{{ task.name }}</li>
+        <li><button (click)="addTask()">Add Task</button></li>
+      </ul>
+    </div>
 
-  <a href="/login" (click)="logout()" class="logout-link">Logout</a>
+    <div class="dropdown">
+      <button (click)="toggleDropdown('developers')">Developers</button>
+      <ul *ngIf="dropdowns['developers']">
+        <li *ngFor="let developer of developers">{{ developer.name }}</li>
+      </ul>
+    </div>
+
+    <button>More</button>
+  </nav>
+
+  <div class="footer-links">
+    <a href="#">Invite Members</a>
+    <a href="/subscriptions">Upgrade Plan</a>
+  </div>
 </div>
+
+<button class="toggle-sidebar" (click)="sidebarHidden = !sidebarHidden"><<<</button>

@@ -2,21 +2,30 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../service/user.service';
 import { User } from '../../model/User';
 import { Router } from '@angular/router';
-import {CommonModule} from "@angular/common";
-import {AuthService} from "../../service/auth.service";
+import { CommonModule } from "@angular/common";
+import { AuthService } from "../../service/auth.service";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.sass'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, FormsModule]
 })
 export class ProfileComponent implements OnInit {
   user: User | null = null;
   subscriptions: string[] = ['Basic', 'Premium', 'Pro'];
   isEditing: boolean = false;
   errorMessage: string | null = null;
+  isGoogleAccount: boolean = false;
+  activeTab: 'account' | 'support' | 'devices' = 'account';
+  showNotificationsModal: boolean = false;
+  notifications = {
+    mobilePush: false,
+    emailAlways: false,
+    emailDigest: false
+  };
 
   constructor(
     private authService: AuthService,
@@ -32,6 +41,8 @@ export class ProfileComponent implements OnInit {
     this.userService.getCurrentUser().subscribe({
       next: (user: User) => {
         this.user = user;
+        //TODO add backend logic
+        this.isGoogleAccount = false;
       },
       error: (err) => {
         console.error('Error fetching user data:', err);
@@ -44,24 +55,9 @@ export class ProfileComponent implements OnInit {
     this.isEditing = !this.isEditing;
   }
 
-  onSubmit(event: Event): void {
+  onAccountSubmit(event: Event): void {
     event.preventDefault();
-    if (this.user) {
-      const form = event.target as HTMLFormElement;
-      const formData = new FormData(form);
-      const subscriptionName = formData.get('subscription')?.toString() || '';
-
-      this.userService.updateSubscription(subscriptionName).subscribe({
-        next: () => {
-          this.isEditing = false;
-          this.loadProfile();
-        },
-        error: (err) => {
-          this.errorMessage = 'Failed to update profile. Please try again later.';
-          console.error('Error updating profile:', err);
-        }
-      });
-    }
+    // Update email or password logic here
   }
 
   deleteAccount(): void {
@@ -78,8 +74,26 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  logout(): void {
-    this.authService.logoutUser();
-    this.router.navigate(['/login']);
+  logoutFromAllDevices(): void {
+    if (confirm('Are you sure you want to log out from all devices?')) {
+      this.authService.logoutAllDevices().subscribe({
+        next: () => {
+          this.router.navigate(['/login']);
+        },
+        error: (err) => {
+          this.errorMessage = 'Failed to log out from all devices.';
+          console.error('Error logging out:', err);
+        }
+      });
+    }
+  }
+
+  toggleNotifications(): void {
+    this.showNotificationsModal = !this.showNotificationsModal;
+  }
+
+  saveNotificationSettings(): void {
+    console.log('Notification settings saved:', this.notifications);
+    this.toggleNotifications();
   }
 }
