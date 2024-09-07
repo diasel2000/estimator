@@ -10,34 +10,26 @@
   <a (click)="toggleNotifications()">My Notifications</a>
 </nav>
 
-<div *ngIf="activeTab === 'account'">
+<div *ngIf="activeTab === 'account'" class="tab-content">
   <form (submit)="onAccountSubmit($event)">
-    <div class="input-group">
+    <div class="form-group">
       <label for="username">Username:</label>
-      <div class="input-wrapper">
-        <input id="username" name="username" [value]="user?.username || ''" readonly>
-      </div>
+      <input id="username" name="username" [value]="user?.username || ''" readonly>
     </div>
 
-    <div class="input-group">
+    <div class="form-group">
       <label for="email">Email:</label>
-      <div class="input-wrapper">
-        <input id="email" name="email" [value]="user?.email || ''" [readonly]="!isEditing" type="email" required>
-      </div>
+      <input id="email" name="email" [value]="user?.email || ''" [readonly]="!isEditing" type="email" required>
     </div>
 
-    <div class="input-group">
+    <div class="form-group">
       <label for="subscription">Subscription:</label>
-      <div class="input-wrapper">
-        <input id="subscription" name="subscription" [value]="user?.subscription?.subscriptionName || ''" readonly>
-      </div>
+      <input id="subscription" name="subscription" [value]="user?.subscription?.subscriptionName || ''" readonly>
     </div>
 
-    <div class="input-group" *ngIf="!isGoogleAccount">
+    <div class="form-group" *ngIf="!isGoogleAccount">
       <label for="password">New Password:</label>
-      <div class="input-wrapper">
-        <input id="password" name="password" [disabled]="!isEditing" type="password">
-      </div>
+      <input id="password" name="password" [disabled]="!isEditing" type="password">
     </div>
 
     <div class="buttons">
@@ -46,12 +38,12 @@
   </form>
 </div>
 
-<div *ngIf="activeTab === 'support'">
+<div *ngIf="activeTab === 'support'" class="tab-content">
   <h3>Support</h3>
   <a href="#" (click)="deleteAccount()" class="button-link delete-link">Delete Account</a>
 </div>
 
-<div *ngIf="activeTab === 'devices'">
+<div *ngIf="activeTab === 'devices'" class="tab-content">
   <h3>All Devices</h3>
   <a href="#" (click)="logoutFromAllDevices()" class="button-link">Log out from all devices</a>
 </div>
