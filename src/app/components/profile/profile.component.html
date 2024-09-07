@@ -62,14 +62,20 @@
 <div *ngIf="showNotificationsModal" class="modal">
   <div class="modal-content">
     <h3>Notification Settings</h3>
-    <label>
-      <input type="checkbox" [(ngModel)]="notifications.mobilePush"> Mobile push notifications
+    <label class="custom-checkbox">
+      <input type="checkbox" [(ngModel)]="notifications.mobilePush">
+      <span class="slider"></span>
+      Mobile push notifications
     </label>
-    <label>
-      <input type="checkbox" [(ngModel)]="notifications.emailAlways"> Always send email notifications
+    <label class="custom-checkbox">
+      <input type="checkbox" [(ngModel)]="notifications.emailAlways">
+      <span class="slider"></span>
+      Always send email notifications
     </label>
-    <label>
-      <input type="checkbox" [(ngModel)]="notifications.emailDigest"> Email digests
+    <label class="custom-checkbox">
+      <input type="checkbox" [(ngModel)]="notifications.emailDigest">
+      <span class="slider"></span>
+      Email digests
     </label>
     <div class="modal-actions">
       <button (click)="saveNotificationSettings()">Save</button>
