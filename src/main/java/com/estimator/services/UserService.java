@@ -136,9 +136,9 @@ public class UserService {
         User user = userRepository.findByGoogleID(googleID);
         if (user != null) {
             logger.info("User found with Google ID: {}", googleID);
-            user.getRoles().size(); // Trigger lazy loading if needed
+            user.getRoles().size();
             if (user.getSubscription() != null) {
-                user.getSubscription().getSubscriptionName(); // Trigger lazy loading if needed
+                user.getSubscription().getSubscriptionName();
             }
         } else {
             logger.warn("User not found with Google ID: {}", googleID);
