@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { User } from '../../model/User';
 import { UserService } from "../../service/user.service";
@@ -82,6 +82,15 @@ export class DashboardComponent implements OnInit {
 
   toggleUserMenu(): void {
     this.showUserMenu = !this.showUserMenu;
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeMenuOnClickOutside(event: Event): void {
+    this.showUserMenu = false;
+  }
+
+  stopPropagation(event: Event): void {
+    event.stopPropagation();
   }
 
   toggleDropdown(menu: string): void {

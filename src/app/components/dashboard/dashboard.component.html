@@ -1,8 +1,11 @@
 <div class="sidebar" [class.hidden]="sidebarHidden">
-  <div class="user-info">
+  <div class="user-info" (click)="stopPropagation($event)">
     <button (click)="toggleUserMenu()">{{ user?.username || 'User' }}</button>
     <ul *ngIf="showUserMenu">
       <li>Email: {{ user?.email }}</li>
+      <li><a href="/users/profile">Profile</a></li>
+      <li *ngIf="roles.isAdmin"><a href="/admin/subscriptions">Manage Subscriptions</a></li>
+      <li *ngIf="roles.isAdmin"><a href="/admin/users">Manage Users</a></li>
       <li><a href="/login" (click)="logout()">Logout</a></li>
     </ul>
   </div>

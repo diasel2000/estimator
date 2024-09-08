@@ -22,6 +22,7 @@
 
   .user-info
     margin-bottom: 15px
+    position: relative
 
     button
       background: none
@@ -39,6 +40,27 @@
       &:hover
         color: #0078d4
         background-color: #f0f0f0
+
+    ul
+      position: absolute
+      top: 50%
+      left: 0
+      background-color: #fff
+      border: 1px solid #ddd
+      padding: 10px
+      border-radius: 4px
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
+      z-index: 1000
+
+      li
+        margin-bottom: 8px
+
+        a
+          text-decoration: none
+          color: #333
+
+          &:hover
+            color: #0078d4
 
   .search-bar
     position: relative
