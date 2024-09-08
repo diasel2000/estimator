@@ -14,10 +14,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import static org.mockito.Mockito.*;
+import javax.servlet.http.HttpServletRequest;
 
+import static org.mockito.Mockito.*;
 class JwtTokenProviderTest {
 
     private JwtTokenProvider jwtTokenProvider;
@@ -71,8 +74,7 @@ class JwtTokenProviderTest {
         assertEquals(email, username);
 
         InOrder inOrder = inOrder(logger);
-        inOrder.verify(logger).debug("Creating token for email: {}",
-                "test@example.com");
+        inOrder.verify(logger).debug("Creating token for email: {}", email);
     }
 
     @Test
@@ -84,8 +86,43 @@ class JwtTokenProviderTest {
         boolean isValid = jwtTokenProvider.validateToken(token);
 
         assertTrue(isValid);
-        verify(logger).debug("Creating token for email: {}",
-                "test@example.com");
+        verify(logger).debug("Creating token for email: {}", email);
+    }
+
+    @Test
+    void testGetAuthentication() {
+        String email = "test@example.com";
+        List<Role> roles = Collections.singletonList(createRole());
+        String token = jwtTokenProvider.createToken(email, roles);
+
+        UserDetails userDetails = Mockito.mock(UserDetails.class);
+        when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
+
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+
+        assertNotNull(authentication);
+        assertEquals(authentication.getPrincipal(), userDetails);
+        verify(logger).debug("Creating token for email: {}", email);
+    }
+
+    @Test
+    void testResolveToken() {
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer validtoken");
+
+        String token = jwtTokenProvider.resolveToken(request);
+
+        assertEquals("validtoken", token);
+    }
+
+    @Test
+    void testResolveTokenWithoutBearerPrefix() {
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Invalidtoken");
+
+        String token = jwtTokenProvider.resolveToken(request);
+
+        assertNull(token);
     }
 
     private Role createRole() {
