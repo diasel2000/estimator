@@ -3,10 +3,10 @@
     <button (click)="toggleUserMenu()">{{ user?.username || 'User' }}</button>
     <ul *ngIf="showUserMenu">
       <li>Email: {{ user?.email }}</li>
-      <li><a href="/users/profile">Profile</a></li>
-      <li *ngIf="roles.isAdmin"><a href="/admin/subscriptions">Manage Subscriptions</a></li>
-      <li *ngIf="roles.isAdmin"><a href="/admin/users">Manage Users</a></li>
-      <li><a href="/login" (click)="logout()">Logout</a></li>
+      <li><a [routerLink]="['/users/profile']">Profile</a></li>
+      <li *ngIf="roles.isAdmin"><a [routerLink]="['/admin/subscriptions']">Manage Subscriptions</a></li>
+      <li *ngIf="roles.isAdmin"><a [routerLink]="['/admin/users']">Manage Users</a></li>
+      <li><a [routerLink]="['/login']" (click)="logout()">Logout</a></li>
     </ul>
   </div>
 
@@ -21,12 +21,12 @@
     <button (click)="navigate('/home')">
       <img src="assets/icons/home-icon.png" alt="Home" class="nav-icon"> Home
     </button>
-    <button (click)="navigate('/getting-started')">
+    <button (click)="navigate('/dashboard/getting-started')">
       <img src="assets/icons/getting-started-icon.png" alt="Getting Started" class="nav-icon"> Getting Started
     </button>
 
     <div class="dropdown">
-      <button (click)="toggleDropdown('projects')">
+      <button (click)="handleDropdownClick('/dashboard/projects', 'projects')">
         <img src="assets/icons/projects-icon.png" alt="My Projects" class="nav-icon"> My Projects
       </button>
       <ul *ngIf="dropdowns['projects']">
@@ -36,7 +36,7 @@
     </div>
 
     <div class="dropdown">
-      <button (click)="toggleDropdown('tasks')">
+      <button (click)="handleDropdownClick('/dashboard/tasks', 'tasks')">
         <img src="assets/icons/tasks-icon.png" alt="Task List" class="nav-icon"> Task List
       </button>
       <ul *ngIf="dropdowns['tasks']">
@@ -46,7 +46,7 @@
     </div>
 
     <div class="dropdown">
-      <button (click)="toggleDropdown('developers')">
+      <button (click)="handleDropdownClick('/dashboard/developers', 'developers')">
         <img src="assets/icons/developers-icon.png" alt="Developers" class="nav-icon"> Developers
       </button>
       <ul *ngIf="dropdowns['developers']">
@@ -60,8 +60,8 @@
   </nav>
 
   <div class="footer-links">
-    <a href="#">Invite Members</a>
-    <a href="/subscriptions">Upgrade Plan</a>
+    <a [routerLink]="['/invite-members']">Invite Members</a>
+    <a [routerLink]="['/subscriptions']">Upgrade Plan</a>
   </div>
 </div>
 

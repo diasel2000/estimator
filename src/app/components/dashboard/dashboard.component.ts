@@ -3,7 +3,7 @@ import { AuthService } from '../../service/auth.service';
 import { User } from '../../model/User';
 import { UserService } from "../../service/user.service";
 import { CommonModule } from "@angular/common";
-import { Router } from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import { FormsModule } from "@angular/forms";
 
 interface Project {
@@ -23,7 +23,7 @@ interface Developer {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.sass'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, RouterModule]
 })
 export class DashboardComponent implements OnInit {
   user: User | null = null;
@@ -95,6 +95,13 @@ export class DashboardComponent implements OnInit {
 
   toggleDropdown(menu: string): void {
     this.dropdowns[menu] = !this.dropdowns[menu];
+  }
+
+  handleDropdownClick(route: string, dropdownKey: string): void {
+    this.dropdowns[dropdownKey] = !this.dropdowns[dropdownKey];
+    setTimeout(() => {
+      this.router.navigate([route]);
+    }, 0);
   }
 
   navigate(path: string): void {

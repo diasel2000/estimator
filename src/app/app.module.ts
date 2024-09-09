@@ -1,22 +1,29 @@
 import {APP_INITIALIZER, ErrorHandler, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { RegisterComponent } from './components/register/register.component';
-import {DashboardComponent} from "./components/dashboard/dashboard.component";
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
+import {Router, RouterModule} from '@angular/router';
+import * as Sentry from '@sentry/angular';
+
+import { AppComponent } from './app.component';
+import {AppRoutingModule, routes} from './app.routes';
+import { AuthService } from './service/auth.service';
+import { AuthGuardService } from './service/auth-guard.service';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {LoginComponent} from "./components/login/login.component";
-import {AppRoutingModule} from "./app.routes";
-import {AuthGuardService} from "./service/auth-guard.service";
-import {AuthService} from "./service/auth.service";
-import {AppComponent} from "./app.component";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {ProfileComponent} from "./components/profile/profile.component";
-import {SubscriptionsComponent} from "./components/subscriptions/subscriptions.component";
-import {ManageSubscriptionsComponent} from "./components/manage-subscriptions/manage-subscriptions.component";
-import {ManageUsersComponent} from "./components/manage-users/manage-users.component";
-import { Router } from "@angular/router";
-import * as Sentry from "@sentry/angular";
+
+import { RegisterComponent } from './components/register/register.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { LoginComponent } from './components/login/login.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { SubscriptionsComponent } from './components/subscriptions/subscriptions.component';
+import { ManageSubscriptionsComponent } from './components/manage-subscriptions/manage-subscriptions.component';
+import { ManageUsersComponent } from './components/manage-users/manage-users.component';
+import { TaskListComponent } from './components/task-list/task-list.component';
+import { ProjectsComponent } from './components/projects/projects.component';
+import { HomeComponent } from './components/home/home.component';
+import { GettingStartedComponent } from './components/getting-started/getting-started.component';
 
 @NgModule({
   declarations: [
@@ -27,14 +34,20 @@ import * as Sentry from "@sentry/angular";
     ProfileComponent,
     SubscriptionsComponent,
     ManageSubscriptionsComponent,
-    ManageUsersComponent
+    ManageUsersComponent,
+    TaskListComponent,
+    ProjectsComponent,
+    HomeComponent,
+    GettingStartedComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
     HttpClientModule,
-    AppRoutingModule
+    FormsModule,
+    AppRoutingModule,
+    RouterModule.forRoot(routes)
   ],
   providers: [
     AuthService,
