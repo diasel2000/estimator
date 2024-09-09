@@ -4,11 +4,11 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import * as Sentry from '@sentry/angular';
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app.routes';
+import {AppRoutingModule, routes} from './app.routes';
 import { AuthService } from './service/auth.service';
 import { AuthGuardService } from './service/auth-guard.service';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -46,7 +46,8 @@ import { GettingStartedComponent } from './components/getting-started/getting-st
     CommonModule,
     HttpClientModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    RouterModule.forRoot(routes)
   ],
   providers: [
     AuthService,

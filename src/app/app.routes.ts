@@ -21,7 +21,7 @@ export const routes: Routes = [
       { path: 'home', component: HomeComponent },
       { path: 'getting-started', component: GettingStartedComponent },
       { path: 'projects', component: ProjectsComponent },
-      { path: 'task-list', component: TaskListComponent },
+      { path: 'tasks', component: TaskListComponent },
       { path: 'developers', component: DevelopersComponent }
     ]
   },

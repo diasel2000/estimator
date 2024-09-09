@@ -18,25 +18,25 @@
   </div>
 
   <nav>
-    <button [routerLink]="['/dashboard/home']">
+    <button (click)="navigate('/home')">
       <img src="assets/icons/home-icon.png" alt="Home" class="nav-icon"> Home
     </button>
-    <button [routerLink]="['/dashboard/getting-started']">
+    <button (click)="navigate('/dashboard/getting-started')">
       <img src="assets/icons/getting-started-icon.png" alt="Getting Started" class="nav-icon"> Getting Started
     </button>
 
     <div class="dropdown">
-      <button [routerLink]="['/dashboard/projects']" (click)="toggleDropdown('/dashboard/projects')">
+      <button (click)="handleDropdownClick('/dashboard/projects', 'projects')">
         <img src="assets/icons/projects-icon.png" alt="My Projects" class="nav-icon"> My Projects
       </button>
-      <ul *ngIf="dropdowns['/projects']">
+      <ul *ngIf="dropdowns['projects']">
         <li *ngFor="let project of projects">{{ project.name }}</li>
         <li><button (click)="addProject()">Add Project</button></li>
       </ul>
     </div>
 
     <div class="dropdown">
-      <button [routerLink]="['/dashboard/tasks']" (click)="toggleDropdown('tasks')">
+      <button (click)="handleDropdownClick('/dashboard/tasks', 'tasks')">
         <img src="assets/icons/tasks-icon.png" alt="Task List" class="nav-icon"> Task List
       </button>
       <ul *ngIf="dropdowns['tasks']">
@@ -46,7 +46,7 @@
     </div>
 
     <div class="dropdown">
-      <button [routerLink]="['/dashboard/developers']" (click)="toggleDropdown('/dashboard/developers')">
+      <button (click)="handleDropdownClick('/dashboard/developers', 'developers')">
         <img src="assets/icons/developers-icon.png" alt="Developers" class="nav-icon"> Developers
       </button>
       <ul *ngIf="dropdowns['developers']">

@@ -97,6 +97,13 @@ export class DashboardComponent implements OnInit {
     this.dropdowns[menu] = !this.dropdowns[menu];
   }
 
+  handleDropdownClick(route: string, dropdownKey: string): void {
+    this.dropdowns[dropdownKey] = !this.dropdowns[dropdownKey];
+    setTimeout(() => {
+      this.router.navigate([route]);
+    }, 0);
+  }
+
   navigate(path: string): void {
     this.router.navigate([path]);
   }
