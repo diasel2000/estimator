@@ -18,7 +18,7 @@
   </div>
 
   <nav>
-    <button (click)="navigate('/home')">
+    <button (click)="navigate('/dashboard/home')">
       <img src="assets/icons/home-icon.png" alt="Home" class="nav-icon"> Home
     </button>
     <button (click)="navigate('/dashboard/getting-started')">
@@ -64,5 +64,8 @@
     <a [routerLink]="['/subscriptions']">Upgrade Plan</a>
   </div>
 </div>
-
+<div class="content">
+  <!-- Main content for child components -->
+  <router-outlet></router-outlet>
+</div>
 <button class="toggle-sidebar" (click)="sidebarHidden = !sidebarHidden"><<<</button>
