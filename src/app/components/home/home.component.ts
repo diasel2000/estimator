@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { UserService } from "../../service/user.service";
 import { Router } from '@angular/router';
 import { User } from '../../model/User';
@@ -24,6 +24,8 @@ interface RecentlyVisitedItem {
 export class HomeComponent implements OnInit {
   user: User | null = null;
   recentlyVisited: RecentlyVisitedItem[] = [];
+
+  @ViewChild('sliderContent', { static: false }) sliderContent: ElementRef | undefined;
 
   constructor(private userService: UserService, private router: Router) {}
 
@@ -61,5 +63,15 @@ export class HomeComponent implements OnInit {
       route: `/dashboard/projects/new/${this.recentlyVisited.length + 1}`
     };
     this.recentlyVisited.push(newItem);
+  }
+
+  scroll(direction: number): void {
+    if (this.sliderContent) {
+      const scrollAmount = 240;
+      this.sliderContent.nativeElement.scrollBy({
+        left: direction * scrollAmount,
+        behavior: 'smooth'
+      });
+    }
   }
 }
