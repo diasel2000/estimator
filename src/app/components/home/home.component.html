@@ -1,3 +1,23 @@
-<p>home works!11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</p>
+<div class="home-container">
+  <mat-card class="welcome-card">
+    <mat-card-header>
+      <mat-card-title>Welcome, {{ user?.username || 'User' }}</mat-card-title>
+    </mat-card-header>
+  </mat-card>
 
+  <mat-card class="recently-visited-slider">
+    <mat-card-content>
+      <ng-container *ngIf="recentlyVisited.length === 0">
+        <p>No recent activity</p>
+      </ng-container>
 
+      <ng-container *ngIf="recentlyVisited.length > 0">
+        <mat-chip-list>
+          <mat-chip *ngFor="let item of recentlyVisited" (click)="navigateTo(item)">
+            <span>{{ item.name }}</span>
+          </mat-chip>
+        </mat-chip-list>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+</div>

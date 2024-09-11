@@ -24,6 +24,12 @@ import { TaskListComponent } from './components/task-list/task-list.component';
 import { ProjectsComponent } from './components/projects/projects.component';
 import { HomeComponent } from './components/home/home.component';
 import { GettingStartedComponent } from './components/getting-started/getting-started.component';
+import {MatButtonModule} from "@angular/material/button";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatIconModule} from "@angular/material/icon";
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatCardModule} from "@angular/material/card";
+import {MatChipsModule} from "@angular/material/chips";
 
 @NgModule({
   declarations: [
@@ -43,6 +49,12 @@ import { GettingStartedComponent } from './components/getting-started/getting-st
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    MatChipsModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatCardModule,
     CommonModule,
     HttpClientModule,
     FormsModule,
