@@ -23,9 +23,10 @@
     max-width: 1000px
     padding: 10px 0
     overflow: hidden
+    margin-left: 220px
 
     .scroll-button
-      background-color: #0078d4
+      background-color: rgba(128, 128, 128, 0.3)
       color: #fff
       border: none
       border-radius: 50%
@@ -51,12 +52,12 @@
       left: 10px
 
     .right
-      right: 10px
+      right: 100px
 
     .slider-wrapper
       display: flex
       overflow: hidden
-      width: calc(100% - 80px) // Учитываем ширину кнопок прокрутки
+      width: calc(100% - 80px)
 
       .slider-content
         display: flex
@@ -64,7 +65,7 @@
         flex-wrap: nowrap
         overflow-x: auto
         scroll-behavior: smooth
-        padding-right: 50px // Дополнительное пространство для кнопки справа
+        padding-right: 50px
 
         .content-card
           flex: 0 0 220px
