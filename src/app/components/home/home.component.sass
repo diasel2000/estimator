@@ -2,7 +2,7 @@
   display: flex
   flex-direction: column
   align-items: center
-  justify-content: center
+  justify-content: flex-start
   text-align: center
   height: 100vh
   padding: 20px
@@ -12,11 +12,13 @@
     margin-bottom: 20px
     width: 100%
     max-width: 600px
+    background-color: #fff
+    color: #333
 
   .recently-visited-slider
     width: 80%
     max-width: 600px
-    margin: 0 auto
+    margin: 20px auto
     padding: 20px
     background-color: #f9f9f9
     border-radius: 8px
@@ -26,12 +28,14 @@
     mat-chip-list
       display: flex
       flex-wrap: wrap
+      justify-content: center
       gap: 10px
 
     mat-chip
       background-color: #0078d4
       color: #fff
       cursor: pointer
+      padding: 0 10px
       transition: background-color 0.3s ease
 
       &:hover
@@ -40,6 +44,26 @@
     p
       font-size: 1rem
       color: #555
+      margin-top: 10px
+
+  .add-chip
+    display: flex
+    justify-content: center
+    align-items: center
+    background-color: #ddd
+    border-radius: 50%
+    cursor: pointer
+    height: 40px
+    width: 40px
+    margin-top: 20px
+    transition: background-color 0.3s ease
+
+    &:hover
+      background-color: #c5e0f9
+
+    mat-icon
+      font-size: 24px
+      color: #0078d4
 
 @media (max-width: 768px)
   .recently-visited-slider

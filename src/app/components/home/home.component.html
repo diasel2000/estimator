@@ -8,7 +8,7 @@
   <mat-card class="recently-visited-slider">
     <mat-card-content>
       <ng-container *ngIf="recentlyVisited.length === 0">
-        <p>No recent activity</p>
+        <p>No recent activity123</p>
       </ng-container>
 
       <ng-container *ngIf="recentlyVisited.length > 0">
@@ -17,6 +17,9 @@
             <span>{{ item.name }}</span>
           </mat-chip>
         </mat-chip-list>
+        <div class="add-chip" (click)="addRecentlyVisited()">
+          <mat-icon>+</mat-icon>
+        </div>
       </ng-container>
     </mat-card-content>
   </mat-card>

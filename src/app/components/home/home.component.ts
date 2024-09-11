@@ -1,4 +1,4 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, OnInit} from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { UserService } from "../../service/user.service";
 import { Router } from '@angular/router';
 import { User } from '../../model/User';
@@ -43,7 +43,6 @@ export class HomeComponent implements OnInit {
   }
 
   private loadRecentlyVisited(): void {
-    // Sample recently visited data
     this.recentlyVisited = [
       { name: 'Project 1', type: 'Project', route: '/dashboard/projects/1' },
       { name: 'Task 2', type: 'Task', route: '/dashboard/tasks/2' },
@@ -53,5 +52,14 @@ export class HomeComponent implements OnInit {
 
   navigateTo(item: RecentlyVisitedItem): void {
     this.router.navigate([item.route]);
+  }
+
+  addRecentlyVisited(): void {
+    const newItem: RecentlyVisitedItem = {
+      name: `New Project ${this.recentlyVisited.length + 1}`,
+      type: 'Project',
+      route: `/dashboard/projects/new/${this.recentlyVisited.length + 1}`
+    };
+    this.recentlyVisited.push(newItem);
   }
 }
