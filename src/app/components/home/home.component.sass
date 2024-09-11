@@ -1,0 +1,52 @@
+.home-container
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  text-align: center
+  height: 100vh
+  padding: 20px
+  box-sizing: border-box
+
+  .welcome-card
+    margin-bottom: 20px
+    width: 100%
+    max-width: 600px
+
+  .recently-visited-slider
+    width: 80%
+    max-width: 600px
+    margin: 0 auto
+    padding: 20px
+    background-color: #f9f9f9
+    border-radius: 8px
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
+    overflow: hidden
+
+    mat-chip-list
+      display: flex
+      flex-wrap: wrap
+      gap: 10px
+
+    mat-chip
+      background-color: #0078d4
+      color: #fff
+      cursor: pointer
+      transition: background-color 0.3s ease
+
+      &:hover
+        background-color: #005a9e
+
+    p
+      font-size: 1rem
+      color: #555
+
+@media (max-width: 768px)
+  .recently-visited-slider
+    mat-chip
+      font-size: 0.9rem
+
+@media (max-width: 480px)
+  .recently-visited-slider
+    mat-chip
+      font-size: 0.8rem
