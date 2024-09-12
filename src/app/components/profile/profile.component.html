@@ -42,8 +42,18 @@
 </div>
 
 <div *ngIf="activeTab === 'support'" class="tab-content">
-  <h3>Support</h3>
-  <a href="#" (click)="deleteAccount()" class="button-link delete-link">Delete Account</a>
+  <div *ngIf="activeTab === 'support'" class="tab-content">
+    <h3>Support</h3>
+    <nav class="support-nav">
+      <a href="#" class="nav-link">Help & Documentation</a>
+      <a href="#" class="nav-link">Message Support</a>
+      <a href="#" class="nav-link">What's New?</a>
+      <a href="#" class="nav-link">Join Us</a>
+      <a href="#" class="nav-link">Status</a>
+      <div class="version-info">Estimator version: 0.0.1</div>
+    </nav>
+    <a href="#" (click)="deleteAccount()" class="button-link delete-link">Delete Account</a>
+  </div>
 </div>
 
 <div *ngIf="activeTab === 'devices'" class="tab-content">

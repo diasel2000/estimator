@@ -58,6 +58,7 @@
       <img src="assets/icons/more-icon.png" alt="More" class="nav-icon"> More
     </button>
   </nav>
+  <button class="toggle-sidebar" (click)="sidebarHidden = !sidebarHidden"><</button>
 
   <div class="footer-links">
     <a [routerLink]="['/invite-members']">Invite Members</a>
@@ -68,4 +69,3 @@
   <!-- Main content for child components -->
   <router-outlet></router-outlet>
 </div>
-<button class="toggle-sidebar" (click)="sidebarHidden = !sidebarHidden"><<<</button>
