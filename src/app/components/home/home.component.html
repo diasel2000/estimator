@@ -5,7 +5,10 @@
     </mat-card-header>
   </mat-card>
   <div class="title-divider"></div>
-  <span class="slider-info">Here are your recently visited items:</span>
+  <div class="slider-info">
+    <mat-icon matTooltip=" your Estimator items" matTooltipPosition="above">Recently visited</mat-icon>
+  </div>
+
   <div class="slider-container">
     <button class="scroll-button left" (click)="scroll(-1)">
       <mat-icon><</mat-icon>
