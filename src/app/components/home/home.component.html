@@ -1,10 +1,11 @@
 <div class="home-container">
   <mat-card class="welcome-card">
     <mat-card-header>
-      <mat-card-title>👋 Welcome, {{ user?.username || 'User' }}!</mat-card-title>
+      <mat-card-title class="animated-title">👋 Welcome, {{ user?.username || 'User' }}!</mat-card-title>
     </mat-card-header>
   </mat-card>
-
+  <div class="title-divider"></div>
+  <span class="slider-info">Here are your recently visited items:</span>
   <div class="slider-container">
     <button class="scroll-button left" (click)="scroll(-1)">
       <mat-icon><</mat-icon>
@@ -39,4 +40,5 @@
       <mat-icon>></mat-icon>
     </button>
   </div>
+  <div class="title-divider"></div>
 </div>
