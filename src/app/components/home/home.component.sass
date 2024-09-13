@@ -36,7 +36,7 @@
     width: 80%
     height: 2px
     background-color: #0078d4
-    margin: 20px 0 20px 0
+    margin: 20px 0
     transition: width 0.4s ease
 
     &:hover
@@ -49,7 +49,7 @@
     width: 100%
     max-width: 1150px
     padding-left: 220px
-    margin-bottom: 0px
+    margin-bottom: 0
 
     mat-icon
       color: #76767c
@@ -112,7 +112,6 @@
           display: none
 
         scrollbar-width: none
-
         -ms-overflow-style: none
 
         .content-card
@@ -184,13 +183,100 @@
             mat-icon
               font-size: 48px
               color: #0078d4
+.developer-card
+  margin: 20px auto
+  width: 100%
+  max-width: 1200px
+  display: flex
+  flex-direction: column
+  padding: 20px
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
+  border-radius: 8px
+  background-color: #ffffff
+  border: 1px solid #e0e0e0
+  position: relative
+  overflow: hidden
+  transition: transform 0.3s ease-in-out
+
+  &:hover
+    transform: scale(1.10)
+
+  .card-content
+    display: flex
+    align-items: flex-start
+    justify-content: space-between
+    gap: 20px
+
+    .left-section
+      flex: 1
+      padding-right: 20px
+      .profile-info
+        display: flex
+        flex-direction: column
+        align-items: flex-start
+        gap: 8px
+        .developer-icon
+          font-size: 50px
+          color: #007bff
+        h2
+          font-size: 22px
+          font-weight: 600
+          color: #333
+        p
+          font-size: 14px
+          color: #666
+        .location
+          display: flex
+          align-items: center
+          gap: 5px
+          mat-icon
+            font-size: 16px
+            color: #666
+          .region-flag
+            width: 30px
+            height: 20px
+        .work-period, .role, .salary
+          margin: 4px 0
+
+    .vertical-divider
+      width: 2px
+      background-color: #e0e0e0
+      height: 100%
+      margin: 0 20px
+
+    .right-section
+      flex: 1
+      padding-left: 20px
+      h3
+        font-size: 18px
+        font-weight: 600
+        color: #333
+        margin-bottom: 16px
+      .example-tree
+        .mat-tree-node
+          padding: 8px 0
+          font-size: 14px
+          color: #666
+          display: flex
+          align-items: center
+          button
+            display: none
 
 @media (max-width: 768px)
-  .content-card, .add-card
-    flex: 0 0 150px
-    height: 150px
+  .developer-card
+    .card-content
+      flex-direction: column
+      gap: 0
+
+    .left-section, .right-section
+      padding: 0
+      text-align: center
+
+    .vertical-divider
+      display: none
 
 @media (max-width: 480px)
-  .content-card, .add-card
-    flex: 0 0 120px
-    height: 120px
+  .left-section, .right-section
+    padding: 0
+    text-align: center
+
