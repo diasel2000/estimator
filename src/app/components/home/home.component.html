@@ -48,15 +48,43 @@
   <mat-card class="developer-card">
     <div class="card-content">
       <div class="left-section">
-        <h2>{{ developer?.name || 'Developer Name' }}</h2>
-        <p>{{ developer?.status || 'Status: N/A' }}</p>
-        <p>{{ developer?.role || 'Role: N/A' }}</p>
+        <div class="profile-info">
+          <mat-icon>person</mat-icon>
+          <h2>{{ developer?.name || 'John Doe' }}</h2>
+          <p class="status">{{ developer?.status || 'Active' }}</p>
+          <p class="location">
+            <mat-icon>location_on</mat-icon> {{ developer?.region || 'USA' }}
+            <img [src]="developer?.flag || '/assets/default-flag.png'" alt="flag" class="region-flag">
+          </p>
+          <p class="work-period">Works from {{ developer?.workStart || 'Start Date' }} to {{ developer?.workEnd || 'Present' }}</p>
+          <p class="role">{{ developer?.role || 'Senior Programmer' }}</p>
+          <p class="salary"><mat-icon>attach_money</mat-icon> {{ developer?.salary || '$120,000/year' }}</p>
+        </div>
       </div>
+
+      <div class="vertical-divider"></div>
+
       <div class="right-section">
-        <h3>Projects:</h3>
-        <ul>
-          <li *ngFor="let project of developer?.projects">{{ project }}</li>
-        </ul>
+        <h3>Professional Details:</h3>
+        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
+          <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+            <li class="mat-tree-node">
+              <button mat-icon-button disabled></button>
+              {{ node.item }}
+            </li>
+          </mat-tree-node>
+
+          <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodeToggle>
+            <li>
+              <div class="mat-tree-node">
+                <button mat-icon-button matTreeNodeToggle>
+                  <mat-icon>{{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+                </button>
+                {{ node.item }}
+              </div>
+            </li>
+          </mat-tree-node>
+        </mat-tree>
       </div>
     </div>
   </mat-card>
