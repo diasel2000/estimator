@@ -185,10 +185,58 @@
               font-size: 48px
               color: #0078d4
 
+  .developer-card
+    margin-top: 20px
+    width: 100%
+    max-width: 1000px
+    display: flex
+    flex-direction: column
+    padding: 16px
+    box-shadow: none
+    background-color: #6fb2de
+
+    .card-content
+      display: flex
+      justify-content: space-between
+      padding: 16px 0
+
+      .left-section
+        flex: 1
+        padding-right: 16px
+        h2
+          font-size: 24px
+          font-weight: bold
+          color: #333
+        p
+          font-size: 16px
+          color: #555
+
+      .right-section
+        flex: 1
+        padding-left: 16px
+        h3
+          font-size: 20px
+          font-weight: bold
+          color: #333
+        ul
+          list-style-type: none
+          padding: 0
+          li
+            font-size: 16px
+            color: #555
+
 @media (max-width: 768px)
   .content-card, .add-card
     flex: 0 0 150px
     height: 150px
+
+  .developer-card
+    .card-content
+      flex-direction: column
+
+      .left-section, .right-section
+        padding: 0
+        text-align: center
 
 @media (max-width: 480px)
   .content-card, .add-card

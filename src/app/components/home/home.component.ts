@@ -7,6 +7,13 @@ import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import {MatChipsModule} from "@angular/material/chips";
 
+interface Developer {
+  name: string;
+  status: string;
+  role: string;
+  projects: string[];
+}
+
 interface RecentlyVisitedItem {
   name: string;
   type: 'Project' | 'Task' | 'Developer';
@@ -25,6 +32,8 @@ export class HomeComponent implements OnInit {
   user: User | null = null;
   recentlyVisited: RecentlyVisitedItem[] = [];
 
+  developer: Developer | null = null;
+
   @ViewChild('sliderContent', { static: false }) sliderContent: ElementRef | undefined;
 
   constructor(private userService: UserService, private router: Router) {}
@@ -32,6 +41,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.loadUser();
     this.loadRecentlyVisited();
+    this.loadDeveloper();
   }
 
   private loadUser(): void {
@@ -50,6 +60,15 @@ export class HomeComponent implements OnInit {
       { name: 'Task 2', type: 'Task', route: '/dashboard/tasks/2' },
       { name: 'Developer 3', type: 'Developer', route: '/dashboard/developers/3' }
     ];
+  }
+
+  private loadDeveloper(): void {
+    this.developer = {
+      name: 'John Doe',
+      status: 'Active',
+      role: 'Programmer',
+      projects: ['Project 1', 'Project 2', 'Project 3']
+    };
   }
 
   navigateTo(item: RecentlyVisitedItem): void {
