@@ -49,16 +49,19 @@
     <div class="card-content">
       <div class="left-section">
         <div class="profile-info">
-          <mat-icon>person</mat-icon>
-          <h2>{{ developer?.name || 'John Doe' }}</h2>
-          <p class="status">{{ developer?.status || 'Active' }}</p>
+          <mat-icon class="developer-icon">person</mat-icon>
+          <h2>Name: {{ developer?.name || 'John Doe' }}</h2>
+          <p class="status">Status: {{ developer?.status || 'Active' }}</p>
           <p class="location">
-            <mat-icon>location_on</mat-icon> {{ developer?.region || 'USA' }}
+            <mat-icon>Location:</mat-icon>
+             {{ developer?.region || 'USA' }}
             <img [src]="developer?.flag || '/assets/default-flag.png'" alt="flag" class="region-flag">
           </p>
-          <p class="work-period">Works from {{ developer?.workStart || 'Start Date' }} to {{ developer?.workEnd || 'Present' }}</p>
-          <p class="role">{{ developer?.role || 'Senior Programmer' }}</p>
-          <p class="salary"><mat-icon>attach_money</mat-icon> {{ developer?.salary || '$120,000/year' }}</p>
+          <p class="work-period">Works from {{ developer?.workStart || 'Jan 2020' }} to {{ developer?.workEnd || 'Present' }}</p>
+          <p class="role">Role: {{ developer?.role || 'Senior Programmer' }}</p>
+          <p class="salary">
+            <mat-icon>Salary: </mat-icon> {{ developer?.salary || '$120,000/year' }}
+          </p>
         </div>
       </div>
 
@@ -88,5 +91,4 @@
       </div>
     </div>
   </mat-card>
-
 </div>
