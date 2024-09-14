@@ -190,6 +190,6 @@ This application assists project managers, developers, and clients in obtaining 
 
 ## Usage
 
-1. Open your browser and navigate to `http://localhost:8080`.
+1. Open your browser and navigate to `http://localhost:8081`.
 2. Create a new project, add parameters, and obtain a cost estimate.
 
