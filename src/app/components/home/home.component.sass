@@ -57,6 +57,11 @@
       cursor: pointer
       margin-right: 10px
 
+    span
+      font-size: 16px
+      color: #76767c
+      margin-left: 5px
+
   .slider-container
     display: flex
     align-items: center
@@ -183,6 +188,7 @@
             mat-icon
               font-size: 48px
               color: #0078d4
+
 .developer-card
   margin: 20px auto
   width: 100%
@@ -210,33 +216,50 @@
     .left-section
       flex: 1
       padding-right: 20px
+
       .profile-info
         display: flex
         flex-direction: column
         align-items: flex-start
         gap: 8px
+
         .developer-icon
           font-size: 50px
           color: #007bff
+
         h2
           font-size: 22px
           font-weight: 600
           color: #333
+
         p
           font-size: 14px
           color: #666
+
         .location
           display: flex
           align-items: center
           gap: 5px
+
           mat-icon
             font-size: 16px
             color: #666
+
           .region-flag
             width: 30px
             height: 20px
+
         .work-period, .role, .salary
           margin: 4px 0
+
+        .status
+          display: flex
+          align-items: center
+
+        mat-icon
+          font-size: 16px
+          margin-right: 5px
+
 
     .vertical-divider
       width: 2px
@@ -247,11 +270,13 @@
     .right-section
       flex: 1
       padding-left: 20px
+
       h3
         font-size: 18px
         font-weight: 600
         color: #333
         margin-bottom: 16px
+
       .example-tree
         .mat-tree-node
           padding: 8px 0
@@ -259,6 +284,7 @@
           color: #666
           display: flex
           align-items: center
+
           button
             display: none
 

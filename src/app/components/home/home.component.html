@@ -6,12 +6,13 @@
   </mat-card>
   <div class="title-divider"></div>
   <div class="slider-info">
-    <mat-icon matTooltip=" your Estimator items" matTooltipPosition="above">Recently visited</mat-icon>
+    <mat-icon matTooltip="Your Estimator items" matTooltipPosition="above">history</mat-icon>
+    <span>Recently visited</span>
   </div>
 
   <div class="slider-container">
     <button class="scroll-button left" (click)="scroll(-1)">
-      <mat-icon><</mat-icon>
+      <
     </button>
     <div class="slider-wrapper">
       <div class="slider-content" #sliderContent>
@@ -34,35 +35,54 @@
             <mat-card-title>Add New</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <mat-icon>+</mat-icon>
+            <mat-icon class="developer-icon">add</mat-icon>
           </mat-card-content>
         </mat-card>
       </div>
     </div>
     <button class="scroll-button right" (click)="scroll(1)">
-      <mat-icon>></mat-icon>
+      >
     </button>
   </div>
   <div class="title-divider"></div>
   <div class="slider-info">
-    <mat-icon matTooltip=" your Estimator items" matTooltipPosition="above">Team Leader</mat-icon>
+    <mat-icon matTooltip="Your Estimator items" matTooltipPosition="above">supervisor_account</mat-icon>
+    <span>Team Leader</span>
   </div>
   <mat-card class="developer-card">
     <div class="card-content">
       <div class="left-section">
         <div class="profile-info">
-          <mat-icon class="developer-icon">person</mat-icon>
+          <span class="material-icons md-48">person</span>
           <h2>Name: {{ developer?.name || 'John Doe' }}</h2>
-          <p class="status">Status: {{ developer?.status || 'Active' }}</p>
+          <p class="status">
+            <mat-icon>check_circle</mat-icon>
+            <span>Status:</span>
+            {{ developer?.status || 'Active' }}
+          </p>
           <p class="location">
-            <mat-icon>Location:</mat-icon>
-             {{ developer?.region || 'USA' }}
+            <mat-icon>place</mat-icon>
+            <span>Location:</span>
+            {{ developer?.region || 'USA' }}
             <img [src]="developer?.flag || '/assets/default-flag.png'" alt="flag" class="region-flag">
           </p>
-          <p class="work-period">Works from {{ developer?.workStart || 'Jan 2020' }} to {{ developer?.workEnd || 'Present' }}</p>
-          <p class="role">Role: {{ developer?.role || 'Senior Programmer' }}</p>
+          <p class="work-period">
+            <mat-icon>calendar_today</mat-icon>
+            <span>Works from</span>
+            {{ developer?.workStart || 'Jan 2020' }}
+            <mat-icon>event</mat-icon>
+            <span>to</span>
+            {{ developer?.workEnd || 'Present' }}
+          </p>
+          <p class="role">
+            <mat-icon>work</mat-icon>
+            <span>Role:</span>
+            {{ developer?.role || 'Senior Programmer' }}
+          </p>
+
           <p class="salary">
-            <mat-icon>Salary: </mat-icon> {{ developer?.salary || '$120,000/year' }}
+            <span class="material-icons md-24">paid</span> Salary:
+            {{ developer?.salary || '$120,000/year' }}
           </p>
         </div>
       </div>
