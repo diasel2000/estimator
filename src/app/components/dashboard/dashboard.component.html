@@ -1,65 +1,77 @@
+<div #sidenav mode="side" [class.hidden]="sidebarHidden" class="sidebar">
+  <div class="user-info" (click)="stopPropagation($event)">
+    <button mat-button (click)="toggleUserMenu()">{{ user?.username || 'User' }}</button>
+    <div *ngIf="showUserMenu" class="user-menu">
+      <div>Email: {{ user?.email }}</div>
+      <button mat-button (click)="navigate('/users/profile')">Profile</button>
+      <button *ngIf="roles.isAdmin" mat-button (click)="navigate('/admin/subscriptions')">Manage Subscriptions</button>
+      <button *ngIf="roles.isAdmin" mat-button (click)="navigate('/admin/users')">Manage Users</button>
+      <button mat-button (click)="logout()">Logout</button>
+    </div>
+  </div>
 
-  <div #sidenav mode="side" [class.hidden]="sidebarHidden" class="sidebar">
-    <div class="user-info" (click)="stopPropagation($event)">
-      <button mat-button (click)="toggleUserMenu()">{{ user?.username || 'User' }}</button>
-      <div *ngIf="showUserMenu" class="user-menu">
-        <div>Email: {{ user?.email }}</div>
-        <button mat-button (click)="navigate('/users/profile')">Profile</button>
-        <button *ngIf="roles.isAdmin" mat-button (click)="navigate('/admin/subscriptions')">Manage Subscriptions</button>
-        <button *ngIf="roles.isAdmin" mat-button (click)="navigate('/admin/users')">Manage Users</button>
-        <button mat-button (click)="logout()">Logout</button>
-      </div>
+  <div class="search-container">
+    <button mat-icon-button (click)="openSearchDialog()">
+      <mat-icon>search</mat-icon>
+    </button>
+  </div>
+
+  <nav>
+    <button mat-button (click)="navigate('/dashboard/home')">
+      <mat-icon>home</mat-icon>
+      Home
+    </button>
+    <button mat-button (click)="navigate('/dashboard/getting-started')">
+      <mat-icon>info</mat-icon>
+      Getting Started
+    </button>
+
+    <button mat-button (click)="toggleDropdown('projects')">
+      <mat-icon>work</mat-icon>
+      My Projects
+    </button>
+    <div *ngIf="dropdowns['projects']" class="dropdown-menu">
+      <button mat-button *ngFor="let project of projects">{{ project.name }}</button>
+      <button mat-button (click)="addProject()">Add Project</button>
     </div>
 
-    <mat-form-field class="search-bar">
-      <input matInput placeholder="Search..." [(ngModel)]="searchQuery">
-      <button mat-icon-button (click)="onSearch()">
-        <mat-icon>search</mat-icon>
-      </button>
+    <button mat-button (click)="toggleDropdown('tasks')">
+      <mat-icon>assignment</mat-icon>
+      Task List
+    </button>
+    <div *ngIf="dropdowns['tasks']" class="dropdown-menu">
+      <button mat-button *ngFor="let task of tasks">{{ task.name }}</button>
+      <button mat-button (click)="addTask()">Add Task</button>
+    </div>
+
+    <button mat-button (click)="toggleDropdown('developers')">
+      <mat-icon>people</mat-icon>
+      Developers
+    </button>
+    <div *ngIf="dropdowns['developers']" class="dropdown-menu">
+      <button mat-button *ngFor="let developer of developers">{{ developer.name }}</button>
+    </div>
+
+    <button mat-button>
+      <mat-icon>more_vert</mat-icon>
+      More
+    </button>
+  </nav>
+
+  <div class="footer-links">
+    <button mat-button (click)="navigate('/invite-members')">Invite Members</button>
+    <button mat-button (click)="navigate('/subscriptions')">Upgrade Plan</button>
+  </div>
+</div>
+<ng-template #searchDialog>
+  <h1 mat-dialog-title>Search</h1>
+  <div mat-dialog-content>
+    <mat-form-field appearance="fill">
+      <mat-label>Search</mat-label>
+      <input matInput [(ngModel)]="searchQuery" (input)="onSearch()">
     </mat-form-field>
-
-    <nav>
-      <button mat-button (click)="navigate('/dashboard/home')">
-        <mat-icon>home</mat-icon> Home
-      </button>
-      <button mat-button (click)="navigate('/dashboard/getting-started')">
-        <mat-icon>info</mat-icon> Getting Started
-      </button>
-
-      <button mat-button (click)="toggleDropdown('projects')">
-        <mat-icon>work</mat-icon> My Projects
-      </button>
-      <div *ngIf="dropdowns['projects']" class="dropdown-menu">
-        <button mat-button *ngFor="let project of projects">{{ project.name }}</button>
-        <button mat-button (click)="addProject()">Add Project</button>
-      </div>
-
-      <button mat-button (click)="toggleDropdown('tasks')">
-        <mat-icon>assignment</mat-icon> Task List
-      </button>
-      <div *ngIf="dropdowns['tasks']" class="dropdown-menu">
-        <button mat-button *ngFor="let task of tasks">{{ task.name }}</button>
-        <button mat-button (click)="addTask()">Add Task</button>
-      </div>
-
-      <button mat-button (click)="toggleDropdown('developers')">
-        <mat-icon>people</mat-icon> Developers
-      </button>
-      <div *ngIf="dropdowns['developers']" class="dropdown-menu">
-        <button mat-button *ngFor="let developer of developers">{{ developer.name }}</button>
-      </div>
-
-      <button mat-button>
-        <mat-icon>more_vert</mat-icon> More
-      </button>
-    </nav>
-
-    <div class="footer-links">
-      <button mat-button (click)="navigate('/invite-members')">Invite Members</button>
-      <button mat-button (click)="navigate('/subscriptions')">Upgrade Plan</button>
-    </div>
   </div>
-
-  <div class="content">
-    <router-outlet></router-outlet>
-  </div>
+</ng-template>
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

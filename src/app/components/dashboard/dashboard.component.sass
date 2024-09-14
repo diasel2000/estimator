@@ -1,3 +1,6 @@
+.sidenav-container
+  display: flex
+
 .sidebar
   width: 240px
   max-width: 100%
@@ -70,34 +73,25 @@
           background-color: #f0f0f0
           color: #0078d4
 
-  .search-bar
+  .search-container
     display: flex
     align-items: center
+    justify-content: center
     margin-bottom: 15px
-
-    input
-      flex: 1
-      padding: 10px
-      font-size: 0.9rem
-      border: 1px solid #ddd
-      border-radius: 4px
-      outline: none
-      background-color: #fff
-      transition: border-color 0.3s ease
-
-      &:focus
-        border-color: #0078d4
 
     button
       background: none
       border: none
-      padding: 0
-      margin-left: 8px
+      padding: 8px
       cursor: pointer
+      transition: background-color 0.3s ease
 
-      mat-icon
-        width: 16px
-        height: 16px
+    mat-icon
+      width: 24px
+      height: 24px
+
+    &:hover
+      background-color: #f0f0f0
 
   nav
     display: flex
@@ -199,6 +193,11 @@
 
   .sidebar.hidden ~ .toggle-sidebar
     left: 0
+
+.content
+  margin-left: 240px
+  padding: 15px
+  flex: 1
 
 @media (max-width: 768px)
   .sidebar

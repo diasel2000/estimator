@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { User } from '../../model/User';
 import { UserService } from '../../service/user.service';
@@ -12,6 +12,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { FormsModule } from '@angular/forms';
 import {CommonModule} from "@angular/common";
+import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 
 interface Project {
   name: string;
@@ -38,6 +39,7 @@ interface Developer {
     MatCardModule,
     MatSidenavModule,
     MatListModule,
+    MatDialogModule,
     FormsModule,
     CommonModule,
     RouterModule
@@ -66,8 +68,9 @@ export class DashboardComponent implements OnInit {
   projects: Project[] = [];
   tasks: Task[] = [];
   developers: Developer[] = [];
+  @ViewChild('searchDialog') searchDialog!: TemplateRef<any>;
 
-  constructor(private authService: AuthService, private userService: UserService, private router: Router) {}
+  constructor(private authService: AuthService, private userService: UserService, private router: Router, private dialog: MatDialog) {}
 
   ngOnInit(): void {
 
@@ -96,6 +99,17 @@ export class DashboardComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  openSearchDialog(): void {
+    this.dialog.open(this.searchDialog, {
+      width: '700px',
+      height: '210px',
+    });
+  }
+
+  closeSearchDialog(): void {
+    this.dialog.closeAll();
   }
 
   toggleUserMenu(): void {
