@@ -64,12 +64,13 @@
   </div>
 </div>
 <ng-template #searchDialog>
-  <h1 mat-dialog-title>Search</h1>
-  <div mat-dialog-content>
-    <mat-form-field appearance="fill">
-      <mat-label>Search</mat-label>
-      <input matInput [(ngModel)]="searchQuery" (input)="onSearch()">
-    </mat-form-field>
+  <div class="custom-dialog-overlay" (click)="closeSearchDialog()">
+    <div class="custom-dialog" (click)="$event.stopPropagation()">
+      <h1 class="dialog-title">Search</h1>
+      <div class="dialog-content">
+        <input class="search-input" [(ngModel)]="searchQuery" (input)="onSearch()" placeholder="Search...">
+      </div>
+    </div>
   </div>
 </ng-template>
 <div class="content">

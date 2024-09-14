@@ -103,8 +103,7 @@ export class DashboardComponent implements OnInit {
 
   openSearchDialog(): void {
     this.dialog.open(this.searchDialog, {
-      width: '700px',
-      height: '210px',
+      panelClass: 'custom-dialog-overlay'
     });
   }
 
