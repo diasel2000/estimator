@@ -1,13 +1,14 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnInit, ViewChild} from '@angular/core';
-import { UserService } from "../../service/user.service";
-import { Router } from '@angular/router';
-import { User } from '../../model/User';
-import { CommonModule } from "@angular/common";
-import { RouterModule } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
+import {UserService} from "../../service/user.service";
+import {Router} from '@angular/router';
+import {User} from '../../model/User';
+import {CommonModule} from "@angular/common";
+import {RouterModule} from '@angular/router';
+import {MatCardModule} from '@angular/material/card';
 import {MatChipsModule} from "@angular/material/chips";
 import {FlatTreeControl} from "@angular/cdk/tree";
 import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
+import {MatIconModule} from "@angular/material/icon";
 
 interface Developer {
   name: string;
@@ -53,7 +54,7 @@ interface RecentlyVisitedItem {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatCardModule, MatChipsModule],
+  imports: [CommonModule, RouterModule, MatCardModule, MatChipsModule, MatIconModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.sass',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -84,9 +85,11 @@ export class HomeComponent implements OnInit {
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-  @ViewChild('sliderContent', { static: false }) sliderContent: ElementRef | undefined;
+  @ViewChild('sliderContent', {static: false}) sliderContent: ElementRef | undefined;
 
-  constructor(private userService: UserService, private router: Router) {this.dataSource.data = TREE_DATA;}
+  constructor(private userService: UserService, private router: Router) {
+    this.dataSource.data = TREE_DATA;
+  }
 
   ngOnInit(): void {
     this.loadUser();
@@ -106,9 +109,9 @@ export class HomeComponent implements OnInit {
 
   private loadRecentlyVisited(): void {
     this.recentlyVisited = [
-      { name: 'Project 1', type: 'Project', route: '/dashboard/projects/1' },
-      { name: 'Task 2', type: 'Task', route: '/dashboard/tasks/2' },
-      { name: 'Developer 3', type: 'Developer', route: '/dashboard/developers/3' }
+      {name: 'Project 1', type: 'Project', route: '/dashboard/projects/1'},
+      {name: 'Task 2', type: 'Task', route: '/dashboard/tasks/2'},
+      {name: 'Developer 3', type: 'Developer', route: '/dashboard/developers/3'}
     ];
   }
 
