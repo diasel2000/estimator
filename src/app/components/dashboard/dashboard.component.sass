@@ -1,18 +1,18 @@
 .sidebar
-  width: 180px
+  width: 240px
   max-width: 100%
-  background-color: #f9f9f9
+  background-color: #fff
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
   padding: 15px
   position: fixed
   top: 0
   left: 0
-  height: 90vh
+  height: 100vh
   display: flex
   flex-direction: column
   justify-content: space-between
   overflow-y: auto
-  transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.4s ease
+  transition: transform 0.3s ease, opacity 0.3s ease
   z-index: 10
   transform: translateX(0)
 
@@ -28,12 +28,12 @@
       background: none
       border: none
       font-size: 1rem
-      font-weight: normal
+      font-weight: 500
       color: #333
       cursor: pointer
       display: flex
       align-items: center
-      padding: 8px
+      padding: 10px
       border-radius: 4px
       transition: background-color 0.3s ease, color 0.3s ease
 
@@ -41,9 +41,9 @@
         color: #0078d4
         background-color: #f0f0f0
 
-    ul
+    .user-menu
       position: absolute
-      top: 50%
+      top: 100%
       left: 0
       background-color: #fff
       border: 1px solid #ddd
@@ -51,27 +51,33 @@
       border-radius: 4px
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
       z-index: 1000
+      list-style: none
+      margin: 0
+      padding: 0
 
-      li
+      button
+        display: block
+        width: 100%
         margin-bottom: 8px
+        background: none
+        border: none
+        color: #333
+        padding: 8px
+        border-radius: 4px
+        transition: background-color 0.3s ease
 
-        a
-          text-decoration: none
-          color: #333
-
-          &:hover
-            color: #0078d4
+        &:hover
+          background-color: #f0f0f0
+          color: #0078d4
 
   .search-bar
-    position: relative
     display: flex
     align-items: center
     margin-bottom: 15px
 
     input
       flex: 1
-      padding: 8px
-      padding-right: 0
+      padding: 10px
       font-size: 0.9rem
       border: 1px solid #ddd
       border-radius: 4px
@@ -83,17 +89,15 @@
         border-color: #0078d4
 
     button
-      position: absolute
-      right: 8px
       background: none
       border: none
       padding: 0
       margin-left: 8px
       cursor: pointer
 
-      img
-        width: 14px
-        height: 14px
+      mat-icon
+        width: 16px
+        height: 16px
 
   nav
     display: flex
@@ -105,20 +109,18 @@
       color: #fff
       border: none
       border-radius: 4px
-      padding: 10px 12px
+      padding: 10px
       font-size: 0.9rem
       cursor: pointer
-      text-align: left
       display: flex
       align-items: center
       transition: background-color 0.3s ease, color 0.3s ease
       width: 100%
 
-      .nav-icon
-        width: 20px
-        height: 20px
+      mat-icon
+        width: 24px
+        height: 24px
         margin-right: 10px
-        flex-shrink: 0
 
       &:hover
         background-color: #005a9e
@@ -132,8 +134,8 @@
         &:after
           content: ''
           display: inline-block
-          width: 6px
-          height: 6px
+          width: 8px
+          height: 8px
           border: 2px solid #fff
           border-left: transparent
           border-top: transparent
@@ -143,44 +145,23 @@
         &.open:after
           transform: rotate(225deg)
 
-  .dropdown
+  .dropdown-menu
     overflow: hidden
-    transition: max-height 0.4s ease
+    transition: max-height 0.3s ease
 
-    ul
-      list-style-type: none
-      margin: 0
-      padding: 0
+    button
       background-color: #fff
-      border: 1px solid #ddd
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
+      color: #0078d4
+      border: none
       border-radius: 4px
+      padding: 8px
+      font-size: 0.9rem
+      cursor: pointer
+      transition: background-color 0.3s ease, color 0.3s ease
+      width: 100%
 
-      li
-        margin: 0
-        padding: 8px 12px
-        background-color: #fff
-        border-bottom: 1px solid #ddd
-        transition: background-color 0.3s ease
-
-        &:last-child
-          border-bottom: none
-
-        &:hover
-          background-color: #f0f0f0
-
-        button
-          background-color: #0078d4
-          color: #fff
-          border: none
-          border-radius: 4px
-          padding: 6px 10px
-          font-size: 0.9rem
-          cursor: pointer
-          transition: background-color 0.3s ease, color 0.3s ease
-
-          &:hover
-            background-color: #005a9e
+      &:hover
+        background-color: #f0f0f0
 
   .footer-links
     margin-top: auto
@@ -188,7 +169,7 @@
     flex-direction: column
     gap: 15px
 
-    a
+    button
       color: #0078d4
       text-decoration: none
       font-size: 0.9rem
@@ -207,9 +188,9 @@
     border: none
     position: absolute
     top: 10px
-    left: 180px
+    left: 240px
     cursor: pointer
-    font-size: 1rem
+    font-size: 1.2rem
     color: #333
     transition: color 0.3s ease
 
@@ -221,18 +202,22 @@
 
 @media (max-width: 768px)
   .sidebar
-    width: 160px
+    width: 200px
     padding: 12px
+
     .toggle-sidebar
-      left: 160px
+      left: 200px
 
   .content
-    margin-left: 200px /* To account for the sidebar width */
-    padding: 200px
+    margin-left: 200px
 
 @media (max-width: 480px)
   .sidebar
     width: 100vw
     height: 100vh
+
     .toggle-sidebar
       left: 100vw
+
+  .content
+    margin-left: 0

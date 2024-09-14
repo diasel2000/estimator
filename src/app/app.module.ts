@@ -30,6 +30,9 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatCardModule} from "@angular/material/card";
 import {MatChipsModule} from "@angular/material/chips";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatInputModule} from "@angular/material/input";
+import {MatListModule} from "@angular/material/list";
 
 @NgModule({
   declarations: [
@@ -47,6 +50,10 @@ import {MatChipsModule} from "@angular/material/chips";
     GettingStartedComponent
   ],
   imports: [
+    MatMenuModule,
+    MatInputModule,
+    MatIconModule,
+    MatListModule,
     BrowserModule,
     BrowserAnimationsModule,
     MatChipsModule,

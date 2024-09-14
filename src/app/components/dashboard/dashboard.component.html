@@ -1,71 +1,65 @@
-<div class="sidebar" [class.hidden]="sidebarHidden">
-  <div class="user-info" (click)="stopPropagation($event)">
-    <button (click)="toggleUserMenu()">{{ user?.username || 'User' }}</button>
-    <ul *ngIf="showUserMenu">
-      <li>Email: {{ user?.email }}</li>
-      <li><a [routerLink]="['/users/profile']">Profile</a></li>
-      <li *ngIf="roles.isAdmin"><a [routerLink]="['/admin/subscriptions']">Manage Subscriptions</a></li>
-      <li *ngIf="roles.isAdmin"><a [routerLink]="['/admin/users']">Manage Users</a></li>
-      <li><a [routerLink]="['/login']" (click)="logout()">Logout</a></li>
-    </ul>
-  </div>
 
-  <div class="search-bar">
-    <input type="text" placeholder="search..." [(ngModel)]="searchQuery">
-    <button (click)="onSearch()">
-      <img src="assets/icons/search-icon.png" alt="Search">
-    </button>
-  </div>
-
-  <nav>
-    <button (click)="navigate('/dashboard/home')">
-      <img src="assets/icons/home-icon.png" alt="Home" class="nav-icon"> Home
-    </button>
-    <button (click)="navigate('/dashboard/getting-started')">
-      <img src="assets/icons/getting-started-icon.png" alt="Getting Started" class="nav-icon"> Getting Started
-    </button>
-
-    <div class="dropdown">
-      <button (click)="handleDropdownClick('/dashboard/projects', 'projects')">
-        <img src="assets/icons/projects-icon.png" alt="My Projects" class="nav-icon"> My Projects
-      </button>
-      <ul *ngIf="dropdowns['projects']">
-        <li *ngFor="let project of projects">{{ project.name }}</li>
-        <li><button (click)="addProject()">Add Project</button></li>
-      </ul>
+  <div #sidenav mode="side" [class.hidden]="sidebarHidden" class="sidebar">
+    <div class="user-info" (click)="stopPropagation($event)">
+      <button mat-button (click)="toggleUserMenu()">{{ user?.username || 'User' }}</button>
+      <div *ngIf="showUserMenu" class="user-menu">
+        <div>Email: {{ user?.email }}</div>
+        <button mat-button (click)="navigate('/users/profile')">Profile</button>
+        <button *ngIf="roles.isAdmin" mat-button (click)="navigate('/admin/subscriptions')">Manage Subscriptions</button>
+        <button *ngIf="roles.isAdmin" mat-button (click)="navigate('/admin/users')">Manage Users</button>
+        <button mat-button (click)="logout()">Logout</button>
+      </div>
     </div>
 
-    <div class="dropdown">
-      <button (click)="handleDropdownClick('/dashboard/tasks', 'tasks')">
-        <img src="assets/icons/tasks-icon.png" alt="Task List" class="nav-icon"> Task List
+    <mat-form-field class="search-bar">
+      <input matInput placeholder="Search..." [(ngModel)]="searchQuery">
+      <button mat-icon-button (click)="onSearch()">
+        <mat-icon>search</mat-icon>
       </button>
-      <ul *ngIf="dropdowns['tasks']">
-        <li *ngFor="let task of tasks">{{ task.name }}</li>
-        <li><button (click)="addTask()">Add Task</button></li>
-      </ul>
-    </div>
+    </mat-form-field>
 
-    <div class="dropdown">
-      <button (click)="handleDropdownClick('/dashboard/developers', 'developers')">
-        <img src="assets/icons/developers-icon.png" alt="Developers" class="nav-icon"> Developers
+    <nav>
+      <button mat-button (click)="navigate('/dashboard/home')">
+        <mat-icon>home</mat-icon> Home
       </button>
-      <ul *ngIf="dropdowns['developers']">
-        <li *ngFor="let developer of developers">{{ developer.name }}</li>
-      </ul>
+      <button mat-button (click)="navigate('/dashboard/getting-started')">
+        <mat-icon>info</mat-icon> Getting Started
+      </button>
+
+      <button mat-button (click)="toggleDropdown('projects')">
+        <mat-icon>work</mat-icon> My Projects
+      </button>
+      <div *ngIf="dropdowns['projects']" class="dropdown-menu">
+        <button mat-button *ngFor="let project of projects">{{ project.name }}</button>
+        <button mat-button (click)="addProject()">Add Project</button>
+      </div>
+
+      <button mat-button (click)="toggleDropdown('tasks')">
+        <mat-icon>assignment</mat-icon> Task List
+      </button>
+      <div *ngIf="dropdowns['tasks']" class="dropdown-menu">
+        <button mat-button *ngFor="let task of tasks">{{ task.name }}</button>
+        <button mat-button (click)="addTask()">Add Task</button>
+      </div>
+
+      <button mat-button (click)="toggleDropdown('developers')">
+        <mat-icon>people</mat-icon> Developers
+      </button>
+      <div *ngIf="dropdowns['developers']" class="dropdown-menu">
+        <button mat-button *ngFor="let developer of developers">{{ developer.name }}</button>
+      </div>
+
+      <button mat-button>
+        <mat-icon>more_vert</mat-icon> More
+      </button>
+    </nav>
+
+    <div class="footer-links">
+      <button mat-button (click)="navigate('/invite-members')">Invite Members</button>
+      <button mat-button (click)="navigate('/subscriptions')">Upgrade Plan</button>
     </div>
-
-    <button>
-      <img src="assets/icons/more-icon.png" alt="More" class="nav-icon"> More
-    </button>
-  </nav>
-  <button class="toggle-sidebar" (click)="sidebarHidden = !sidebarHidden"><</button>
-
-  <div class="footer-links">
-    <a [routerLink]="['/invite-members']">Invite Members</a>
-    <a [routerLink]="['/subscriptions']">Upgrade Plan</a>
   </div>
-</div>
-<div class="content">
-  <!-- Main content for child components -->
-  <router-outlet></router-outlet>
-</div>
+
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>

@@ -1,10 +1,17 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { User } from '../../model/User';
-import { UserService } from "../../service/user.service";
-import { CommonModule } from "@angular/common";
+import { UserService } from '../../service/user.service';
 import {Router, RouterModule} from '@angular/router';
-import { FormsModule } from "@angular/forms";
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { FormsModule } from '@angular/forms';
+import {CommonModule} from "@angular/common";
 
 interface Project {
   name: string;
@@ -23,7 +30,18 @@ interface Developer {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.sass'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule]
+  imports: [
+    MatButtonModule,
+    MatMenuModule,
+    MatInputModule,
+    MatIconModule,
+    MatCardModule,
+    MatSidenavModule,
+    MatListModule,
+    FormsModule,
+    CommonModule,
+    RouterModule
+  ]
 })
 export class DashboardComponent implements OnInit {
   user: User | null = null;
