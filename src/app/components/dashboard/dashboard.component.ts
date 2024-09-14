@@ -1,10 +1,18 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { User } from '../../model/User';
-import { UserService } from "../../service/user.service";
-import { CommonModule } from "@angular/common";
+import { UserService } from '../../service/user.service';
 import {Router, RouterModule} from '@angular/router';
-import { FormsModule } from "@angular/forms";
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { FormsModule } from '@angular/forms';
+import {CommonModule} from "@angular/common";
+import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 
 interface Project {
   name: string;
@@ -23,7 +31,19 @@ interface Developer {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.sass'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule]
+  imports: [
+    MatButtonModule,
+    MatMenuModule,
+    MatInputModule,
+    MatIconModule,
+    MatCardModule,
+    MatSidenavModule,
+    MatListModule,
+    MatDialogModule,
+    FormsModule,
+    CommonModule,
+    RouterModule
+  ]
 })
 export class DashboardComponent implements OnInit {
   user: User | null = null;
@@ -48,8 +68,9 @@ export class DashboardComponent implements OnInit {
   projects: Project[] = [];
   tasks: Task[] = [];
   developers: Developer[] = [];
+  @ViewChild('searchDialog') searchDialog!: TemplateRef<any>;
 
-  constructor(private authService: AuthService, private userService: UserService, private router: Router) {}
+  constructor(private authService: AuthService, private userService: UserService, private router: Router, private dialog: MatDialog) {}
 
   ngOnInit(): void {
 
@@ -78,6 +99,16 @@ export class DashboardComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  openSearchDialog(): void {
+    this.dialog.open(this.searchDialog, {
+      panelClass: 'custom-dialog-overlay'
+    });
+  }
+
+  closeSearchDialog(): void {
+    this.dialog.closeAll();
   }
 
   toggleUserMenu(): void {

@@ -1,18 +1,21 @@
+.sidenav-container
+  display: flex
+
 .sidebar
-  width: 180px
+  width: 240px
   max-width: 100%
-  background-color: #f9f9f9
+  background-color: #e3f2fd
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
   padding: 15px
   position: fixed
   top: 0
   left: 0
-  height: 90vh
+  height: 100vh
   display: flex
   flex-direction: column
   justify-content: space-between
   overflow-y: auto
-  transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.4s ease
+  transition: transform 0.3s ease, opacity 0.3s ease
   z-index: 10
   transform: translateX(0)
 
@@ -28,22 +31,22 @@
       background: none
       border: none
       font-size: 1rem
-      font-weight: normal
-      color: #333
+      font-weight: 500
+      color: #0078d4
       cursor: pointer
       display: flex
       align-items: center
-      padding: 8px
+      padding: 10px
       border-radius: 4px
       transition: background-color 0.3s ease, color 0.3s ease
 
       &:hover
-        color: #0078d4
-        background-color: #f0f0f0
+        color: #005a9e
+        background-color: #e1f5fe
 
-    ul
+    .user-menu
       position: absolute
-      top: 50%
+      top: 100%
       left: 0
       background-color: #fff
       border: 1px solid #ddd
@@ -51,49 +54,45 @@
       border-radius: 4px
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
       z-index: 1000
+      list-style: none
+      margin: 0
+      padding: 0
 
-      li
+      button
+        display: block
+        width: 100%
         margin-bottom: 8px
+        background: none
+        border: none
+        color: #333
+        padding: 8px
+        border-radius: 4px
+        transition: background-color 0.3s ease
 
-        a
-          text-decoration: none
-          color: #333
+        &:hover
+          background-color: #f0f0f0
+          color: #0078d4
 
-          &:hover
-            color: #0078d4
-
-  .search-bar
-    position: relative
+  .search-container
     display: flex
     align-items: center
+    justify-content: center
     margin-bottom: 15px
 
-    input
-      flex: 1
-      padding: 8px
-      padding-right: 0
-      font-size: 0.9rem
-      border: 1px solid #ddd
-      border-radius: 4px
-      outline: none
-      background-color: #fff
-      transition: border-color 0.3s ease
-
-      &:focus
-        border-color: #0078d4
-
     button
-      position: absolute
-      right: 8px
       background: none
       border: none
-      padding: 0
-      margin-left: 8px
+      padding: 8px
       cursor: pointer
+      transition: background-color 0.3s ease
 
-      img
-        width: 14px
-        height: 14px
+    mat-icon
+      width: 24px
+      height: 24px
+      color: #0078d4
+
+    &:hover
+      background-color: #f0f0f0
 
   nav
     display: flex
@@ -105,82 +104,22 @@
       color: #fff
       border: none
       border-radius: 4px
-      padding: 10px 12px
+      padding: 10px
       font-size: 0.9rem
       cursor: pointer
-      text-align: left
       display: flex
       align-items: center
       transition: background-color 0.3s ease, color 0.3s ease
       width: 100%
 
-      .nav-icon
-        width: 20px
-        height: 20px
+      mat-icon
+        width: 24px
+        height: 24px
         margin-right: 10px
-        flex-shrink: 0
 
       &:hover
         background-color: #005a9e
         color: #fff
-
-      &.dropdown-button
-        display: flex
-        justify-content: space-between
-        align-items: center
-
-        &:after
-          content: ''
-          display: inline-block
-          width: 6px
-          height: 6px
-          border: 2px solid #fff
-          border-left: transparent
-          border-top: transparent
-          transform: rotate(45deg)
-          transition: transform 0.3s ease
-
-        &.open:after
-          transform: rotate(225deg)
-
-  .dropdown
-    overflow: hidden
-    transition: max-height 0.4s ease
-
-    ul
-      list-style-type: none
-      margin: 0
-      padding: 0
-      background-color: #fff
-      border: 1px solid #ddd
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
-      border-radius: 4px
-
-      li
-        margin: 0
-        padding: 8px 12px
-        background-color: #fff
-        border-bottom: 1px solid #ddd
-        transition: background-color 0.3s ease
-
-        &:last-child
-          border-bottom: none
-
-        &:hover
-          background-color: #f0f0f0
-
-        button
-          background-color: #0078d4
-          color: #fff
-          border: none
-          border-radius: 4px
-          padding: 6px 10px
-          font-size: 0.9rem
-          cursor: pointer
-          transition: background-color 0.3s ease, color 0.3s ease
-
-          &:hover
-            background-color: #005a9e
 
   .footer-links
     margin-top: auto
@@ -188,7 +127,7 @@
     flex-direction: column
     gap: 15px
 
-    a
+    button
       color: #0078d4
       text-decoration: none
       font-size: 0.9rem
@@ -207,9 +146,9 @@
     border: none
     position: absolute
     top: 10px
-    left: 180px
+    left: 240px
     cursor: pointer
-    font-size: 1rem
+    font-size: 1.2rem
     color: #333
     transition: color 0.3s ease
 
@@ -219,20 +158,80 @@
   .sidebar.hidden ~ .toggle-sidebar
     left: 0
 
+.content
+  margin-left: 240px
+  padding: 15px
+  flex: 1
+
+.custom-dialog-overlay
+  position: fixed
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  background: rgba(0, 0, 0, 0.5)
+  display: flex
+  align-items: center
+  justify-content: center
+  z-index: 1000
+
+.custom-dialog
+  background-color: #ffffff
+  border-radius: 8px
+  padding: 20px
+  max-width: 700px
+  width: 100%
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)
+
+.dialog-title
+  font-size: 1.5rem
+  color: #0078d4
+  margin-bottom: 15px
+
+.dialog-content
+  margin-bottom: 15px
+
+.search-input
+  width: 100%
+  padding: 10px
+  border: 1px solid #ddd
+  border-radius: 4px
+  font-size: 1rem
+  background-color: #f5f5f5
+  outline: none
+  box-sizing: border-box
+
+.search-input:focus
+  border-color: #0078d4
+
+.close-button
+  background-color: #0078d4
+  color: #ffffff
+  border: none
+  padding: 10px 15px
+  border-radius: 4px
+  cursor: pointer
+  font-size: 1rem
+  transition: background-color 0.3s
+
 @media (max-width: 768px)
   .sidebar
-    width: 160px
+    width: 200px
     padding: 12px
+
     .toggle-sidebar
-      left: 160px
+      left: 200px
 
   .content
-    margin-left: 200px /* To account for the sidebar width */
-    padding: 200px
+    margin-left: 200px
 
 @media (max-width: 480px)
   .sidebar
     width: 100vw
     height: 100vh
+
     .toggle-sidebar
       left: 100vw
+
+  .content
+    margin-left: 0
