@@ -1,6 +1,6 @@
 <div #sidenav mode="side" [class.hidden]="sidebarHidden" class="sidebar">
   <div class="user-info" (click)="stopPropagation($event)">
-    <button mat-button (click)="toggleUserMenu()">{{ user?.username || 'User' }}</button>
+    <button mat-button (click)="toggleUserMenu()"><span class="material-icons md-48">account_circle </span> {{ user?.username || 'User' }}</button>
     <div *ngIf="showUserMenu" class="user-menu">
       <div>Email: {{ user?.email }}</div>
       <button mat-button (click)="navigate('/users/profile')">Profile</button>
@@ -18,17 +18,15 @@
 
   <nav>
     <button mat-button (click)="navigate('/dashboard/home')">
-      <mat-icon>home</mat-icon>
-      Home
+      <div><mat-icon>home</mat-icon>Home</div>
+
     </button>
     <button mat-button (click)="navigate('/dashboard/getting-started')">
-      <mat-icon>info</mat-icon>
-      Getting Started
+      <div><mat-icon>info</mat-icon>Getting Started</div>
     </button>
 
     <button mat-button (click)="toggleDropdown('projects')">
-      <mat-icon>work</mat-icon>
-      My Projects
+      <div><mat-icon>work</mat-icon>My Projects</div>
     </button>
     <div *ngIf="dropdowns['projects']" class="dropdown-menu">
       <button mat-button *ngFor="let project of projects">{{ project.name }}</button>
@@ -36,8 +34,7 @@
     </div>
 
     <button mat-button (click)="toggleDropdown('tasks')">
-      <mat-icon>assignment</mat-icon>
-      Task List
+      <div><mat-icon>assignment</mat-icon>Task List</div>
     </button>
     <div *ngIf="dropdowns['tasks']" class="dropdown-menu">
       <button mat-button *ngFor="let task of tasks">{{ task.name }}</button>
@@ -45,16 +42,14 @@
     </div>
 
     <button mat-button (click)="toggleDropdown('developers')">
-      <mat-icon>people</mat-icon>
-      Developers
+      <div><mat-icon>people</mat-icon>Developers</div>
     </button>
     <div *ngIf="dropdowns['developers']" class="dropdown-menu">
       <button mat-button *ngFor="let developer of developers">{{ developer.name }}</button>
     </div>
 
     <button mat-button>
-      <mat-icon>more_vert</mat-icon>
-      More
+     <div><mat-icon>more_vert</mat-icon>More</div>
     </button>
   </nav>
 
