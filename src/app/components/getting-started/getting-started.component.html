@@ -1,1 +1,68 @@
-<p>getting-started works!1111111111111111111111111111111111111111111111111111</p>
+<div class="getting-started">
+  <mat-card class="intro-card">
+    <mat-card-header>
+      <mat-card-title>Welcome to Estimator!</mat-card-title>
+      <mat-card-subtitle>Get Started with These Simple Steps</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Congratulations on getting started! Follow these steps to make the most of our product.</p>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="steps-card">
+    <mat-card-header>
+      <mat-card-title>Getting Started Steps</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list class="steps-list">
+        <mat-list-item *ngFor="let step of steps">
+          <mat-icon class="step-icon">check_circle</mat-icon>
+          <mat-checkbox
+            [checked]="step.completed"
+            (change)="onCheckboxChange($event, step)">
+            {{ step.label }}
+          </mat-checkbox>
+          <span class="step-description">{{ step.description }}</span>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="resources-card">
+    <mat-card-header>
+      <mat-card-title>Resources and Support</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <ul>
+        <li><a href="/documentation">Documentation</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="/contact">Contact Support</a></li>
+      </ul>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="video-card">
+    <mat-card-header>
+      <mat-card-title>Video Tutorials</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/your-video-id" frameborder="0" allowfullscreen></iframe>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="feedback-card">
+    <mat-card-header>
+      <mat-card-title>Give Us Feedback</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Your feedback is important to us. If you have any questions or suggestions, please let us know.</p>
+      <form>
+        <mat-form-field>
+          <mat-label>Your Message</mat-label>
+          <textarea matInput></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="primary">Send</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
