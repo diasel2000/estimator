@@ -50,19 +50,15 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="feedback-card">
-    <mat-card-header>
-      <mat-card-title>Give Us Feedback</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p>Your feedback is important to us. If you have any questions or suggestions, please let us know.</p>
-      <form>
-        <mat-form-field>
-          <mat-label>Your Message</mat-label>
-          <textarea matInput></textarea>
-        </mat-form-field>
-        <button mat-raised-button color="primary">Send</button>
-      </form>
-    </mat-card-content>
-  </mat-card>
+  <div class="feedback-card">
+    <h2 class="card-title">Send Feedback</h2>
+    <form class="feedback-form">
+      <div class="form-group">
+        <label for="feedback">Your Message:</label>
+        <textarea id="feedback" rows="4"></textarea>
+      </div>
+      <button type="submit" class="feedback-button">Send Feedback</button>
+    </form>
+  </div>
+
 </div>
