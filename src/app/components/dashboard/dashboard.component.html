@@ -29,7 +29,7 @@
         <div><mat-icon>work</mat-icon>My Projects</div>
         <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
       </button>
-      <div *ngIf="dropdowns['projects']" class="dropdown-menu" (click)="$event.stopPropagation()">
+      <div *ngIf="activeDropdown === 'projects'" class="dropdown-menu" (click)="$event.stopPropagation()">
         <button mat-button *ngFor="let project of projects" (click)="navigate('/dashboard/projects')">{{ project.name }}</button>
         <button mat-button (click)="addProject()">Add Project</button>
       </div>
@@ -40,7 +40,7 @@
         <div><mat-icon>assignment</mat-icon>Task List</div>
         <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
       </button>
-      <div *ngIf="dropdowns['tasks']" class="dropdown-menu" (click)="$event.stopPropagation()">
+      <div *ngIf="activeDropdown === 'tasks'" class="dropdown-menu" (click)="$event.stopPropagation()">
         <button mat-button *ngFor="let task of tasks" (click)="navigate('/dashboard/tasks')">{{ task.name }}</button>
         <button mat-button (click)="addTask()">Add Task</button>
       </div>
@@ -51,7 +51,7 @@
         <div><mat-icon>people</mat-icon>Developers</div>
         <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
       </button>
-      <div *ngIf="dropdowns['developers']" class="dropdown-menu" (click)="$event.stopPropagation()">
+      <div *ngIf="activeDropdown === 'developers'" class="dropdown-menu" (click)="$event.stopPropagation()">
         <button mat-button *ngFor="let developer of developers" (click)="navigate('/dashboard/developers')">{{ developer.name }}</button>
       </div>
     </div>
