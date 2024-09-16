@@ -22,7 +22,7 @@
             (change)="onCheckboxChange($event, step)">
             {{ step.label }}
           </mat-checkbox>
-          <span class="step-description">{{ step.description }}</span>
+          <span class="step-description"> - {{ step.description }}</span>
         </mat-list-item>
       </mat-list>
     </mat-card-content>
@@ -36,7 +36,7 @@
       <ul>
         <li><a href="/documentation">Documentation</a></li>
         <li><a href="/faq">FAQ</a></li>
-        <li><a href="/contact">Contact Support</a></li>
+        <li><a href="/users/profile">Contact Support</a></li>
       </ul>
     </mat-card-content>
   </mat-card>
@@ -50,19 +50,15 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="feedback-card">
-    <mat-card-header>
-      <mat-card-title>Give Us Feedback</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p>Your feedback is important to us. If you have any questions or suggestions, please let us know.</p>
-      <form>
-        <mat-form-field>
-          <mat-label>Your Message</mat-label>
-          <textarea matInput></textarea>
-        </mat-form-field>
-        <button mat-raised-button color="primary">Send</button>
-      </form>
-    </mat-card-content>
-  </mat-card>
+  <div class="feedback-card">
+    <h2 class="card-title">Send Feedback</h2>
+    <form class="feedback-form">
+      <div class="form-group">
+        <label for="feedback">Your Message:</label>
+        <textarea id="feedback" rows="4"></textarea>
+      </div>
+      <button type="submit" class="feedback-button">Send Feedback</button>
+    </form>
+  </div>
+
 </div>

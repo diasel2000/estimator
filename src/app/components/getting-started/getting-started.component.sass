@@ -4,15 +4,33 @@
   padding: 16px
   gap: 24px
 
-  .intro-card
+  .intro-card, .steps-card, .resources-card, .video-card, .feedback-card
+    position: relative
     border-radius: 8px
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
     padding: 16px
     background-color: #ffffff
-    transition: box-shadow 0.3s ease
+    transition: box-shadow 0.3s ease, transform 0.3s ease
 
     &:hover
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15)
+      transform: translateY(-4px)
+
+    &:before
+      content: ''
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      background: linear-gradient(135deg, #63a0df 0%, #23aa7f 100%)
+      z-index: -1
+      transition: transform 0.5s ease-in-out
+      transform: scaleX(0) scaleY(0)
+      transform-origin: top left
+
+    &:hover:before
+      transform: scaleX(1) scaleY(1)
 
     .mat-card-header
       border-bottom: 1px solid #e0e0e0
@@ -25,12 +43,6 @@
     .mat-card-subtitle
       font-size: 16px
       color: #555
-
-  .steps-card, .resources-card, .video-card, .feedback-card
-    border-radius: 8px
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
-    padding: 16px
-    background-color: #ffffff
 
   .steps-list
     .mat-list-item
@@ -68,3 +80,86 @@
 
     mat-form-field
       margin-bottom: 16px
+
+.feedback-card
+  position: relative
+  border-radius: 8px
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
+  padding: 16px
+  background-color: #ffffff
+  transition: box-shadow 0.3s ease, transform 0.3s ease
+
+  &:hover
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15)
+    transform: translateY(-4px)
+
+  &:before
+    content: ''
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background: linear-gradient(135deg, #63a0df 0%, #23aa7f 100%)
+    z-index: -1
+    transition: transform 0.5s ease-in-out
+    transform: scaleX(0) scaleY(0)
+    transform-origin: top left
+
+  &:hover:before
+    transform: scaleX(1) scaleY(1)
+
+  .card-title
+    font-size: 24px
+    font-weight: 600
+    color: #333
+    margin-bottom: 12px
+
+  form
+    display: flex
+    flex-direction: column
+    gap: 16px
+
+    .form-group
+      display: flex
+      flex-direction: column
+
+      label
+        margin-bottom: 8px
+        font-weight: 500
+        color: #333
+
+      textarea
+        padding: 10px
+        border: 1px solid #ddd
+        border-radius: 4px
+        font-size: 14px
+        resize: vertical
+
+  .feedback-button
+    display: inline-block
+    padding: 10px 20px
+    background-color: #63a0df
+    color: #fff
+    font-size: 16px
+    font-weight: 600
+    border: none
+    border-radius: 4px
+    cursor: pointer
+    text-align: center
+    transition: background-color 0.3s ease, transform 0.3s ease
+    max-width: 200px
+    width: auto
+
+    &:hover
+      background-color: #23aa7f
+      transform: scale(1.05)
+
+    &:active
+      background-color: #1d8f68
+
+    &:disabled
+      background-color: #ccc
+      cursor: not-allowed
+
+
