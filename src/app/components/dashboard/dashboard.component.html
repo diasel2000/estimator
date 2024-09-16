@@ -1,7 +1,7 @@
 <div #sidenav mode="side" [class.hidden]="sidebarHidden" class="sidebar">
   <div class="user-info" (click)="stopPropagation($event)">
     <button mat-button (click)="toggleUserMenu()"><span class="material-icons md-48">account_circle </span> {{ user?.username || 'User' }}</button>
-    <div *ngIf="showUserMenu" class="user-menu">
+    <div *ngIf="showUserMenu" class="user-menu" (click)="$event.stopPropagation()">
       <div>Email: {{ user?.email }}</div>
       <button mat-button (click)="navigate('/users/profile')">Profile</button>
       <button *ngIf="roles.isAdmin" mat-button (click)="navigate('/admin/subscriptions')">Manage Subscriptions</button>
@@ -19,40 +19,47 @@
   <nav>
     <button mat-button (click)="navigate('/dashboard/home')">
       <div><mat-icon>home</mat-icon>Home</div>
-
     </button>
     <button mat-button (click)="navigate('/dashboard/getting-started')">
       <div><mat-icon>info</mat-icon>Getting Started</div>
     </button>
 
-    <button mat-button (click)="toggleDropdown('projects')">
-      <div><mat-icon>work</mat-icon>My Projects</div>
-    </button>
-    <div *ngIf="dropdowns['projects']" class="dropdown-menu">
-      <button mat-button *ngFor="let project of projects">{{ project.name }}</button>
-      <button mat-button (click)="addProject()">Add Project</button>
+    <div class="nav-item" (click)="stopPropagation($event)">
+      <button mat-button (click)="toggleDropdown('projects')">
+        <div><mat-icon>work</mat-icon>My Projects</div>
+        <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+      </button>
+      <div *ngIf="activeDropdown === 'projects'" class="dropdown-menu" (click)="$event.stopPropagation()">
+        <button mat-button *ngFor="let project of projects" (click)="navigate('/dashboard/projects')">{{ project.name }}</button>
+        <button mat-button (click)="addProject()">Add Project</button>
+      </div>
     </div>
 
-    <button mat-button (click)="toggleDropdown('tasks')">
-      <div><mat-icon>assignment</mat-icon>Task List</div>
-    </button>
-    <div *ngIf="dropdowns['tasks']" class="dropdown-menu">
-      <button mat-button *ngFor="let task of tasks">{{ task.name }}</button>
-      <button mat-button (click)="addTask()">Add Task</button>
+    <div class="nav-item" (click)="stopPropagation($event)">
+      <button mat-button (click)="toggleDropdown('tasks')">
+        <div><mat-icon>assignment</mat-icon>Task List</div>
+        <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+      </button>
+      <div *ngIf="activeDropdown === 'tasks'" class="dropdown-menu" (click)="$event.stopPropagation()">
+        <button mat-button *ngFor="let task of tasks" (click)="navigate('/dashboard/tasks')">{{ task.name }}</button>
+        <button mat-button (click)="addTask()">Add Task</button>
+      </div>
     </div>
 
-    <button mat-button (click)="toggleDropdown('developers')">
-      <div><mat-icon>people</mat-icon>Developers</div>
-    </button>
-    <div *ngIf="dropdowns['developers']" class="dropdown-menu">
-      <button mat-button *ngFor="let developer of developers">{{ developer.name }}</button>
+    <div class="nav-item" (click)="stopPropagation($event)">
+      <button mat-button (click)="toggleDropdown('developers')">
+        <div><mat-icon>people</mat-icon>Developers</div>
+        <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+      </button>
+      <div *ngIf="activeDropdown === 'developers'" class="dropdown-menu" (click)="$event.stopPropagation()">
+        <button mat-button *ngFor="let developer of developers" (click)="navigate('/dashboard/developers')">{{ developer.name }}</button>
+      </div>
     </div>
 
     <button mat-button>
-     <div><mat-icon>more_vert</mat-icon>More</div>
+      <div><mat-icon>more_vert</mat-icon>More</div>
     </button>
   </nav>
-
   <div class="footer-links">
     <button mat-button (click)="navigate('/invite-members')">Invite Members</button>
     <button mat-button (click)="navigate('/subscriptions')">Upgrade Plan</button>

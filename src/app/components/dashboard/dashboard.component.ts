@@ -59,11 +59,7 @@ export class DashboardComponent implements OnInit {
   sidebarHidden = false;
   showUserMenu = false;
   searchQuery = '';
-  dropdowns: { [key: string]: boolean } = {
-    projects: false,
-    tasks: false,
-    developers: false,
-  };
+  activeDropdown: string | null = null; // Store the currently active dropdown
 
   projects: Project[] = [];
   tasks: Task[] = [];
@@ -80,7 +76,6 @@ export class DashboardComponent implements OnInit {
 
     this.userService.getCurrentUser().subscribe({
       next: (user: User) => {
-        console.log('User data:', user);
         this.user = user;
         this.subscriptionName = user.subscription ? user.subscription.subscriptionName : 'No Subscription';
 
@@ -117,22 +112,31 @@ export class DashboardComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   closeMenuOnClickOutside(event: Event): void {
-    this.showUserMenu = false;
+    const target = event.target as HTMLElement;
+    const isClickInsideUserMenu = document.querySelector('.user-menu')?.contains(target) ?? false;
+    const isClickInsideActiveDropdown = this.activeDropdown
+      ? (document.querySelector(`.dropdown-menu.${this.activeDropdown}`) as HTMLElement)?.contains(target) ?? false
+      : false;
+
+    if (!isClickInsideUserMenu) {
+      this.showUserMenu = false;
+      this.showUserMenu = false;
+    }
+
+    if (!isClickInsideActiveDropdown && !isClickInsideUserMenu) {
+      this.activeDropdown = null;
+    }
+  }
+
+  toggleDropdown(menu: string): void {
+    if (this.activeDropdown === menu) {
+    } else {
+      this.activeDropdown = menu;
+    }
   }
 
   stopPropagation(event: Event): void {
     event.stopPropagation();
-  }
-
-  toggleDropdown(menu: string): void {
-    this.dropdowns[menu] = !this.dropdowns[menu];
-  }
-
-  handleDropdownClick(route: string, dropdownKey: string): void {
-    this.dropdowns[dropdownKey] = !this.dropdowns[dropdownKey];
-    setTimeout(() => {
-      this.router.navigate([route]);
-    }, 0);
   }
 
   navigate(path: string): void {
