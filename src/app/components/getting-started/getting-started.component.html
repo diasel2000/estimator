@@ -15,14 +15,40 @@
     </mat-card-header>
     <mat-card-content>
       <mat-list class="steps-list">
-        <mat-list-item *ngFor="let step of steps">
-          <mat-icon class="step-icon">check_circle</mat-icon>
-          <mat-checkbox
-            [checked]="step.completed"
-            (change)="onCheckboxChange($event, step)">
-            {{ step.label }}
-          </mat-checkbox>
-          <span class="step-description"> - {{ step.description }}</span>
+        <mat-list-item>
+          <mat-icon class="step-icon">add_circle</mat-icon>
+          <mat-checkbox [checked]="true">Add a New Project</mat-checkbox>
+          <span class="step-description">
+          - Start by creating a project, defining its name, goals, and description.
+        </span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon class="step-icon">code</mat-icon>
+          <mat-checkbox [checked]="false">Select Technologies</mat-checkbox>
+          <span class="step-description">
+          - Choose the technologies (e.g., programming languages, frameworks) involved in your project.
+        </span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon class="step-icon">access_time</mat-icon>
+          <mat-checkbox [checked]="false">Estimate Man-Hours</mat-checkbox>
+          <span class="step-description">
+          - Provide an estimation of the man-hours required to complete the project.
+        </span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon class="step-icon">warning</mat-icon>
+          <mat-checkbox [checked]="false">Add Risks</mat-checkbox>
+          <span class="step-description">
+          - Include potential risks and how they might impact the project cost.
+        </span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon class="step-icon">attach_money</mat-icon>
+          <mat-checkbox [checked]="false">Get Final Estimate</mat-checkbox>
+          <span class="step-description">
+          - Receive the total cost estimate based on the provided inputs and risk factors.
+        </span>
         </mat-list-item>
       </mat-list>
     </mat-card-content>
