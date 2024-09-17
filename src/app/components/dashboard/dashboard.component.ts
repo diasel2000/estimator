@@ -13,6 +13,7 @@ import { MatListModule } from '@angular/material/list';
 import { FormsModule } from '@angular/forms';
 import {CommonModule} from "@angular/common";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {MoreComponent} from "../more/more.component";
 
 interface Project {
   name: string;
@@ -93,6 +94,11 @@ export class DashboardComponent implements OnInit {
         console.error('Error fetching user data:', err);
         this.router.navigate(['/login']);
       }
+    });
+  }
+
+  openMoreDialog() {
+    this.dialog.open(MoreComponent, {
     });
   }
 
