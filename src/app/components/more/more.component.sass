@@ -9,16 +9,39 @@
   padding: 15px
   display: flex
   flex-direction: column
-  justify-content: center
   transition: left 1s ease-in-out
   z-index: 999
 
   &.open
     left: 212px
 
-
 .more-content
-  text-align: center
+  nav
+    margin-top: 0
+    ul
+      list-style-type: none
+      padding: 0
+
+      li
+        margin: 10px 0
+        padding-bottom: 10px
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1)
+
+        &:last-child
+          border-bottom: none
+
+        a
+          display: flex
+          align-items: center
+          text-decoration: none
+          color: #0078d4
+          font-size: 1.2rem
+
+          mat-icon
+            margin-right: 10px
+
+          &:hover
+            color: #0056a3
 
   h1
     color: #0078d4
