@@ -1,4 +1,16 @@
-<app-dashboard></app-dashboard>
-<p>task-list works!</p>
+<div class="task-list-container">
+  <h2>Task List</h2>
+  <button mat-raised-button color="primary" (click)="addTask()">Add Task</button>
 
-
+  <mat-list>
+    <mat-list-item *ngFor="let task of tasks.controls; let i = index">
+      <mat-checkbox [(ngModel)]="task.value.completed">{{ task.value.title }}</mat-checkbox>
+      <button mat-icon-button color="accent" (click)="editTask(i)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="deleteTask(i)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-list-item>
+  </mat-list>
+</div>
