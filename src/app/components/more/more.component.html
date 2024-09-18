@@ -1,6 +1,44 @@
 <div class="custom-dialog-container" [ngClass]="{'open': isOpen}">
   <div class="more-content">
-    <h1>More works!</h1>
-    <p>This content slides in from the sidebar</p>
+    <nav>
+      <ul>
+        <li>
+          <a routerLink="/estimator-ai">
+            <mat-icon>calculate</mat-icon>
+            Estimator AI
+          </a>
+        </li>
+        <li>
+          <a routerLink="/calendar">
+            <mat-icon>calendar_today</mat-icon>
+            Calendar
+          </a>
+        </li>
+        <li>
+          <a routerLink="/templates">
+            <mat-icon>description</mat-icon>
+            Templates
+          </a>
+        </li>
+        <li>
+          <a routerLink="/settings">
+            <mat-icon>settings</mat-icon>
+            Settings
+          </a>
+        </li>
+        <li>
+          <a routerLink="/comments">
+            <mat-icon>comment</mat-icon>
+            Comments & Suggestions
+          </a>
+        </li>
+        <li>
+          <a routerLink="/trash">
+            <mat-icon>delete</mat-icon>
+            Trash
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </div>
