@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule, FormsModule} from '@angular/forms';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {RouterModule} from "@angular/router";
 import {DashboardComponent} from "../dashboard/dashboard.component";
@@ -8,11 +8,26 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatListModule} from "@angular/material/list";
 import {CommonModule} from "@angular/common";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [RouterModule,DashboardComponent,MatIconModule,MatCheckboxModule,MatListModule,MatDialogModule,CommonModule],
+  imports: [
+    FormsModule,
+    RouterModule,
+    DashboardComponent,
+    MatIconModule,
+    MatCheckboxModule,
+    MatListModule,
+    MatDialogModule,
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    ReactiveFormsModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.sass'
 })
