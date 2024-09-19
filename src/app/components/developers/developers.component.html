@@ -1,1 +1,22 @@
-<p>developers works!</p>
+<mat-toolbar>
+  <h1>Create a Developer</h1>
+  <p>Add the basic details of the developer to the list.</p>
+</mat-toolbar>
+
+<div class="header-actions">
+  <mat-form-field>
+    <input matInput placeholder="Search developers..." />
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="openAddDeveloperDialog()">Add Developer</button>
+</div>
+
+<div class="developers-list">
+  <mat-card *ngFor="let developer of paginatedDevelopers" class="developer-card">
+    <mat-card-title>{{ developer.name }}</mat-card-title>
+    <mat-card-content>{{ developer.position }}</mat-card-content>
+  </mat-card>
+</div>
+
+<div class="pagination">
+  <button mat-button (click)="changePage(page)" *ngFor="let page of [1, 2, 3, 4]">{{ page }}</button>
+</div>

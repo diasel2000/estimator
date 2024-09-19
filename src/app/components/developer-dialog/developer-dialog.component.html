@@ -1,0 +1,35 @@
+<h1>Add Developer</h1>
+<mat-form-field>
+  <mat-label>Name</mat-label>
+  <input matInput [(ngModel)]="developer.name" />
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Position</mat-label>
+  <input matInput [(ngModel)]="developer.position" />
+</mat-form-field>
+
+<div *ngFor="let field of developer.customFields; let i = index">
+  <mat-form-field>
+    <mat-label>Field Title</mat-label>
+    <input matInput [(ngModel)]="field.title" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Field Description</mat-label>
+    <input matInput [(ngModel)]="field.description" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Attach Link</mat-label>
+    <input matInput [(ngModel)]="field.link" />
+  </mat-form-field>
+
+  <button mat-button color="warn" (click)="removeCustomField(i)">Remove Field</button>
+</div>
+
+<button mat-button (click)="addCustomField()">Add Custom Field</button>
+
+<div class="actions">
+  <button mat-raised-button color="primary" (click)="addDeveloper()">Add Developer</button>
+</div>
