@@ -33,6 +33,8 @@ import {MatChipsModule} from "@angular/material/chips";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatInputModule} from "@angular/material/input";
 import {MatListModule} from "@angular/material/list";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatFormFieldModule} from "@angular/material/form-field";
 
 @NgModule({
   declarations: [
@@ -60,6 +62,8 @@ import {MatListModule} from "@angular/material/list";
     MatButtonModule,
     MatToolbarModule,
     MatIconModule,
+    MatDialogModule,
+    MatFormFieldModule,
     MatSidenavModule,
     MatCardModule,
     CommonModule,

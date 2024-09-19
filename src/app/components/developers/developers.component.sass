@@ -1,0 +1,36 @@
+developers-header
+  display: flex
+  justify-content: space-between
+  align-items: center
+  padding: 16px
+  background-color: #e3f2fd
+  color: #1a237e
+
+header-actions
+  display: flex
+  justify-content: space-between
+  margin: 24px 0
+  mat-form-field
+    margin-right: 16px
+
+developers-list
+  display: grid
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
+  gap: 24px
+  margin-top: 16px
+
+developer-card
+  background-color: #fff
+  border-radius: 8px
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)
+  padding: 16px
+  transition: transform 0.2s ease-in-out
+  &:hover
+    transform: scale(1.05)
+
+pagination
+  display: flex
+  justify-content: center
+  margin-top: 32px
+  button
+    margin: 0 8px
