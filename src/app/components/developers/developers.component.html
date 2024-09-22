@@ -12,8 +12,24 @@
 
 <div class="developers-list">
   <mat-card *ngFor="let developer of paginatedDevelopers" class="developer-card">
-    <mat-card-title>{{ developer.name }}</mat-card-title>
-    <mat-card-content>{{ developer.position }}</mat-card-content>
+    <div class="card-content">
+      <div class="left-section">
+        <div class="profile-info">
+          <div class="developer-icon">👤</div>
+          <h2>{{ developer.name }}</h2>
+          <p>{{ developer.role }}</p>
+          <div class="location">
+            <mat-icon>location_on</mat-icon>
+            <span>{{ developer.location }}</span>
+          </div>
+          <p>Works from {{ developer.workStart }} to {{ developer.workEnd }}</p>
+          <p>Salary: {{ developer.salary }}</p>
+          <div *ngFor="let field of developer.customFields">
+            <strong>{{ field.title }}</strong>: {{ field.description }} (<a href="{{ field.link }}">Link</a>)
+          </div>
+        </div>
+      </div>
+    </div>
   </mat-card>
 </div>
 

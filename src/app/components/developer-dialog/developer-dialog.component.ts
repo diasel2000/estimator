@@ -6,6 +6,12 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 
+interface CustomField {
+  title: string;
+  description: string;
+  link: string;
+}
+
 @Component({
   selector: 'app-developer-dialog',
   standalone: true,
@@ -22,7 +28,7 @@ export class DeveloperDialogComponent {
     workEnd: '',
     role: '',
     salary: '',
-    customFields: [] as any[]
+    customFields: [] as CustomField[]
   };
 
   constructor(public dialogRef: MatDialogRef<DeveloperDialogComponent>) {}
