@@ -1,12 +1,53 @@
 <h1>Add Developer</h1>
+
 <mat-form-field>
   <mat-label>Name</mat-label>
   <input matInput [(ngModel)]="developer.name" />
 </mat-form-field>
 
 <mat-form-field>
-  <mat-label>Position</mat-label>
-  <input matInput [(ngModel)]="developer.position" />
+  <mat-label>Status</mat-label>
+  <mat-select [(ngModel)]="developer.status">
+    <mat-option value="Active">Active</mat-option>
+    <mat-option value="Inactive">Inactive</mat-option>
+    <mat-option value="Bench">Bench</mat-option>
+    <mat-option value="Terminated">Terminated</mat-option>
+    <mat-option value="New">New (Probation)</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Location</mat-label>
+  <mat-select [(ngModel)]="developer.location">
+    <mat-option *ngFor="let country of countries" [value]="country">{{ country }}</mat-option>
+  </mat-select>
+  <input matInput [(ngModel)]="developer.customLocation" placeholder="Or enter custom location" />
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Works From</mat-label>
+  <input matInput [matDatepicker]="pickerFrom" [(ngModel)]="developer.workStart" />
+  <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+  <mat-datepicker #pickerFrom></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>To</mat-label>
+  <input matInput [matDatepicker]="pickerTo" [(ngModel)]="developer.workEnd" [disabled]="!developer.workStart" />
+  <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+  <mat-datepicker #pickerTo></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Role</mat-label>
+  <mat-select [(ngModel)]="developer.role">
+    <mat-option *ngFor="let role of roles" [value]="role">{{ role }}</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Salary</mat-label>
+  <input matInput [(ngModel)]="developer.salary" type="number" />
 </mat-form-field>
 
 <div *ngFor="let field of developer.customFields; let i = index">

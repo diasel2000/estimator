@@ -1,7 +1,7 @@
 <mat-toolbar>
   <h1>Create a Developer</h1>
-  <p>Add the basic details of the developer to the list.</p>
 </mat-toolbar>
+<p>Add the basic details of the developer to the list.</p>
 
 <div class="header-actions">
   <mat-form-field>
@@ -12,8 +12,37 @@
 
 <div class="developers-list">
   <mat-card *ngFor="let developer of paginatedDevelopers" class="developer-card">
-    <mat-card-title>{{ developer.name }}</mat-card-title>
-    <mat-card-content>{{ developer.position }}</mat-card-content>
+    <div class="card-content">
+      <div class="left-section">
+        <div class="profile-info">
+          <div class="developer-icon">👤</div>
+          <h2>Name: {{ developer.name || 'John Doe' }}</h2>
+          <p class="status">
+            <mat-icon>check_circle</mat-icon>
+            <span>Status:</span> {{ developer.status || 'Active' }}
+          </p>
+          <div class="location">
+            <mat-icon>place</mat-icon>
+            <span>Location: {{ developer.location || 'USA' }}</span>
+            <img [src]="developer.flag || '/assets/default-flag.png'" alt="flag" class="region-flag">
+          </div>
+          <p class="work-period">
+            <mat-icon>calendar_today</mat-icon>
+            <span>Works from {{ developer.workStart || 'Jan 2020' }} to {{ developer.workEnd || 'Present' }}</span>
+          </p>
+          <p class="role">
+            <mat-icon>work</mat-icon>
+            <span>Role: {{ developer.role || 'Senior Programmer' }}</span>
+          </p>
+          <p class="salary">
+            <span class="material-icons md-24">paid</span> Salary: {{ developer.salary || '$120,000/year' }}
+          </p>
+          <div *ngFor="let field of developer.customFields">
+            <strong>{{ field.title }}</strong>: {{ field.description }} (<a href="{{ field.link }}">Link</a>)
+          </div>
+        </div>
+      </div>
+    </div>
   </mat-card>
 </div>
 

@@ -9,12 +9,13 @@ import {MatCardModule} from "@angular/material/card";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatIconModule} from "@angular/material/icon";
 
 @Component({
   selector: 'app-developers',
   standalone: true,
   imports: [
-    MatDialogModule, CommonModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatToolbarModule
+    MatDialogModule, CommonModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatToolbarModule,MatIconModule
   ],
   templateUrl: './developers.component.html',
   styleUrls: ['./developers.component.sass']
@@ -33,7 +34,16 @@ export class DevelopersComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.developers.push(result);
+        this.developers.push({
+          name: result.name,
+          status: result.status,
+          location: result.location,
+          workStart: result.workStart,
+          workEnd: result.workEnd,
+          role: result.role,
+          salary: result.salary,
+          customFields: result.customFields
+        });
       }
     });
   }

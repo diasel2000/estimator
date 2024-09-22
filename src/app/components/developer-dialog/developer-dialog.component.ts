@@ -2,10 +2,12 @@ import { Component } from '@angular/core';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { } from '@angular/material';
-import {MatButtonModule} from "@angular/material/button";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatInputModule} from "@angular/material/input";
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 interface CustomField {
   title: string;
@@ -16,14 +18,33 @@ interface CustomField {
 @Component({
   selector: 'app-developer-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+  ],
   templateUrl: './developer-dialog.component.html',
   styleUrls: ['./developer-dialog.component.sass']
 })
 export class DeveloperDialogComponent {
+  countries = ['USA', 'Canada', 'UK', 'Germany', 'France', 'Other'];
+  roles = ['PM', 'Developer', 'Tester', 'Designer', 'DevOps', 'Other'];
+
   developer = {
     name: '',
-    position: '',
+    status: '',
+    location: '',
+    customLocation: '',
+    workStart: '',
+    workEnd: '',
+    role: '',
+    salary: '',
     customFields: [] as CustomField[]
   };
 
@@ -38,6 +59,14 @@ export class DeveloperDialogComponent {
   }
 
   addDeveloper(): void {
+    if (this.developer.workStart && this.developer.workEnd) {
+      const startDate = new Date(this.developer.workStart);
+      const endDate = new Date(this.developer.workEnd);
+      if (endDate <= startDate) {
+        alert('End date must be later than Start date.');
+        return;
+      }
+    }
     this.dialogRef.close(this.developer);
   }
 }
