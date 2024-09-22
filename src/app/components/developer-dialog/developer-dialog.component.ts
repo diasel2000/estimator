@@ -2,16 +2,9 @@ import { Component } from '@angular/core';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { } from '@angular/material';
-import {MatButtonModule} from "@angular/material/button";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatInputModule} from "@angular/material/input";
-
-interface CustomField {
-  title: string;
-  description: string;
-  link: string;
-}
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
 
 @Component({
   selector: 'app-developer-dialog',
@@ -23,8 +16,13 @@ interface CustomField {
 export class DeveloperDialogComponent {
   developer = {
     name: '',
-    position: '',
-    customFields: [] as CustomField[]
+    status: '',
+    location: '',
+    workStart: '',
+    workEnd: '',
+    role: '',
+    salary: '',
+    customFields: [] as any[]
   };
 
   constructor(public dialogRef: MatDialogRef<DeveloperDialogComponent>) {}

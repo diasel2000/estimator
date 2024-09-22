@@ -5,8 +5,33 @@
 </mat-form-field>
 
 <mat-form-field>
-  <mat-label>Position</mat-label>
-  <input matInput [(ngModel)]="developer.position" />
+  <mat-label>Status</mat-label>
+  <input matInput [(ngModel)]="developer.status" />
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Location</mat-label>
+  <input matInput [(ngModel)]="developer.location" />
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Works from</mat-label>
+  <input matInput [(ngModel)]="developer.workStart" />
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>to</mat-label>
+  <input matInput [(ngModel)]="developer.workEnd" />
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Role</mat-label>
+  <input matInput [(ngModel)]="developer.role" />
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Salary</mat-label>
+  <input matInput [(ngModel)]="developer.salary" />
 </mat-form-field>
 
 <div *ngFor="let field of developer.customFields; let i = index">
