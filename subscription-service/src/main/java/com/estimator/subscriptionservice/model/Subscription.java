@@ -1,6 +1,5 @@
 package com.estimator.subscriptionservice.model;
 
-
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-// Model for Subscriptions
 @Data
 @NoArgsConstructor
 @Entity
