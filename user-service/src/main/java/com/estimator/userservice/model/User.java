@@ -1,4 +1,5 @@
-import com.estimator.userservice.model.UserRole;
+package com.estimator.userservice.model;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
