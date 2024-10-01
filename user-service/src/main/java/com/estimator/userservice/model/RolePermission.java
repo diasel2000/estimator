@@ -1,13 +1,11 @@
-import com.estimator.userservice.model.RolePermissionKey;
+package com.estimator.userservice.model;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.management.relation.Role;
-import java.security.Permission;
 import java.util.Objects;
 
-// Model for RolePermission with composite key
 @Data
 @NoArgsConstructor
 @Entity
