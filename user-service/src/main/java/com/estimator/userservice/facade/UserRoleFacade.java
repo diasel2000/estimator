@@ -1,9 +1,9 @@
 package com.estimator.userservice.facade;
 
-import com.estimator.dto.UserRoleDTO;
-import com.estimator.dto.UserRoleKeyDTO;
-import com.estimator.model.UserRole;
-import com.estimator.model.UserRoleKey;
+import com.estimator.userservice.dto.UserRoleDTO;
+import com.estimator.userservice.dto.UserRoleKeyDTO;
+import com.estimator.userservice.model.UserRole;
+import com.estimator.userservice.model.UserRoleKey;
 import org.springframework.stereotype.Component;
 
 @Component

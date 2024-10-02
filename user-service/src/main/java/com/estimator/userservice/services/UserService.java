@@ -1,10 +1,11 @@
 package com.estimator.userservice.services;
 
-import com.estimator.exception.CustomException;
-import com.estimator.repository.RoleRepository;
-import com.estimator.repository.SubscriptionRepository;
-import com.estimator.repository.UserRepository;
-import com.estimator.repository.UserRoleRepository;
+import com.estimator.userservice.exception.CustomException;
+import com.estimator.userservice.model.*;
+import com.estimator.userservice.repository.RoleRepository;
+import com.estimator.userservice.repository.SubscriptionRepository;
+import com.estimator.userservice.repository.UserRepository;
+import com.estimator.userservice.repository.UserRoleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
