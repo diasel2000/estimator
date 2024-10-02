@@ -1,6 +1,5 @@
 package com.estimator.userservice.model;
 
-import com.estimator.userservice.model.UserRoleKey;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;

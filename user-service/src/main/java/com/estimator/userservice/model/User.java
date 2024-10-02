@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.management.relation.Role;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
