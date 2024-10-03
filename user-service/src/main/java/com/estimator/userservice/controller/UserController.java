@@ -1,12 +1,10 @@
 package com.estimator.userservice.controller;
-import com.estimator.dto.UserDTO;
-import com.estimator.facade.AuthFacade;
-import com.estimator.facade.UserFacade;
-import com.estimator.model.User;
-import com.estimator.services.JwtTokenProvider;
+
 import com.estimator.userservice.dto.UserDTO;
 import com.estimator.userservice.facade.AuthFacade;
 import com.estimator.userservice.facade.UserFacade;
+import com.estimator.userservice.model.User;
+import com.estimator.userservice.services.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

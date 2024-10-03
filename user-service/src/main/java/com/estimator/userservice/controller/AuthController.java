@@ -1,19 +1,19 @@
 package com.estimator.userservice.controller;
 
-import com.estimator.dto.LoginRequest;
-import com.estimator.dto.RegisterRequest;
-import com.estimator.exception.CustomException;
-import com.estimator.facade.AuthFacade;
-import com.estimator.model.User;
-import com.estimator.services.JwtTokenProvider;
+
+import com.estimator.userservice.dto.LoginRequest;
+import com.estimator.userservice.dto.RegisterRequest;
+import com.estimator.userservice.exception.CustomException;
+import com.estimator.userservice.facade.AuthFacade;
+import com.estimator.userservice.model.User;
+import com.estimator.userservice.services.JwtTokenProvider;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
